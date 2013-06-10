@@ -10,16 +10,17 @@ $a = array(
 	'border'=>array(10,'red'),
 	'rounded'=>array(10, "tl tr"),
 );
-$file = '1.jpg'; 
-$url = image($file,$a);
+ 
+'t' also support array like $a
+<?php echo image('t/11.jpg','t');?> 
+<?php echo image('t/00.jpg','t');?>
+<?php echo image('t/22.jpg','t');?>
+<?php echo image('t/33.jpg','t');?>
+<?php echo image('t/1.jpg','t');?>
+<?php echo image('t/2.jpg','t');?>
  
 
-<?php 
-use yii\helpers\Html;
-echo Html::img($url);
-?>
-
-``
+```
 
 dir setting
 

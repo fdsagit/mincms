@@ -6,6 +6,7 @@
 * @since Yii 2.0
 */
 
-function image($file,$option=null){
-	return module_class('imagecache.Classes.image',$file,$option);
+function image($file,$option=null,$params=null){
+	$url =  module_class('imagecache.Classes.image',$file,$option);
+	return \yii\helpers\Html::img($url,$params);
 }
