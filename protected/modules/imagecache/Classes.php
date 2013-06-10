@@ -15,6 +15,7 @@ class Classes
 	    if(!is_array($option)){
 	    	$option = static::get_image($option);
 	    } 
+	    if(!$option) $option = array('resize'=>array(300,200));
 		if(is_array($option)){
 			$s = base64_encode(json_encode($option));
 		} 
@@ -39,6 +40,9 @@ class Classes
 					'slug'=>$id
 				),
 			));
+			if(!$one){
+				return array();
+			}
 			$one['memo'] = unserialize($one['memo']);
 			foreach($one['memo'] as $k=>$v){
 				if(!in_array($k,$one['memo']['_type']))

@@ -9,7 +9,7 @@ $form = ActiveForm::begin(array(
 <div class="control-group">
 	<label class="control-label" for="image-slug"><?php echo __('type');?></label>
 	<div class="controls">
-		<?php echo Html::dropDownList("Image[type][]",$model->type ,$image,array('multiple'=>'multiple','id'=>'type'));?> 
+		<?php echo Html::dropDownList("Image[type][]",$model->type ,$image,array('multiple'=>'multiple','id'=>'type','style'=>'width:300px;'));?> 
 	</div>
 </div>
 <div id='resize' class='well control-group imagecache_form'>

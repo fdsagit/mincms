@@ -16,3 +16,5 @@ Thumbs.db
 /cronjob/backup
 /composer.lock
 /public/themes/ljftaichi.com
+
+/cronjob/backup

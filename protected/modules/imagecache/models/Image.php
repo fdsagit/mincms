@@ -18,6 +18,7 @@ class Image extends \app\core\ActiveRecord
 		return array(
 			array('slug', 'required'), 
 			array('slug', 'unique'),   
+			array('slug', 'match','pattern'=>'/^[a-z_]/', 'message'=>__('match')), 
 		);
 	} 
 	function beforeSave($insert){
