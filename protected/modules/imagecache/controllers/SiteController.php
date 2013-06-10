@@ -1,7 +1,7 @@
-<?php namespace app\modules\image\controllers; 
+<?php namespace app\modules\imagecache\controllers; 
 use app\core\FrontController;
 use app\core\File;
-use app\modules\image\libraries\Image;
+use app\modules\imagecache\libraries\Image;
 /**
 * 公共可访问控制器，自动生成图片需要的效果
 *
@@ -65,11 +65,11 @@ class SiteController extends FrontController
  		foreach($json as $k=>$v){
 			switch($k){
 				case 'resize': 
-					$imagine = $imagine->resize($v[0], $v[1], true, true);
+					$imagine = $imagine->resize($v[0], $v[1],  $v[2], $v[3]);
 					break;
 				case 'crop': 
 					//crop(20, 20, 180, 180);
-					$imagine = $imagine->crop($v[0], $v[1], $v[3], $v[4]);
+					$imagine = $imagine->crop($v[0], $v[1], $v[2], $v[3]);
 					break;
 				case 'crop_resize':
 					$imagine = $imagine->crop_resize($v[0], $v[1]);
@@ -86,8 +86,8 @@ class SiteController extends FrontController
 					* watermark('watermark.ext', "top left", 15);
 					* watermark('watermark.ext', "bottom right");
 					* watermark('watermark.ext', "center middle");
-					*/
-					$imagine = $imagine->watermark($v[0],$v[1],$v[2]);
+					*/  
+					$imagine = $imagine->watermark($v->{0},$v->ps,$v->{2});
 					break;
 				case 'border':
 					//border(10, '#000000');

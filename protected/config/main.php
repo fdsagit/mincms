@@ -7,7 +7,8 @@ $modules = cache_pre('all_modules');
 //默认系统模块
 $modules['core'] = 1;
 $modules['auth'] = 1;
- 
+$modules['imagecache'] = 1;
+$modules['file'] = 1;
 $module['debug'] = array(
 	 'class' => "yii\debug\Module"
 );
@@ -71,7 +72,7 @@ return array(
 				* default router
 				*/
 				'admin'=>'core/config/index',
-				'imagine'=>'image/site/index',
+				'imagine'=>'imagecache/site/index',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),  
 		), 

@@ -15,5 +15,8 @@ color: #333;
 margin: 10px 0 5px 0;
 padding: 10px; 
 }
+input.watermark {margin-right:10px;margin-bottom:10px;}
 .btn a,.label a{color:#fff;}
 .form-actions{padding-left: 10px;}
+.imagecache_form{margin-left:180px;width:300px; }
+.imagecache_form .icon-trash {float:right;}

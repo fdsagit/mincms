@@ -1,5 +1,6 @@
 <?php 
 return  array (
+  'image cache' => '图片缓存',
   'description' => '描述',
   'redirect' => '跳转URL',
   'disable host' => '禁用域名跳转',

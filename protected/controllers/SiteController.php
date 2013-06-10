@@ -21,14 +21,9 @@ class SiteController extends FrontController
 		echo $this->render('index');
 	} 
  	function actionTest(){
- 		$a = array(
-			'resize'=>array(300,200),
-			'rotate'=>45,
-			'border'=>array(10,'red'),
-			'rounded'=>array(10, "tl tr"),
-		);
+ 		 
 		$file = '1.jpg'; 
-		$url = image($file,$a);
+		$url = image($file,'test');
 		$this->active = 'site.test';  
 		echo $this->render('test',array('url'=>$url));
  	}

@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = __('list');
 <?php echo app\core\widget\Table::widget(array(
 	'models'=>$models,
 	'pages'=>$pages, 
-	'fields'=>array('id','slug','memo')	
+	'fields'=>array('id','slug','description')	
 )); 
 ?> 
  

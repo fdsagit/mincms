@@ -13,6 +13,31 @@ class Arr
 	static $_j = 0;
 	static $tree; 
  	static $deep = 0; 
+ 	/**
+ 	* 判断数组有没有值
+ 	*
+ 	$memo = $_POST['memo'];
+	foreach($memo as $k=>$arr){ 
+		if(Arr::null($arr)<1){ 
+			unset($_POST['memo'][$k]);
+		}
+	}
+ 	*/
+ 	static function null($arr){
+ 		if(!is_array($arr)){
+ 			if(!empty($arr)) return 1;
+ 			return 0;
+ 		} 
+ 		foreach($arr as $k=>$v){
+ 			if(is_array($v)){
+ 				static::null($arr);
+ 			}
+ 			if(empty($v) || $v==null){
+ 				unset($arr[$k]);
+ 			}
+ 		} 
+ 		return count($arr);
+ 	}
  	static function query($array){
  		return http_build_query($array);
  	}

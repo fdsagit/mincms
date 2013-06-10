@@ -218,6 +218,7 @@ function cache_pre_delete($name){
  	return MinCache::delete($name);
 }
 function cache($name,$value=null,$expire=0){  
+	if($value===false) return \Yii::$app->cache->delete($name);
 	$data = \Yii::$app->cache->get($name);
 	if(!$value) return $data; 
 	\Yii::$app->cache->set($name,$value,$expire); 

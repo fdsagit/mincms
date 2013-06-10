@@ -1,5 +1,5 @@
-<?php namespace app\modules\image\controllers;  
-use app\modules\image\models\Image;
+<?php namespace app\modules\imagecache\controllers;  
+use app\modules\imagecache\models\Image;
  
 /**
 * 公共可访问控制器，自动生成图片需要的效果
@@ -11,55 +11,15 @@ class AdminController extends \app\core\AuthController
 	public $imagecache;
 	function init(){
 		parent::init();
-		$this->imagecache = array(
-			'resize'=>array(
-				'width'=>'',
-				'height'=>'',
-				'keepar'=>"true",
-				'pad'=>"true",
-			),
-			'crop'=>array(
-				'x1'=>'',
-				'y1'=>'',
-				'x2'=>'',
-				'y2'=>'',
-			),
-			'crop_resize'=>array(
-				'width'=>'',
-				'height'=>'', 
-			),
-			'rotate'=>array(
-				'degrees'=>'',
-			),
-			'flip'=>array(
-				'direction'=>array(
-					'vertical','horizontal','both'
-				), 
-			),
-			'watermark'=>array(
-				'filename'=>'file',
-				'position'=>array(
-					1,2,3,4,5,6,7,8,9
-				),
-				'padding'=>'',
-			),
-			'border'=>array(
-				'size'=>'',
-				'color'=>'color', 
-			),
-			'mask'=>array(
-				'maskimage'=>'mask.ext', 
-			),
-			'rounded'=>array(
-				'radius'=>'',
-				'sides'=>'tl tr bl br',
-				'antialias'=>'', 
-			),
-			'grayscale'=>array(
-				'grayscale' 
-			),
+		$imagecache = array(
+			'resize','crop','crop_resize','rotate',
+			'flip','watermark','border','mask',
+			'rounded','grayscale',
 		);
-		$this->active = array('system','image.admin.index');
+		foreach($imagecache as $i){
+			$this->imagecache[$i] = $i;
+		}
+		$this->active = array('system','imagecache.admin.index');
 	}
 	 
 	public function actionCreate()
@@ -67,14 +27,15 @@ class AdminController extends \app\core\AuthController
 		$this->view->title = __('create image');
 		$model = new Image();
 	 	$model->scenario = 'all';
-		if ($this->populate($_POST, $model) && $model->validate()) { 
-		 	$model->save();
+	 	
+		if ($this->populate($_POST, $model) && $model->validate()) {  
+		 	$model->save(); 
 		 	flash('success',__('create sucessful'));
-			$this->redirect(url('image/admin/index'));
+			$this->redirect(url('imagecache/admin/index'));
 		} 
 		echo $this->render('form', array(
 		   'model' => $model, 
-		   'image' => array_keys($this->imagecache)
+		   'image' => $this->imagecache
 		));
 	}
 	public function actionUpdate($id)
@@ -85,7 +46,7 @@ class AdminController extends \app\core\AuthController
 		if ($this->populate($_POST, $model) && $model->validate()) { 
 		 	$model->save();
 		 	flash('success',__('update sucessful'));
-			$this->redirect(url('image/admin/index'));
+			$this->redirect(url('imagecache/admin/index'));
 		} 
 		echo $this->render('form', array(
 		   'model' => $model, 
@@ -102,7 +63,7 @@ class AdminController extends \app\core\AuthController
 	}
 	public function actionIndex()
 	{    
-		$rt = \app\core\Pagination::run('\app\modules\image\models\Image',null,array('pageSize'=>50));  
+		$rt = \app\core\Pagination::run('\app\modules\imagecache\models\Image',null,array('pageSize'=>50));  
  		
 		echo $this->render('index', array(
 		   'models' => $rt->models,

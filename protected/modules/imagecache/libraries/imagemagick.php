@@ -1,5 +1,5 @@
-<?php namespace app\modules\image\libraries; 
-use app\modules\image\libraries\Driver;
+<?php namespace app\modules\imagecache\libraries; 
+use app\modules\imagecache\libraries\Driver;
 /**
  * Part of the Fuel framework.
  *

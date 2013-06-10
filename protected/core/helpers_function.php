@@ -7,5 +7,5 @@
 */
 
 function image($file,$option=null){
-	return module_class('image.Classes.image',$file,$option);
+	return module_class('imagecache.Classes.image',$file,$option);
 }

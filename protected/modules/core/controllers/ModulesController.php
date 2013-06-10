@@ -10,7 +10,7 @@ class ModulesController extends \app\core\AuthController
 	* 内核主要模块，不能改动。
 	*/
 	protected $_core_modules = array(
-		'core', 'auth',
+		'core', 'auth','imagecache','file'
 	);
 	
 	function init(){ 
@@ -25,16 +25,7 @@ class ModulesController extends \app\core\AuthController
 	}
 	
 	public function actionIndex()
-	{  
-		 
-		widget('uisort',array(
-		 	'tag'=>'.drag',
-	        'table'=>'modules', // database table name,must params
-	        'stop'=>"$.get('".url('admin/admin/menu')."',function(data){ 
-	     			$('#menu').html(data);
-	     	 });
-	     	"
-	    ));
+	{   
 	    if($_POST['uisort_widget_ajax'] != 'uisort_modules'){ 
 			$base = $this->_base;
 			$models = Modules::find()->where(array('active'=>1))->orderBy('core asc,sort desc,id asc')->all();

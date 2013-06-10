@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2013 年 06 月 09 日 06:20
--- 服务器版本: 5.5.24-log
--- PHP 版本: 5.3.13
+-- 生成日期: 2013 年 06 月 10 日 06:16
+-- 服务器版本: 5.5.8-log
+-- PHP 版本: 5.4.3
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -440,7 +440,7 @@ CREATE TABLE IF NOT EXISTS `core_modules` (
   `active` tinyint(1) NOT NULL,
   `sort` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
 
 --
 -- 转存表中的数据 `core_modules`
@@ -457,7 +457,6 @@ INSERT INTO `core_modules` (`id`, `name`, `label`, `memo`, `core`, `active`, `so
 (8, 'content', 'content', '内容', 0, 1, 0),
 (9, 'document', 'document', '手册', 0, 1, 0),
 (10, 'file', 'file', '文件', 0, 1, 0),
-(11, 'image', 'image', '图片', 0, 1, 0),
 (13, 'menu', 'menu', '菜单', 0, 1, 0),
 (14, 'payment', 'payment', '支付', 0, 1, 0),
 (15, 'svn', 'svn', 'SVN同步', 0, 1, 0),
@@ -465,7 +464,8 @@ INSERT INTO `core_modules` (`id`, `name`, `label`, `memo`, `core`, `active`, `so
 (17, 'taxonomy', 'taxonomy', '分类', 0, 1, 0),
 (18, 'i18n', 'i18n', '多语言', 0, 1, 0),
 (19, 'multisite', 'multisite', '多站点', 0, 1, 0),
-(21, 'host', 'host', '设置域名自动跳转', 0, 1, 0);
+(21, 'host', 'host', '设置域名自动跳转', 0, 1, 0),
+(22, 'imagecache', 'image', '图片', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -584,16 +584,23 @@ INSERT INTO `host` (`id`, `url`, `redirect`, `display`, `sort`) VALUES
 -- --------------------------------------------------------
 
 --
--- 表的结构 `image`
+-- 表的结构 `imagecache`
 --
 
-CREATE TABLE IF NOT EXISTS `image` (
+CREATE TABLE IF NOT EXISTS `imagecache` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `slug` varchar(50) NOT NULL,
   `description` varchar(255) NOT NULL,
   `memo` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- 转存表中的数据 `imagecache`
+--
+
+INSERT INTO `imagecache` (`id`, `slug`, `description`, `memo`) VALUES
+(1, 'test', '测试', 'a:5:{s:6:"resize";a:4:{i:0;s:3:"600";i:1;s:3:"550";i:2;s:1:"1";i:3;s:0:"";}s:6:"rotate";s:2:"45";s:9:"watermark";a:3:{i:0;s:16:"imagine/logo.png";s:2:"ps";s:9:"top right";i:1;s:2:"10";}s:6:"border";a:2:{i:0;s:1:"1";i:1;s:7:"#f684a8";}s:5:"_type";a:4:{i:0;s:6:"resize";i:1;s:6:"rotate";i:2;s:9:"watermark";i:3;s:6:"border";}}');
 
 -- --------------------------------------------------------
 

@@ -10,6 +10,52 @@ function strrpos (haystack, needle, offset) {
     i = (haystack + '').lastIndexOf(needle);
   }
   return i >= 0 ? i : false;
+} 
+/**
+ * Function : dump()
+ * Arguments: The data - array,hash(associative array),object
+ *    The level - OPTIONAL
+ * Returns  : The textual representation of the array.
+ * This function was inspired by the print_r function of PHP.
+ * This will accept some data as the argument and return a
+ * text that will be a more readable version of the
+ * array/hash/object that is given.
+ * Docs: http://www.openjs.com/scripts/others/dump_function_php_print_r.php
+ */
+function dump(arr,level) {
+	var dumped_text = "";
+	if(!level) level = 0;
+	
+	//The padding given at the beginning of the line.
+	var level_padding = "";
+	for(var j=0;j<level+1;j++) level_padding += "    ";
+	
+	if(typeof(arr) == 'object') { //Array/Hashes/Objects 
+		for(var item in arr) {
+			var value = arr[item];
+			
+			if(typeof(value) == 'object') { //If it is an array,
+				dumped_text += level_padding + "'" + item + "' ...\n";
+				dumped_text += dump(value,level+1);
+			} else {
+				dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+			}
+		}
+	} else { //Stings/Chars/Numbers etc.
+		dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
+	}
+	return dumped_text;
+}
+function ucfirst (str) {
+  // http://kevin.vanzonneveld.net
+  // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+  // +   bugfixed by: Onno Marsman
+  // +   improved by: Brett Zamir (http://brett-zamir.me)
+  // *     example 1: ucfirst('kevin van zonneveld');
+  // *     returns 1: 'Kevin van zonneveld'
+  str += '';
+  var f = str.charAt(0).toUpperCase();
+  return f + str.substr(1);
 }
 function str_replace (search, replace, subject, count) { 
   var i = 0,
@@ -42,4 +88,66 @@ function str_replace (search, replace, subject, count) {
     }
   }
   return sa ? s : s[0];
+}
+function implode (glue, pieces) {
+  // http://kevin.vanzonneveld.net
+  // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+  // +   improved by: Waldo Malqui Silva
+  // +   improved by: Itsacon (http://www.itsacon.net/)
+  // +   bugfixed by: Brett Zamir (http://brett-zamir.me)
+  // *     example 1: implode(' ', ['Kevin', 'van', 'Zonneveld']);
+  // *     returns 1: 'Kevin van Zonneveld'
+  // *     example 2: implode(' ', {first:'Kevin', last: 'van Zonneveld'});
+  // *     returns 2: 'Kevin van Zonneveld'
+  var i = '',
+    retVal = '',
+    tGlue = '';
+  if (arguments.length === 1) {
+    pieces = glue;
+    glue = '';
+  }
+  if (typeof(pieces) === 'object') {
+    if (Object.prototype.toString.call(pieces) === '[object Array]') {
+      return pieces.join(glue);
+    }
+    for (i in pieces) {
+      retVal += tGlue + pieces[i];
+      tGlue = glue;
+    }
+    return retVal;
+  }
+  return pieces;
+}
+function explode (delimiter, string, limit) {
+
+  if ( arguments.length < 2 || typeof delimiter === 'undefined' || typeof string === 'undefined' ) return null;
+  if ( delimiter === '' || delimiter === false || delimiter === null) return false;
+  if ( typeof delimiter === 'function' || typeof delimiter === 'object' || typeof string === 'function' || typeof string === 'object'){
+    return { 0: '' };
+  }
+  if ( delimiter === true ) delimiter = '1';
+
+  // Here we go...
+  delimiter += '';
+  string += '';
+
+  var s = string.split( delimiter );
+
+
+  if ( typeof limit === 'undefined' ) return s;
+
+  // Support for limit
+  if ( limit === 0 ) limit = 1;
+
+  // Positive limit
+  if ( limit > 0 ){
+    if ( limit >= s.length ) return s;
+    return s.slice( 0, limit - 1 ).concat( [ s.slice( limit - 1 ).join( delimiter ) ] );
+  }
+
+  // Negative limit
+  if ( -limit >= s.length ) return [];
+
+  s.splice( s.length + limit );
+  return s;
 }

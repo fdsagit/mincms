@@ -1,5 +1,5 @@
-<?php namespace app\modules\image\libraries; 
-use app\modules\image\libraries\Driver;
+<?php namespace app\modules\imagecache\libraries; 
+use app\modules\imagecache\libraries\Driver;
  
 /**
  * Part of the Fuel framework.
@@ -72,11 +72,11 @@ class Image
 		$config = array_merge(static::__config(), $config);
  
 		$protocol = ucfirst( ! empty($config['driver']) ? $config['driver'] : 'gd');
-		$class = "\app\modules\image\libraries\\".$protocol;
+		$class = "\app\modules\imagecache\libraries\\".$protocol;
 	 
 		if ($protocol == 'Driver' || ! class_exists($class))
 		{
-			throw new \FuelException('Driver '.$protocol.' is not a valid driver for image manipulation.');
+			return 'imagecache is not a valid driver for image manipulation.';
 		}
 		$return = new $class($config);
 	 
