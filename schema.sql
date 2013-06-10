@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2013 年 06 月 10 日 06:16
+-- 生成日期: 2013 年 06 月 10 日 11:11
 -- 服务器版本: 5.5.8-log
 -- PHP 版本: 5.4.3
 
@@ -470,6 +470,26 @@ INSERT INTO `core_modules` (`id`, `name`, `label`, `memo`, `core`, `active`, `so
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `core_shorturl`
+--
+
+CREATE TABLE IF NOT EXISTS `core_shorturl` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `url` text NOT NULL,
+  `short` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- 转存表中的数据 `core_shorturl`
+--
+
+INSERT INTO `core_shorturl` (`id`, `url`, `short`) VALUES
+(2, 'a:3:{s:6:"resize";a:4:{i:0;s:3:"300";i:1;s:3:"200";i:2;s:1:"1";i:3;s:1:"1";}s:6:"rotate";s:2:"25";s:9:"watermark";a:3:{i:0;s:16:"imagine/logo.png";s:2:"ps";s:12:"bottom right";i:1;s:1:"2";}}', '1koLX2');
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `email_config`
 --
 
@@ -593,14 +613,15 @@ CREATE TABLE IF NOT EXISTS `imagecache` (
   `description` varchar(255) NOT NULL,
   `memo` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- 转存表中的数据 `imagecache`
 --
 
 INSERT INTO `imagecache` (`id`, `slug`, `description`, `memo`) VALUES
-(1, 'test', '测试', 'a:5:{s:6:"resize";a:4:{i:0;s:3:"600";i:1;s:3:"550";i:2;s:1:"1";i:3;s:0:"";}s:6:"rotate";s:2:"45";s:9:"watermark";a:3:{i:0;s:16:"imagine/logo.png";s:2:"ps";s:9:"top right";i:1;s:2:"10";}s:6:"border";a:2:{i:0;s:1:"1";i:1;s:7:"#f684a8";}s:5:"_type";a:4:{i:0;s:6:"resize";i:1;s:6:"rotate";i:2;s:9:"watermark";i:3;s:6:"border";}}');
+(1, 'test', '测试', 'a:5:{s:6:"resize";a:4:{i:0;s:3:"600";i:1;s:3:"550";i:2;s:1:"1";i:3;s:0:"";}s:6:"rotate";s:2:"45";s:9:"watermark";a:3:{i:0;s:16:"imagine/logo.png";s:2:"ps";s:9:"top right";i:1;s:2:"10";}s:6:"border";a:2:{i:0;s:1:"1";i:1;s:7:"#f684a8";}s:5:"_type";a:4:{i:0;s:6:"resize";i:1;s:6:"rotate";i:2;s:9:"watermark";i:3;s:6:"border";}}'),
+(2, 't', '', 'a:4:{s:6:"resize";a:4:{i:0;s:3:"300";i:1;s:3:"200";i:2;s:1:"1";i:3;s:1:"1";}s:6:"rotate";s:2:"25";s:9:"watermark";a:3:{i:0;s:16:"imagine/logo.png";s:2:"ps";s:12:"bottom right";i:1;s:1:"2";}s:5:"_type";a:3:{i:0;s:6:"resize";i:1;s:6:"rotate";i:2;s:9:"watermark";}}');
 
 -- --------------------------------------------------------
 

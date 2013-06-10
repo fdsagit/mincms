@@ -2,7 +2,7 @@
 use app\modules\imagecache\models\Image;
  
 /**
-* 公共可访问控制器，自动生成图片需要的效果
+* 图片缓存后台管理
 *  
 * @author Sun < mincms@outlook.com >
 */

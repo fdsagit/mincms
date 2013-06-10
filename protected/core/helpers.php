@@ -223,6 +223,15 @@ function cache($name,$value=null,$expire=0){
 	if(!$value) return $data; 
 	\Yii::$app->cache->set($name,$value,$expire); 
 }
+function encode($data, $key=null){
+	if(!$key) $key = \Yii::$app->params['SecurityHelper']; 
+	$code = \yii\helpers\SecurityHelper::encrypt($data, $key);
+	return base64_encode($code);
+}
+function decode($data, $key=null){
+	if(!$key) $key = \Yii::$app->params['SecurityHelper'];
+	return \yii\helpers\SecurityHelper::decrypt(base64_decode($data), $key);
+}
 /**
 * 判断是否是只能操作自己添加的记录
 */

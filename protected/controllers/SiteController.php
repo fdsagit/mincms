@@ -20,9 +20,7 @@ class SiteController extends FrontController
 		$this->active = 'site.index';  
 		echo $this->render('index');
 	} 
- 	function actionTest(){
- 		 
-		 
+ 	function actionTest(){  
 		echo $this->render('test');
  	}
 	 

@@ -2,6 +2,7 @@
 namespace app\modules\imagecache; 
 use app\core\DB; 
 use app\core\File;
+use app\core\Url;
 /**
  *  
  * @author Sun < mincms@outlook.com >
@@ -15,9 +16,9 @@ class Classes
 	    if(!is_array($option)){
 	    	$option = static::get_image($option);
 	    } 
-	    if(!$option) $option = array('resize'=>array(300,200));
+	    if(!$option) $option = array('resize'=>array(300,200,true,false));
 		if(is_array($option)){
-			$s = base64_encode(json_encode($option));
+			$s = Url::short(serialize($option));
 		} 
 		$name = File::name($file);
 		$ext = File::ext($file);

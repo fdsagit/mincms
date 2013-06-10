@@ -59,13 +59,13 @@ class SiteController extends FrontController
 		//生成新文件所存在的路径 
 		$new_dir = File::dir($new_name);
 		if(!is_dir($new_dir)) mkdir($new_dir,0777,true); 
-		$json = json_decode(base64_decode($json)); 
-		//操作图片
+		$json = unserialize(\app\core\Url::short_back($json)); 
+		//操作图片 
 		$imagine = Image::load($file_path);
  		foreach($json as $k=>$v){
 			switch($k){
 				case 'resize': 
-					$imagine = $imagine->resize($v[0], $v[1],  $v[2], $v[3]);
+					$imagine = $imagine->resize($v[0], $v[1],  $v[2]?:true, $v[3]?:false);
 					break;
 				case 'crop': 
 					//crop(20, 20, 180, 180);
@@ -86,8 +86,8 @@ class SiteController extends FrontController
 					* watermark('watermark.ext', "top left", 15);
 					* watermark('watermark.ext', "bottom right");
 					* watermark('watermark.ext', "center middle");
-					*/  
-					$imagine = $imagine->watermark($v->{0},$v->ps,$v->{2});
+					*/   
+					$imagine = $imagine->watermark($v[0],$v['ps'],$v[2]);
 					break;
 				case 'border':
 					//border(10, '#000000');
