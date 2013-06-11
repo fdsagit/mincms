@@ -74,6 +74,7 @@ $this->registerMetaTag(array('content'=>'自定义内容管理系统,支持多�
     	$menus = array(
     		'site/index'=>'home',
     		'document/site/index'=>'document',
+    		'site/test'=>'demo',
     		'auth/open/login'=>'admin login',
     	);
     	foreach($menus as $k=>$v){
@@ -115,8 +116,11 @@ z-index: 1000; "src="<?php echo base_url();?>img/fork.png"/></a>
     
 	<?php $this->endBody(); ?> 
       <div class="footer" style="clear:both;">
-        <address><strong>www.mincms.com</strong><br>  
-				Email: mincms@outlook.com<br></address>
+        <hr>
+        <address>
+        		©<?php echo date('Y');?> 
+        		<strong>mincms@outlook.com</strong><br>  
+			 	<br></address>
       </div>
 
     </div> <!-- /container --> 

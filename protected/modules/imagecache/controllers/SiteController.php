@@ -58,8 +58,8 @@ class SiteController extends FrontController
 		}
 		//生成新文件所存在的路径 
 		$new_dir = File::dir($new_name);
-		if(!is_dir($new_dir)) mkdir($new_dir,0777,true); 
-		$json = unserialize(\app\core\Url::short_back($json)); 
+		if(!is_dir($new_dir)) mkdir($new_dir,0777,true);  
+		$json = unserialize(\app\core\Url::short_back($json));  
 		//操作图片 
 		$imagine = Image::load($file_path);
  		foreach($json as $k=>$v){

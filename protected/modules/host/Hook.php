@@ -5,7 +5,7 @@ use app\core\DB;
 use app\core\Str;
 class Hook
 {
-	static function controller(){
+	static function action_init(){
 		$value = Classes::get_config('module_host');
 		if($value==1){
 			$all = DB::all('host');

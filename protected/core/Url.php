@@ -28,6 +28,15 @@ class Url{
 	static function short_back($short){
 	     $id = "table_core_shorturl_".$short;
 		 $one = cache($id);
+		 if(!$one){
+			$one = DB::one('core_shorturl',array(
+				'select'=>'url,short',
+				'where'=>array(
+					'short'=>$short
+				)
+			)); 
+			cache($id,$one);
+		}
 		 return $one['url'];
 	}
 	
@@ -42,8 +51,7 @@ class Url{
 	}
 	
 	static function get($url,$short){
-		$id = "table_core_shorturl_".$short;
-		cache($id);
+		$id = "table_core_shorturl_".$short; 
 		$one = cache($id);
 		if(!$one){
 			$one = DB::one('core_shorturl',array(

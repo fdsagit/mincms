@@ -1,5 +1,12 @@
 <?php 
 return  array (
+  'had added to cart' => '已经加到购物车中',
+  'add cart success' => '加入购物车成功',
+  'settle up the bill' => '去购物车结算',
+  'total price' => '总价格',
+  'cart total' => '总计',
+  'item' => '件',
+  'cart has' => '购物车',
   'image cache' => '图片缓存',
   'description' => '描述',
   'redirect' => '跳转URL',

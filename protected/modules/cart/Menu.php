@@ -4,7 +4,7 @@ class Menu
 {
 	static function add(){ 
 		$menu['extend'] = array( 
-			'cart'=>array('cart/site/index'),   
+			'cart'=>array('cart/admin/index'),   
 		); 
 		return $menu;
 	}

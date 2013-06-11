@@ -24,9 +24,12 @@ class Auth
 		}
 		return $one;
 	}
+	/**
+	* 返回会员ID
+	*/
 	static function id(){
 		$info = static::info();
-		return $info->id;
+		return $info->id?:0;
 	}
 	static function check(){
 		return static::is_login();

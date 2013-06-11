@@ -1,6 +1,10 @@
 <?php error_reporting(0);
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;  	
+use yii\widgets\ActiveForm;  
+$this->title = __('image cache');
+$this->params['breadcrumbs'][] =  array('label'=>__('image cache'),'url'=>url('imagecache/admin/index'));  
+$this->params['breadcrumbs'][] = __('create'); 
+	
 $form = ActiveForm::begin(array(
 	'options' => array('class' => 'form-horizontal'),
 	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),

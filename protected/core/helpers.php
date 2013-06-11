@@ -165,22 +165,20 @@ function __($message,$category='app',  $params = array(), $language = null){
 /**
 * set cookie or get cookie
 */
-function cookie($name,$value=null,$expire=null){
-	if(!$value){ 
+function cookie($name,$value=null,$expire=null){  
+	if(false === $value)
+		\Yii::$app->response->cookies->remove($name); 
+	elseif($value==null){  
 		return \Yii::$app->request->cookies->getValue($name); 
-	}
+	} 
 	$options['name'] = $name;
-	$options['value'] = $value;
+	$options['value'] = $value; 
 	$options['expire'] = $expire?:time()+86400*365; 
 	$cookie = new \yii\web\Cookie($options);
-	\Yii::$app->request->cookies->add($cookie); 
+ 	\Yii::$app->response->cookies->add($cookie); 
 }
 function remove_cookie($name){ 
-	$options['name'] = $name;
-	$options['value'] = null;
-	$options['expire'] = 1; 
-	$cookie = new \yii\web\Cookie($options);
-	\Yii::$app->request->cookies->add($cookie);  
+	cookie($name,false);
 }
 /**
 * 加载hook

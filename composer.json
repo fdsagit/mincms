@@ -22,7 +22,7 @@
 	 }, 
 	"extra": {
 		"writable": [
-			"runtime",
+			"protected/runtime",
 			"public/assets"
 		] 
 	}

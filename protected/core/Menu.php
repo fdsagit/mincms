@@ -29,6 +29,57 @@ class Menu
 	 	}
 	 	return $active;
 	}
+	/**
+	*
+	use yii\widgets\Menu;
+	$action = \Yii::$app->controller->full_action;
+	$menu = array(
+		'cart list'=>array('cart/admin/index'),  
+		'cart area'=>array('area/admin/index'), 
+		'cart discount'=>array('cart/admin/discount'), 
+		'cart email notice'=>array('cart/admin/notice'), 
+		'cart set'=>array('cart/admin/set'), 
+	);
+
+	echo Menu::widget(array(
+			'options' => array('class' => 'nav '), 
+			'activateParents'=>true, 
+			'items' => \app\core\Menu::next($menu,$action=='cart.admin.index'?true:false),
+		));
+	*/
+	static function next($menus,$flag = true){ 
+		if(property_exists(\Yii::$app->controller,'active')){
+			$active = \Yii::$app->controller->active;
+			if(!is_array($active)) $active = array($active);
+			if($active){
+				foreach($active as $v){
+					$v = str_replace('.','/',$v);
+					if(strpos($v,'.')!==false)
+						$ac[] = url($v);
+					else
+						$ac[] = $v;
+				}
+			}
+			$active = $ac;
+	 	}  
+	 	$i=0;
+		foreach($menus as $key=>$val){ 
+			unset($actived);  
+			if(in_array($val[0],$active)){
+				$actived = 'active';
+			}     
+			if($i==0 && $flag===false) $actived = '';
+			$menu[$key] = array('label' => __($key), 'url' =>$val,'options'=>array(
+					'class'=>"$actived",  
+				), 
+			);
+			$i++; 
+		} 
+		return $menu;
+	} 
+	/**
+	* 生成后台导航菜单
+	*/
 	static function get(){ 
 		/**
 		* 控制器中可设置当前启用的URL
@@ -96,8 +147,7 @@ class Menu
 		 	 	 )
 		 	 );
 			 
-		 }
-	// dump($menu);exit;
+		 } 
 		return $menu;
 		 
 	}

@@ -9,6 +9,7 @@ class AuthController extends Controller
 	private $supperUsers = array(1);
 	public $allowAccess = array();
 	public $theme = 'admin';
+	public $full_action;
 	function init(){
 		parent::init(); 
 	 	language('language_'); 
@@ -39,6 +40,7 @@ class AuthController extends Controller
 		if($module && $module!=$action->id)
 			$url = $module.'.'.$url; 
 		//所当前的URL 传入判断权限   
+		$this->full_action = $url;
 		$this->checkUserAccess($url);    
 		return true;
 	}

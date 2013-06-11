@@ -37,7 +37,7 @@ js("$(function(){
       <a class="brand" href="<?php echo url('site/index');?>"><?php echo __('backend admin');?></a>
       <div class="nav-collapse collapse"> 
     		<?php echo Menu::widget(array(
-				'options' => array('class' => 'nav '),
+				'options' => array('class' => 'nav '), 
 				'activateParents'=>true,
 				'submenuTemplate'=>'<ul class="dropdown-menu">{items}</ul>',
 				'items' => app\core\Menu::get(),
@@ -56,10 +56,9 @@ js("$(function(){
  
     
 <div class="container" style="margin-top: 60px;">
-	<?php $this->beginBody(); ?>
-  
+	<?php $this->beginBody(); ?> 
 	<?php echo \yii\widgets\Breadcrumbs::widget(array(
-		'homeLink'=>array('label'=>__('home'),'url'=>array('site/index')),
+		'homeLink'=>array('label'=>__('home'),'url'=>array('core/config/index')),
 		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : array(),
 	)); ?>
 	<?php 
