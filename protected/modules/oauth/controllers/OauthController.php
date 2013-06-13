@@ -65,6 +65,7 @@ class OauthController extends \app\core\FrontController
 			);
 			cookie('user',json_encode($value),0);
 		}
+		hook('cart_init',array('mid'=>$one['id']));
 		
 	}
 }

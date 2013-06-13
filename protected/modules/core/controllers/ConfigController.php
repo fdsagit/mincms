@@ -9,7 +9,7 @@ class ConfigController extends \app\core\AuthController
 { 
 	function init(){
 		parent::init();
-		$this->active = array('system','auth.config.index');
+		$this->active = array('system','core.config.index');
 	}
 	public function actionCreate()
 	{  

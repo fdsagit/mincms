@@ -4,6 +4,7 @@ use app\core\FrontController;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\vendor\Geo;
+use yii\helpers\FileHelper;
  
 class SiteController extends FrontController
 { 
@@ -18,6 +19,8 @@ class SiteController extends FrontController
  
 	public function actionIndex()
 	{    
+		new FileHelper;
+		exit;
 		$this->active = 'site.index';  
 		echo $this->render('index');
 	} 

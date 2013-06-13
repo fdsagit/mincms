@@ -11,14 +11,14 @@ use app\modules\cart\Classes;
 class AjaxController extends \app\core\FrontController
 { 
 	function init(){
-		parent::init();
-		$this->layout = false;
+		parent::init(); 
 	}
 	/**
 	* ajax加入购物车
 	*/
 	public function actionIndex()
 	{ 
+		$this->layout = false;
 		if(!is_ajax()) exit('access deny');
 		$id = $_POST['id'];
 	   	$arr = (array)json_decode(decode($id));
@@ -33,12 +33,38 @@ class AjaxController extends \app\core\FrontController
 	   	Classes::cart();
 	   	return true;
 	}
+	/**
+	* [id] => 1
+    [name] => IPHONE 10
+    [price] => 6000
+    [img] => upload/t/1.jpg
+    [qty] => 15
+    [total] => 90000
+	*/
 	function actionTip(){ 
-		$all = Classes::get_carts();
-		$data['all'] = $all;
-		$data['num'] = count($all)?:0;
-		echo $this->render('tip',$data); 
-	 
+		$this->layout = false;
+		$all = Classes::get_carts(); 
+		$arr = array(theme_path().'_elements/cart','cart');    
+		echo $this->render($this->view($arr),$all);   
+	}
+	/**
+	* 结算
+	*/
+	function actionDo(){
+		$data = Classes::get_carts();
+	 	$arr = array(theme_path().'_elements/do','do');  
+		echo $this->render($this->view($arr),$data); 
+	}
+	/**
+	* 个数相加
+	*/
+	function actionNum(){
+		$cid = $_GET['cid'];
+		$flag = $_GET['flag'];
+		if($cid < 1 ) return ; 
+		Classes::num($cid,$flag);
+		$t =  Classes::total(); 
+		echo json_encode(array('total'=>$t['total'],'nums'=>$t['nums']));
 	}
 
 	 

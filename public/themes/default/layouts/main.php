@@ -18,6 +18,7 @@ $this->registerMetaTag(array('content'=>'mincms,yii2,yii2 cms,yii2 framework,yii
 $this->registerMetaTag(array('content'=>'自定义内容管理系统,支持多模块,支付,购物车,第三方登录,权限,会员,多语言,自定义内容等模块','name'=>'descriptian'));
 
 ?>
+
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
 <html lang="en">

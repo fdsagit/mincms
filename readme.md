@@ -3,6 +3,7 @@
 - Thank you for  Yii Team 
 - [yii2.0](http://github.com/yiisoft/yii2) 
 - [yii2.0 milestones](http://github.com/yiisoft/yii2/issues/milestones)
+- [Composer] (https://getcomposer.org/doc/03-cli.md#composer-process-timeout)
 
 ### Install
 

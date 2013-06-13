@@ -78,7 +78,7 @@ js("$(function(){
 			Yii <?php echo Yii::getVersion(); ?> 
 		</p>
 		<p>
-			Template by <a href="http://twitter.github.io/bootstrap/">Twitter Bootstrap</a>
+			Template by <a href="http://twitter.github.io/bootstrap/" target='_blank'>Twitter Bootstrap</a>
 		</p>
 	</div>
 	<?php $this->endBody(); ?>

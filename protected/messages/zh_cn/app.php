@@ -1,5 +1,11 @@
 <?php 
 return  array (
+  'pay the bill' => '去结算',
+  'delete' => '删除',
+  'product action' => '操作',
+  'product qty' => '数量',
+  'product price' => '价格',
+  'product name' => '产品名',
   'had added to cart' => '已经加到购物车中',
   'add cart success' => '加入购物车成功',
   'settle up the bill' => '去购物车结算',

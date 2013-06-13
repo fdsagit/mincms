@@ -18,8 +18,11 @@ class Controller extends \yii\web\Controller
 		* load modules 
 		* 加载模块
 		*/
-		if(!cache_pre('all_modules'))
+		if(YII_DEBUG ===true){ 
 			\app\core\Modules::load();  
+		}elseif(!cache_pre('all_modules'))
+			\app\core\Modules::load();  
+			
 	}
 	public function beforeAction($action)
 	{
@@ -35,5 +38,26 @@ class Controller extends \yii\web\Controller
 	}
 	function redirect($url){
 		return redirect($url);
+	}
+	/**
+	* 渲染多个视图中第一个存在的视图
+	$arr = array(theme_path().'_elements/do','do'); 
+	echo $this->render($this->view($arr),$data); 
+	*/
+	function view($path){
+		foreach($path as $p){ 
+			$file  = $this->findViewFile($p); 
+			$flag = false;
+			if(strpos($p,'@www/themes')!==false){
+				$file = root_path().$file; 
+				$flag = true;
+			}
+			if(file_exists($file)){
+				if($flag === true) 
+					return "@app/../public/".substr($p,5);
+				else
+					return $p;
+			}
+		}
 	}
 }

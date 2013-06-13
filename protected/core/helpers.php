@@ -137,6 +137,9 @@ function url($url,$parmas=null){
 function theme_url(){
 	return Yii::$app->view->theme->baseUrl.'/';
 }
+function theme_path(){
+	return Yii::$app->view->theme->basePath.'/';
+}
 function base_url(){
 	return Yii::$app->request->baseUrl.'/';
 }
@@ -184,14 +187,17 @@ function remove_cookie($name){
 * 加载hook
 * @ $name 一般为 controller model
 */
-function hook($name){
+function hook(){
 	$hooks = cache_pre('hooks');
 	if(!$hooks) return;
+	$args = func_get_args();  
+	$name = $args[0];
+	unset($args[0]);   
 	$h = $hooks[$name];
 	if($h){
 		foreach($h as $li){
 			$cls = "\app\modules\\$li\\Hook";
-			$cls::$name();
+			$cls::$name($args[1]);
 		} 
 	} 
  
