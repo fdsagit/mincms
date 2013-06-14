@@ -27,20 +27,24 @@ class DB{
 	static function id(){ 
 		return \Yii::$app->db->getLastInsertID();
 	}
-	/** 
+	/**  
+	$data = (array)node_pager('post');
+	return $this->render('test',$data);
+		
+	$models foreach
 	<div class='pagination'>
 	<?php  echo \app\core\LinkPager::widget(array(
 	      'pagination' => $pages,
 	  ));?>
 	</div>
 	*/
-	static function pagination($table,$params=array(),$route=null){
+	static function pagination($table,$params=array(),$config=array('pageSize'=>10),$route=null){
 		$one = static::one($table,array(
 			'select'=>'count(*) count'
 		));
 		$count = $one['count'];
 		
-		$pages = new \yii\data\Pagination($count);
+		$pages = new \yii\data\Pagination($count,$config);
 		if($route)
 			$pages->route = $route;
 		$params['offset'] = $pages->offset;

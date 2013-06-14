@@ -1,33 +1,13 @@
 <?php namespace app\modules\content\models; 
 use app\modules\content\models\Field;
 use app\modules\content\models\NodeActiveRecord;
-use \app\core\Csv;
+use app\modules\content\Classes;
+use \app\core\DB;
 /**
 * 
 * @author Sun < mincms@outlook.com >
 */
-class Node{
-	static $array_deep = 0;
-	/**
-	* 直接保存数据，无需FORM
-	*/
-	static function save_data($name,$data,$nid=null){
-		$model = new NodeActiveRecord;
-		$data = (object)$data;
-		if(!$nid)
-			$nid = $data->id;
-
-		if($nid){
-			$row = Node::load($name,$nid);
-	 		foreach($row as $k=>$v){
-	 			$model->$k=$v;
-	 		} 
-		}
-		$st = static::tree($name); 
-		$rt = Node::set_rules($st);
-		$model->rules = $rt['rules'];
-		return Node::save($name,$model,$data,$nid,true);  
-	}
+class Node{ 
 	/**
 	 * 设置验证规则
 	 */
@@ -94,115 +74,20 @@ class Node{
 		);
 
 	 }
-	static function find_all($name,$condition=null){
-	 	//使用mysql 分页
-	 	return DataBase::find_all($name,$condition);	 
-	 }
-	/**
-	* 分页
-	调用方法
-	$condition = array(
-		'where'=>array(
-			'or'=>array('created','like','%标题%'),
-			//'and_1'=>array('title','like','%标题%'),
-			//'or_2'=>array('title','like','%标题%'),
-		), 
-		'order'=>array('id'=>'desc'),
-	);
-	$rows = Node::pager($name,$condition);
-	$this->render('admin',array( 
-	     'posts'=>$rows['posts'], 
-	     'pages'=>$rows['pages'], 
-	     'name'=>$name
-	));
-	//输出数据
-	foreach($posts as $row){
-	$post = Node::find($name,$row['id']);
-	显示分页
-	<div class="pagination"> 
-	<?php 
-	$this->widget('LinkPager',array('pages'=>$pages));
-	?>
-	</div>
-	*/ 
-	static function pager($name,$condition=null,$pagesize=20){
-	 	//使用mysql 分页
-	 	return DataBase::pager($name,$condition,$pagesize);	 
-	 }
+	   
 	static function delete_cache($name,$nid){
 		$cache_id = "node_{$name}_{$nid}"; 
 		\Yii::$app->cache->delete($cache_id);
-	}
-	/**
-	* 显示完整一条node的内容
-	*/
-	static function load($name,$nid){  
- 		$cache_id = "node_{$name}"; 
-		$data=\Yii::$app->cache->get($cache_id);
-		echo $cache_id;exit;
-		if($data===false)
-		{
-		    //取得 content_type 指定name的所有信息
-			$structs = Field::tree($name);
-			$master = self::table_master($name);
-			//取得主node信息，_nid表
-			$row = DataBase::select($master." as node",array( 
-				'where'=>array(
-					'node.id=:id'=>array(':id'=>$nid)
-				)
-			)); 		
-			foreach($structs as $field=>$options){  
-				$fid = (int)$options['fid'];//字段ID
-				$mysql = $options['mysql'];
-				$table = self::table_name($name,$mysql);
-				$tables[$table][] = $fid;
-				$fs[$fid] = $field;//字段
-				$i++;
-			}  		 
-			$rows = DataBase::find_no_nid($tables,$nid,$fs);
-			$data = (object)array_merge($row,$rows);
-		    \Yii::$app->cache->set($cache_id,$data);
-		} 
- 	 	return $data; 		
-	}
-	static function find($name,$condition,$all=false){
-		//取得 content_type 指定name的所有信息
-		$structs = static::tree($name);
- 		$master = 'node_'.$name;
-		if(is_numeric($condition)){  
-			return self::load($name,$condition); 
-		} else{
-			$rt = DataBase::find_all($name,$condition); 
-			if(true===$all){
-				if($rt){
-			 		foreach($rt as $n){
-			 			$node[] = find($name,$n['id']);  
-			 		}
-			 	}
-			 	$rt = $node;
-			}
-			if($condition['limit']==1){
-				 return $rt[0];
-			}
-			return $rt;
-		}
-	}
-	static function update($name,$array=array(),$nid){
-		$master = self::table_master($name);
-		DataBase::update($master,$array,array(
- 			'id=:id',
- 			array( ':id'=>$nid)
- 		));  
-	}
-
+	} 
  	/**
- 	* 数据保存
+ 	*  save content base on FormBuilder
  	* @params $name content_type_name
  	* @params $model Model
  	* @params $attrs 属性
  	* @params $return 为true时返回nid
  	*/
  	static function save($name,$model,$attrs,$node_id=null,$return=false){  
+ 		
  		foreach($attrs as $key=>$value){
  			$model->$key = $value; 
  		} 
@@ -219,158 +104,107 @@ class Node{
  				return $out;
  			}
  			exit($out);
- 		} 
- 	 
- 		//保存数据到数据库
- 		$structs = static::tree($name);
- 		$master = "node_".$name;//主表 
- 		//主表 _nid 表，生成node 信息。向mysql中写源数据,返回主键值
- 		if($node_id>0){ //如果node_id > 0说明是更新
+ 		}  
+ 		// get  structure 
+ 		$structs = Classes::structure($name); 
+ 		$table = "node_".$name;// node table  
+ 		//data to [relate] like [node_post_relate]
+ 		$relate = $table.'_relate'; 
+ 		if($node_id>0){  
  			$nid =  $node_id;
  		 	$display = 1;
  		 	if($model->display)
  				$display = $model->display; 
- 			\Yii::$app->db->createCommand()->update($master,array( 
-	 			'updated'=>time(),
-	 			'display'=>$display, 
-		 		),array(
-		 			'id=:id',
-		 			array( ':id'=>$node_id)
-		 		));  
+ 		    	DB::update($table,array( 
+			 			'updated'=>time(),
+			 			'display'=>$display, 
+			 		),array(
+			 			'id=:id',
+			 			array( ':id'=>$nid)
+			 		));  
  		 
  		}else{ 
-	 		\Yii::$app->db->createCommand()
-	 			->insert('node_posts',array(
+	 		DB::insert($table,array(
 		 			'created'=>time(),
 		 			'updated'=>time(),
 		 			'uid'=>uid()
-		 		))->execute(); 
-	 		$nid = \Yii::$app->db->getLastInsertID();
+		 		)); 
+	 		$nid = DB::id();
  		}   
- 		foreach($structs as $field=>$options){
- 			if($value = $model->$field){ //属性有值时 才会查寻数据库
- 				$fid = $options['fid'];//字段ID
- 				$table = "content_".$options['mysql'];  
+ 		foreach($structs as $k=>$v){
+ 			if($value = $model->$k){ //属性有值时 才会查寻数据库
+ 				$fid = $v['fid'];//字段ID
+ 				$table = "content_".$v['mysql'];  
  				$batchs[$table][$fid][] = $value; 
  				$wherein[$table][] = $value;  
  			}
  		} 
- 		 dump($batchs);exit;
+ 		/**  
+		[content_text] => Array
+		    (
+		        [3] => Array
+		            (
+		                [0] => 222
+		            )
+
+		    ) 
+ 		*/ 
  		foreach($batchs as $table=>$value){ 
- 			/*$data = $wherein[$key];
- 			$query = new \yii\db\Query;
-			$query->from($table)
-				->where(array('value'=>$data)); 
-			$command = $query->createCommand(); 
-			$row = $command->queryAll(); 
-			if($row) {
-				foreach($row as $r){
-					$j[] = $r['value'];
-				} 
-				foreach($value as $k=>$vo){
-				 
-					if(vo==$j){
-						echo 11;
-						unset($value[$k]);
-					}
-				}
-			 
-			} */
-		  
- 		}
- 		 
- 		if($batchs){
- 			foreach($batchs as $table=>$insert){   
- 			  	$file = Csv::write($table,$insert);
- 			  	Csv::insert($table,'`value`',$file);
-		 		//\Yii::$app->db->createCommand()
-			 	//		->batchInsert($table,array('value'),$insert)->execute(); 
-			 			
-		 	}
-	 	}
- 		dump(1);exit;
+ 		 	foreach($value as $fid=>$v){ //$k  filed_id
+ 		 		foreach($v as $_v){ // $_v value
+ 		 			$one = DB::one($table,array(
+ 		 				'where'=>array(
+ 		 					'value'=>$_v
+ 		 				)
+ 		 			));
+ 		 			//$value  is node value id
+ 		 			if(!$one){
+ 		 				DB::insert($table,array( 
+	 		 				'value'=>$_v 
+	 		 			));
+	 		 			$value = DB::id();
+ 		 			}else{
+ 		 				$value = $one['id'];
+ 		 			}
+ 		 			// insert data to [relate] like [node_post_relate]
+ 		 			$one = DB::one($relate,array(
+ 		 				'where'=>array(
+ 		 					'nid'=>$nid,
+ 		 					'fid'=>$fid,
+ 		 				)
+ 		 			));
+ 		 			//$last_id  is node value id
+ 		 			if(!$one){
+ 		 				DB::insert($relate,array( 
+	 		 				'nid'=>$nid ,
+	 		 				'fid'=>$fid,
+	 		 				'value'=>$value
+	 		 			)); 
+ 		 			}elseif($one['value']!=$value){
+ 		 				 DB::update($relate,array(  
+	 		 				'value'=>$value
+	 		 			 ),'nid=:nid and fid=:fid',array(
+	 		 			 	':nid'=>$nid ,
+	 		 				':fid'=>$fid,
+	 		 			 ));
+ 		 			}
+ 		 			 
+ 		 		}
+ 		 	} 
+ 		} 
  		$out.= 1; 
-		self::delete_cache($name,$nid);
+		Classes::remove_cache($name,$nid);
+		// create cache
+		Classes::one($name,$nid);
 		if(true === $return){
 			return $nid;
 		}
 		exit($out);  
  	}
  	 
- 	static function array_first($arr){
- 		foreach($arr as $v){
- 			return $v;
- 		}
- 	}
- 	/**
- 	* 内容类型 下的字段信息
- 	*/
- 	static function tree($name){
- 		$model = Field::find(array('slug'=>$name));
- 		if(!$model) exit(__('form builder error')); 
- 		$models = Field::find()->where(array('pid'=>$model->id))->all();
- 		foreach($models as $m){
- 			$n = $m->slug;
- 			$out[$n]['slug'] = $m->slug;
- 			$out[$n]['name'] = $m->name;
- 			$out[$n]['fid'] = $m->id;
- 			$out[$n]['widget'] = $m->widget;
- 			$out[$n]['mysql'] = \app\modules\content\Hook::run($m->widget,'mysql');
- 		} 
- 		return $out;
- 	}
+ 	 
  	
- 	/**
-	* 条件中判断是否是主分的
-	*/
-	static function table_nid($key){
-		$k = array(
-			'id'=>1,
-			'display'=>1,
-			'sort'=>1,
-			'created'=>1,
-			'updated'=>1,
-			'admin'=>1,
-			'uid'=>1
-		);
-		if($k[$key])
-			return "n.$key";
-	}
-	//判断数组深度
-	static function array_deep($array=array()){
-	 	foreach($array as $k=>$v){
-	 		self::$array_deep++;
-	 		if(is_array($v))
-	 			self::array_deep($v);
-	 	}
-	 	return self::$array_deep;
-	}
-	/**
-	* 对分页调用方法的判断
-	返回统一结构的where
-	where=>array(
-		array(k,'=',v)
-	)
-	*/
-	static function where($name,$where){ 
-		$deep = static::array_deep($where); 
- 		//如果是1维
- 		if($deep==1){
- 			foreach($where as $k=>$v){
- 				if(is_numeric($k)){
- 					$field = $where[0];
- 					$condition = $where[1];
- 					$value = $where[2];
- 					$wheres[] = array(array($field,$condition,$value));
- 				}else{
- 					$wheres[] = array(array($k,'=',$v));
- 				}
- 			} 
- 		}else{
- 			$wheres[] = $where;
- 		}
- 		
- 		return $wheres;
-	}
+	 
+ 
  	
 }

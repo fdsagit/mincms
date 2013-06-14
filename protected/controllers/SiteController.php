@@ -16,12 +16,14 @@ class SiteController extends FrontController
  
 	public function actionIndex()
 	{     
+		
 		$this->active = 'site.index';  
 		return $this->render('index');
 	} 
  	function actionTest(){   
  		$this->active = 'site.test';  
-  		$data['cart_test'] = DB::all('cart_test');
+ 		$data = node_pager('post',null,1);
+  		$data['cart_test'] = DB::all('cart_test'); 
 		return $this->render('test',$data);
  	}
 	 

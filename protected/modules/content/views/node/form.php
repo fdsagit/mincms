@@ -5,7 +5,7 @@
 	</h3>
 </blockquote>
 <?php  
-$form = new FormBuilder($name);
+$form = new FormBuilder($name,$id);
 echo $form->run();
 ?>
 

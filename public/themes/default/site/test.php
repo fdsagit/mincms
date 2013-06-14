@@ -2,7 +2,15 @@
 use yii\helpers\Html;
 css("img {margin-right:10px;margin-bottom:10px;}");
 ?> 
-
+<div class='pagination'>
+	<?php  echo \app\core\LinkPager::widget(array(
+	      'pagination' => $pages,
+	  ));?>
+</div>
+<?php foreach($models as $model){?>
+	<p><?php  dump($model);?> </p>
+<?php }?>	
+	
 <h3><?php echo __('cart test');?></h3>
 <hr>
 

@@ -15,7 +15,7 @@ class pagination extends \yii\base\Widget
 		$rows = DB::pagination('comment',array(
 			'where'=>array('slug_id'=>Classes::one($this->slug),'display'=>$this->display),
 			'orderBy'=>'sort desc,id desc'
-		),'comment/ajax/index');
+		),NULL,'comment/ajax/index');
 		echo $this->render('@app/modules/comment/widget/views/pagination',array(
 			'rows'=>$rows,
 			'formId'=>$this->formId,

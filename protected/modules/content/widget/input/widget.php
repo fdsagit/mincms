@@ -6,10 +6,12 @@
 */
 class Widget extends \app\modules\content\Widget
 {  
- 	
+ 	static function node_type(){  
+		 return 'varchar';
+	}
+	
 	function run(){  
-		 $name = $this->name;   
-		 
+		 $name = $this->name;    
  		 echo $this->form->field($this->model,$name)->textInput(); 
 	}
 }

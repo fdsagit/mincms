@@ -10,3 +10,9 @@ function image($file,$option=null,$params=null){
 	$url =  module_class('imagecache.Classes.image',$file,$option);
 	return \yii\helpers\Html::img($url,$params);
 }
+function node($name,$id){
+	return \app\modules\content\Classes::one($name,$id); 
+}
+function node_pager($slug,$params=array(),$config=null,$route=null){
+	return \app\modules\content\Classes::pager($slug,$params,$config,$route); 
+}

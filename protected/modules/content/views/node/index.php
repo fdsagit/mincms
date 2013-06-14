@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = __('list');
 	</h3>
 </blockquote>
 	
- 
+<?php if(!$name){?>
 <table class="table">
   <thead>
     <tr> 
@@ -37,3 +37,31 @@ $this->params['breadcrumbs'][] = __('list');
     <?php }?>
   </tbody>
 </table>
+<?php }else{?>
+	 <?php echo Html::a('<i class="icon-plus-sign"></i>',url('content/node/create',array('name'=>$name)));?> 
+	 <table class="table">
+	  <thead>
+	    <tr> 
+	      <th><?php echo __('name');?></th>
+	      <th><?php echo __('slug');?></th>
+	      <th><?php echo __('action');?></th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <?php foreach($models as $model){?>
+	    <tr> 
+	      <td><?php echo $model->title;?></td>
+	      <td><?php echo $model->body;?></td>
+	      <td>
+	      	<?php echo Html::a('<i class="icon-edit"></i>',url('content/node/update',array('name'=>$name,'id'=>$model->id)));?>    
+	      </td>
+	    </tr>
+	    <?php }?>
+	  </tbody>
+	</table>
+	<div class='pagination'>
+		<?php  echo \app\core\LinkPager::widget(array(
+		      'pagination' => $pages,
+		  ));?>
+	</div>
+<?php }?>

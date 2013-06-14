@@ -28,19 +28,19 @@ class FormBuilder extends \yii\base\Widget
 	 	$this->file  = $file; 
 	 	$this->nid  = $nid; 
 	 	$this->data = Classes::structure($name); 
-		$model::$table = $name; 
+		$this->name =  $name; 
 		$this->model = $model;
-		
+		$model::$table = $this->name;
 	 }
 
 	 function run(){
-	  
+	  	
 	 	if($this->nid>0){
 	 		/**
 	 		* 如果有nid,说明是更新
 	 		* 需要先取出NODE的内容并赋值给model
 	 		*/
-	 		$row = Node::load($this->name,$this->nid);
+	 		$row = Classes::one($this->name,$this->nid);
 	 		foreach($row as $k=>$v){
 	 			$this->model->$k=$v;
 	 		} 
@@ -49,7 +49,7 @@ class FormBuilder extends \yii\base\Widget
 	 	//设置字段验证规则
 	 	$this->set_rules();
 	 	 
-	 	if($_POST && \Yii::$app->request->isAjaxRequest){
+	 	if($_POST && \Yii::$app->request->isAjax){
 	 		//保存数据到数据库  
 	 		$attrs_data = array();
 	 		foreach($this->attrs as $get){

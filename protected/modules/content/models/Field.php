@@ -25,7 +25,17 @@ class Field extends \app\core\ActiveRecord
 	} 
 	//检查原密码是否正确
 	function check($attribute){
-		 
+		if(in_array($this->$attribute, array(
+			'id',
+			'display',
+			'sort',
+			'created',
+			'updated',
+			'admin',
+			'uid'
+		))){
+			$this->addError('slug',__('slug not allowed')); 
+		}
 		$model = static::find()->where(array('slug'=>$this->$attribute,'pid'=>$this->pid))->one();
 		if($model){
 			if(!$this->id){
@@ -50,8 +60,8 @@ class Field extends \app\core\ActiveRecord
 		CREATE TABLE IF NOT EXISTS `node_".$name."_relate` (
 		  `id` int(11) NOT NULL AUTO_INCREMENT,
 		  `nid` int(11) NOT NULL,
-		  `fid` int(11) NOT NULL,
-		  `value` int(11) NOT NULL,
+		  `fid` int(11) NOT NULL, 
+		  `value` int(11) NOT NULL, 
 		  PRIMARY KEY (`id`)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 	 

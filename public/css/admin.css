@@ -15,6 +15,7 @@ color: #333;
 margin: 10px 0 5px 0;
 padding: 10px; 
 }
+li{list-style:none;}
 .margin0{margin-left:0;}
 input.watermark {margin-right:10px;margin-bottom:10px;}
 .btn a,.label a{color:#fff;}

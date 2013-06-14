@@ -5,8 +5,10 @@
 */
 class Widget extends \app\modules\content\Widget
 {  
- 	public $tag;
- 	public $options; 
+  
+ 	static function node_type(){  
+		 return 'text';
+	}
 	function run(){  
 		$name = $this->name;  
  		echo $this->form->field($this->model,$name)->textArea();	 
