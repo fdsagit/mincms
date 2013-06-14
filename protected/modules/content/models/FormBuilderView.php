@@ -22,13 +22,15 @@ $form = ActiveForm::begin(array(
 				$new = $af; 
 		}
 	}	
- 
-	echo module_widget('content',$value['widget'],array(
+  	$widget = 'app\modules\content\widget\\'.$value['widget'].'\widget';
+	echo $widget::widget(array(
 		'label'=>$value['label'],
 		'name'=>$field,
 		'value'=>$new,
 		'form'=>$form,
-		'model'=>$model));?> 
+		'model'=>$model
+	));
+	?> 
 <?php }?>
 	
 <div class="form-actions">

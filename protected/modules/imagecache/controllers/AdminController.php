@@ -33,7 +33,7 @@ class AdminController extends \app\core\AuthController
 		 	flash('success',__('create sucessful'));
 			$this->redirect(url('imagecache/admin/index'));
 		} 
-		echo $this->render('form', array(
+		return $this->render('form', array(
 		   'model' => $model, 
 		   'image' => $this->imagecache
 		));
@@ -48,7 +48,7 @@ class AdminController extends \app\core\AuthController
 		 	flash('success',__('update sucessful'));
 			$this->redirect(url('imagecache/admin/index'));
 		} 
-		echo $this->render('form', array(
+		return $this->render('form', array(
 		   'model' => $model, 
 		   'image' => $this->imagecache
 		));
@@ -65,7 +65,7 @@ class AdminController extends \app\core\AuthController
 	{    
 		$rt = \app\core\Pagination::run('\app\modules\imagecache\models\Image',null,array('pageSize'=>50));  
  		
-		echo $this->render('index', array(
+		return $this->render('index', array(
 		   'models' => $rt->models,
 		   'pages' => $rt->pages,
 		));

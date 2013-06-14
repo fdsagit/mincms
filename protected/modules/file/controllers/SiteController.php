@@ -13,7 +13,7 @@ class SiteController extends \app\core\AuthController
 	{
 		//$file = root_path().'upload/1.jpg';
  	 	//$d = exif_read_data  ($file);  
-	 	echo $this->render('index');
+	 	return $this->render('index');
 	}
 	/**
 	* 管理员上传

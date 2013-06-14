@@ -2,6 +2,7 @@
 namespace app\modules\content\models; 
 use app\modules\content\models\NodeActiveRecord;
 use app\modules\content\models\Node;
+use app\modules\content\Classes;
 /**
 * 
 * @author Sun < mincms@outlook.com >
@@ -21,29 +22,13 @@ class FormBuilder extends \yii\base\Widget
  	 * 如在froms目录下的目录如 admin/post.php  该值为admin.post
  	 * @params $nid node id,如有值说明是更新操作
  	 */
-	 function __construct($file=null,$nid=null){  
+	 function __construct($name,$nid=null){ 
 	 	$this->message = __('save success');
 	 	$model = new NodeActiveRecord;
 	 	$this->file  = $file; 
 	 	$this->nid  = $nid; 
-	 	if(!is_array($this->file)){
-	 		\Yii::import('@app/vendor/Spyc');
-	 		$file = str_replace('.','/',$file);
-	 		$file = base_path()."/../formbuiler/{$file}.yaml";
-			if(!file_exists($file)){
-				return ;
-			}
-			$this->data = \Spyc::YAMLLoad($file);
-			$this->name = $this->data['content_type']; 
-			unset($this->data['content_type']); 
-	 	}
-	 	else{
-	 		$this->data = $file;
-	 		$this->name = $this->data['content_type']; 
-			unset($this->data['content_type']); 
-	 	}
-	 	
-		$model::$table = $this->name;
+	 	$this->data = Classes::structure($name); 
+		$model::$table = $name; 
 		$this->model = $model;
 		
 	 }
@@ -78,7 +63,7 @@ class FormBuilder extends \yii\base\Widget
 	 	$data['message'] = $this->message; 
 	 	$data['script'] = $this->script; 
 	 	
-	 	echo $this->render('@app/modules/content/models/FormBuilderView',$data);
+	 	return $this->render('@app/modules/content/models/FormBuilderView',$data);
 	 }
 	 /**
 	 * 设置验证规则

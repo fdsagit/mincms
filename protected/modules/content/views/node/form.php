@@ -1,10 +1,11 @@
+<?php use app\modules\content\models\FormBuilder;?>
 <blockquote>
 	<h3>
-		<?php echo $this->title; ?> 
+		<?php echo __('create'); ?>  [<?php echo $one->name;?>]
 	</h3>
 </blockquote>
-<?php use app\modules\content\models\FormBuilder;
-$form = new FormBuilder('post');
-$form->run();
+<?php  
+$form = new FormBuilder($name);
+echo $form->run();
 ?>
 

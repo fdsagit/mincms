@@ -12,12 +12,16 @@ class NodeController extends \app\core\AuthController
 		parent::init();
 		$this->active = array('content','content.node.index'); 
 	}
-	public function actionCreate()
+	public function actionCreate($name)
 	{  
+		$one = Field::find()->where(array('slug'=>$name))->one();
 		$this->view->title = __('create content');
-		echo $this->render('form');
+		return $this->render('form',array(
+			'name'=>$name,
+			'one'=>$one
+		));
 	}
-	public function actionUpdate($id)
+	public function actionUpdate($name,$id)
 	{  
 		$this->view->title = __('update content type') ."#".$id;
 		$model = Field::find($id);
@@ -27,10 +31,9 @@ class NodeController extends \app\core\AuthController
 		 	flash('success',__('update sucessful'));
 			refresh();
 		} 
-		echo $this->render('form', array(
+		return $this->render('form', array(
 		   'model' => $model, 
-		   'name'=>'content',
-		   'widget'=>$this->widget
+		   'name'=>$name,  
 		));
 	}
 	public function actionDelete($id){
@@ -43,13 +46,10 @@ class NodeController extends \app\core\AuthController
 	}
 	public function actionIndex($name='posts')
 	{    
-		new FormBuilder('post');
-		$rt = \app\core\Pagination::run('\app\modules\content\models\NodeActiveRecord');  
+	 	
+		$data['types'] = Field::find()->where(array('pid'=>0))->all(); 
  		
-		echo $this->render('index', array(
-		   'models' => $rt->models,
-		   'pages' => $rt->pages,
-		));
+		return $this->render('index' ,$data );
 	}
 
 	 

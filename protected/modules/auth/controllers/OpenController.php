@@ -25,7 +25,7 @@ class OpenController extends FrontController
 		if ($this->populate($_POST, $model) && $model->login()) {
 			redirect(array('core/config/index'));
 		} else {
-			echo $this->render('login', array(
+			return $this->render('login', array(
 				'model' => $model,
 			));
 		}

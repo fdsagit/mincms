@@ -17,7 +17,7 @@ class AjaxController extends FrontController
 		$data['formId'] = $_POST['formId'];
 		$data['slug'] = $_POST['slug'];  
 		if(!$data['slug'] || !$data['formId']) exit;
-		echo $this->render('index',$data);
+		return $this->render('index',$data);
 	}
 
 	 

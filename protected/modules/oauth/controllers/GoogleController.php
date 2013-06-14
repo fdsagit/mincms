@@ -35,7 +35,7 @@ class GoogleController extends OauthController
 	}
 	
 	function actionReturn(){    
-       echo $this->render('index');
+       return $this->render('index');
 	}
 	function actionNext(){
 		if ($access_token = $_GET['access_token']){

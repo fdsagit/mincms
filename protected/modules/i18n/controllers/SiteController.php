@@ -46,7 +46,7 @@ class SiteController extends \app\core\AuthController
 		 	flash('success',__('i18n file create success') . "# ".$name."/".$id);
 		 	redirect(url('i18n/site/index'));
 		}
-		echo $this->render('index',array(
+		return $this->render('index',array(
 			'dirs'=>$dirs,
 			'dir'=>$dir,
 			'id'=>$id,

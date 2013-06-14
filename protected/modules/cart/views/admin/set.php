@@ -3,7 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;   
 if($id>0) $cls = 'btn-success'
 ?>
-<?php echo $this->render('menu');?>
+<?php return $this->render('menu');?>
 <div class='span12 margin0'>
 	<div class='span6 margin0'>
 		<?php echo app\core\widget\Table::widget(array(

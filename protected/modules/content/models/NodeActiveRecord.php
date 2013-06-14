@@ -1,6 +1,4 @@
-<?php namespace app\modules\content\models; 
-use yii\validators\RequiredValidator;
-use yii\validators\Validator;
+<?php namespace app\modules\content\models;  
 /**
  * - `boolean`: [[BooleanValidator]]
  * - `captcha`: [[CaptchaValidator]]

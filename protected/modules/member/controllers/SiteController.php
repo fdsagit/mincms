@@ -10,7 +10,7 @@ class SiteController extends \app\core\AuthController
 { 
 	public function actionIndex()
 	{ 
-		echo $this->render('index');
+		return $this->render('index');
 	}
 
 	 

@@ -70,7 +70,7 @@ class ModulesController extends \app\core\AuthController
 	 			$data = array_merge($data,$array); 
 	 		} 
 	 		  
-			echo $this->render('index',array('data'=>$data,'models'=>$models,'_core_modules'=>$this->_core_modules));
+			return $this->render('index',array('data'=>$data,'models'=>$models,'_core_modules'=>$this->_core_modules));
 		}
 	}
 	protected function load_module($id,$flag=false){ 

@@ -5,7 +5,7 @@ use yii\widgets\ActiveForm;
  * @var yii\base\View $this
  */ 
 ?>
-<?php echo $this->render('menu');?>
+<?php return $this->render('menu');?>
 <blockquote>
 	<h3>
 		<?php echo $this->title; ?> 

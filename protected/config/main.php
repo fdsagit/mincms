@@ -82,18 +82,10 @@ return array(
 			'identityCookie'=>array('name' => 'admin_identity', 'httponly' => true),
 			'identityClass' => 'app\modules\auth\models\User',
 		),
-		'view' => array(
-            'class' => 'app\core\View',
+		'view' => array( 
             'theme' => array(
-            	'class' => 'app\core\Theme',  
-		        'baseUrl' => '@www/themes/'.$theme,
-		    ),
-            'renderers' => array( 
-                'twig' => array(
-                    'class' => 'yii\renderers\TwigViewRenderer',
-                    'cachePath' => '@wwwroot/assets/runtime/Twig/cache',
-                ), 
-            ),
+            	'class' => 'app\core\Theme' 
+		    ), 
         ),
 			
 	),

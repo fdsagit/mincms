@@ -8,7 +8,8 @@ class Widget extends \app\modules\content\Widget
 {  
  	
 	function run(){  
-		 $name = $this->name;  
+		 $name = $this->name;   
+		 
  		 echo $this->form->field($this->model,$name)->textInput(); 
 	}
 }

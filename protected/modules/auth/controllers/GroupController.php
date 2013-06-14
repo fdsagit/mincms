@@ -34,7 +34,7 @@ class GroupController extends \app\core\AuthController
  	 		redirect(url('auth/group/bind',array('id'=>$id))); 
  	 	}
  	  
-		echo $this->render('bind',array(
+		return $this->render('bind',array(
 			'rows'=>$rows, 
 			'groups'=>$groups,
 			'model'=>$model,
@@ -52,7 +52,7 @@ class GroupController extends \app\core\AuthController
 		 	flash('success',__('create group sucessful'));
 			refresh();
 		} 
-		echo $this->render('form', array(
+		return $this->render('form', array(
 		   'model' => $model,
 		   'name'=>'group_create', 
 		));
@@ -67,7 +67,7 @@ class GroupController extends \app\core\AuthController
 		 	flash('success',__('update group sucessful'));
 			refresh();
 		} 
-		echo $this->render('form', array(
+		return $this->render('form', array(
 		   'model' => $model, 
 		   'name'=>'group_create',
 		));
@@ -86,7 +86,7 @@ class GroupController extends \app\core\AuthController
 	public function actionIndex()
 	{    
 		$rt = \app\core\Pagination::run('\app\modules\auth\models\Group'); 
-		echo $this->render('index', array(
+		return $this->render('index', array(
 		   'models' => $rt->models,
 		   'pages' => $rt->pages,
 		));

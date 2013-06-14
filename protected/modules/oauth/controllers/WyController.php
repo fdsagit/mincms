@@ -34,7 +34,7 @@ class WyController extends OauthController
  		exit;
 	}
 	function actionReturn(){ 
-		echo $this->render('index'); 
+		return $this->render('index'); 
 	}
 	
 	function actionNext(){

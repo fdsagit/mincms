@@ -22,7 +22,7 @@ class SiteController extends \app\core\AuthController
 		 	redirect(url('email/site/index'));
 		}
 	   
-		echo $this->render('index',array('model'=>$model));
+		return $this->render('index',array('model'=>$model));
 	 
 	}
 	 

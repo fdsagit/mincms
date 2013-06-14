@@ -1,8 +1,7 @@
 <?php namespace app\core;  
 /** 
 *  controller public $theme; change theme
-'view' => array(
-    'class' => 'yii\base\View',
+'view' => array( 
     'theme' => array(
     	'class' => 'app\core\Theme',  
         'baseUrl' => '@www/themes/'.$theme,

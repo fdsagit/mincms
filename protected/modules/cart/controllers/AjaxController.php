@@ -45,7 +45,7 @@ class AjaxController extends \app\core\FrontController
 		$this->layout = false;
 		$all = Classes::get_carts(); 
 		$arr = array(theme_path().'_elements/cart','cart');    
-		echo $this->render($this->view($arr),$all);   
+		return $this->render($this->view($arr),$all);   
 	}
 	/**
 	* 结算
@@ -53,7 +53,7 @@ class AjaxController extends \app\core\FrontController
 	function actionDo(){
 		$data = Classes::get_carts();
 	 	$arr = array(theme_path().'_elements/do','do');  
-		echo $this->render($this->view($arr),$data); 
+		return $this->render($this->view($arr),$data); 
 	}
 	/**
 	* 个数相加

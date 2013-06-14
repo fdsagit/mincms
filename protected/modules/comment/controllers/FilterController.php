@@ -23,7 +23,7 @@ class FilterController extends \app\core\AuthController
 		 	flash('success',__('create sucessful'));
 			$this->redirect(url('comment/filter/index'));
 		} 
-		echo $this->render('form', array(
+		return $this->render('form', array(
 		   'model' => $model,
 		   'name'=>'comment_filter', 
 		));
@@ -38,7 +38,7 @@ class FilterController extends \app\core\AuthController
 		 	flash('success',__('update sucessful'));
 			$this->redirect(url('comment/filter/index'));
 		} 
-		echo $this->render('form', array(
+		return $this->render('form', array(
 		   'model' => $model, 
 		   'name'=>'comment_filter',
 		));
@@ -55,7 +55,7 @@ class FilterController extends \app\core\AuthController
 	{    
 		$rt = \app\core\Pagination::run('\app\modules\comment\models\Filter');  
  		
-		echo $this->render('index', array(
+		return $this->render('index', array(
 		   'models' => $rt->models,
 		   'pages' => $rt->pages,
 		));

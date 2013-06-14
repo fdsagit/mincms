@@ -1,8 +1,10 @@
 <?php namespace app\modules\content\models; 
 use app\modules\content\models\Widget;
 use yii\helpers\Html;
+use app\core\DB;
 class Field extends \app\core\ActiveRecord 
 { 
+ 
 	public static function tableName()
     {
         return 'content_field';
@@ -12,6 +14,7 @@ class Field extends \app\core\ActiveRecord
 		 	'all' => array('slug','name','pid','memo'), 
 		 );
 	}
+	
 	public function rules()
 	{ 
 		return array(
@@ -82,18 +85,34 @@ class Field extends \app\core\ActiveRecord
 	 		$slug = $m->slug;
 	 	}
 	 	$this->create_table($slug);
+	 	
+	 	\Yii::import('@app/vendor/Spyc');
+ 	    $rule = \Spyc::YAMLLoad($_POST['rule']);
+ 	    $this->_validate($rule);
 	  	
 	}
 	function beforeDelete(){
 		parent::beforeDelete();
 		Widget::find(array('field_id'=>$this->id ))->delete();
-	 
+	 	\app\modules\content\models\Validate::find(array('field_id'=>$this->id ))->delete();
 	}
 	function getwidget(){
 		$model = Widget::find(array(
  			'field_id'=>$this->id 
 	 	));
 		return $model->name;
+	}
+	function getrule(){
+		$model = \app\modules\content\models\Validate::find(array(
+ 			'field_id'=>$this->id 
+	 	));
+	 	$all = unserialize($model->value);
+	 	if($all){
+	 		foreach($all as $k=>$v){
+	 			$str .= $k.":".$v.'';
+	 		}
+	 	}
+		return $str;
 	}
  	function widgets(){
  		$list = scandir(__DIR__.'/../widget/');
@@ -105,6 +124,22 @@ class Field extends \app\core\ActiveRecord
 		}
 		return $li;
  	}
+ 	/**
+ 	* set validate
+ 	*/
+ 	function _validate($value){
+ 		$one = \app\modules\content\models\Validate::find(array(
+ 			'field_id'=>$this->id
+ 		));
+ 		if(!$one){
+ 			$one = new \app\modules\content\models\Validate; 
+ 		} 
+ 		
+ 		$one->field_id = $this->id;
+		$one->value = serialize($value);
+		$one->save();
+ 	} 
+ 	
 	public static function active($query)
     {
     	$pid = (int)$_GET['pid']?:0;

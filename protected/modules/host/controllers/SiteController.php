@@ -66,7 +66,7 @@ class SiteController extends \app\core\AuthController
 		 	flash('success',__('create sucessful'));
 			$this->redirect(url('host/site/index'));
 		} 
-		echo $this->render('form', array(
+		return $this->render('form', array(
 		   'model' => $model 
 		));
 	}
@@ -80,7 +80,7 @@ class SiteController extends \app\core\AuthController
 		 	flash('success',__('update sucessful'));
 			$this->redirect(url('host/site/index'));
 		} 
-		echo $this->render('form', array(
+		return $this->render('form', array(
 		   'model' => $model,  
 		));
 	}
@@ -97,7 +97,7 @@ class SiteController extends \app\core\AuthController
 		$value = Classes::get_config($this->config_key);
 		$rt = \app\core\Pagination::run('\app\modules\host\models\Host',array('orderBy'=>'sort desc,id desc'),array('pageSize'=>50));  
  		
-		echo $this->render('index', array(
+		return $this->render('index', array(
 		   'models' => $rt->models,
 		   'pages' => $rt->pages,
 		   'value'=>$value,

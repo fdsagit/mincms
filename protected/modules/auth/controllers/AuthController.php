@@ -40,7 +40,7 @@ class AuthController extends \app\core\AuthController
  	 		flash('success',__('set access success'));
  	 		redirect(url('auth/auth/index',array('id'=>$id))); 
  	 	}
-		echo $this->render('index',array(
+		return $this->render('index',array(
 			'rows'=>$rows,
 			'out'=>$out,
 			'model'=>$model,

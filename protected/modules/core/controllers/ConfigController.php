@@ -21,7 +21,7 @@ class ConfigController extends \app\core\AuthController
 		 	flash('success',__('create config sucessful'));
 			refresh();
 		} 
-		echo $this->render('form', array(
+		return $this->render('form', array(
 		   'model' => $model,
 		   'name'=>'user_create', 
 		));
@@ -36,7 +36,7 @@ class ConfigController extends \app\core\AuthController
 		 	flash('success',__('update config sucessful'));
 			refresh();
 		} 
-		echo $this->render('form', array(
+		return $this->render('form', array(
 		   'model' => $model, 
 		   'name'=>'user_update',
 		));
@@ -53,7 +53,7 @@ class ConfigController extends \app\core\AuthController
 	{    
 		$rt = \app\core\Pagination::run('\app\modules\core\models\Config');  
  		
-		echo $this->render('index', array(
+		return $this->render('index', array(
 		   'models' => $rt->models,
 		   'pages' => $rt->pages,
 		));

@@ -23,7 +23,7 @@ class ConfigController extends \app\core\AuthController
 		 	flash('success',__('mail settings success'));
 		 	redirect(url('email/config/index'));
 		} 
-		echo $this->render('index',array('model'=>$model));
+		return $this->render('index',array('model'=>$model));
 	 
 	}
 	 

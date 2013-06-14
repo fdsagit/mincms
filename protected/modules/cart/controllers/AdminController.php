@@ -15,7 +15,7 @@ class AdminController extends \app\core\AuthController
 	public function actionIndex()
 	{ 
 		$this->active = array('extend','cart.admin.index');
-		echo $this->render('index');
+		return $this->render('index');
 	}
 	/**
 	* 设置cart数据库信息
@@ -38,7 +38,7 @@ class AdminController extends \app\core\AuthController
 		} 
 		$rt = \app\core\Pagination::run('\app\modules\cart\models\Tables');  
 		
-		echo $this->render('set', array(
+		return $this->render('set', array(
 		   'model' => $model, 
 		   'models' => $rt->models,
 		   'pages' => $rt->pages,

@@ -62,7 +62,7 @@ class SiteController extends \app\core\AuthController
 		else
 			$rt = \app\core\Pagination::run('\app\modules\comment\models\Slug');  
  		
-		echo $this->render('index', array(
+		return $this->render('index', array(
 		   'models' => $rt->models,
 		   'pages' => $rt->pages,
 		   'form'=>$form

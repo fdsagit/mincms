@@ -85,7 +85,7 @@ class Node{
 		* 无规则直接报错
 		*/
 	 	if(!$rules){
-	 		exit(t('admin','No Validate Rules'));
+	 		exit(__('admin','No Validate Rules'));
 	 	} 
 		return array(
 			'rules'=>$rules,
@@ -255,7 +255,7 @@ class Node{
  				$wherein[$table][] = $value;  
  			}
  		} 
- 		 
+ 		 dump($batchs);exit;
  		foreach($batchs as $table=>$value){ 
  			/*$data = $wherein[$key];
  			$query = new \yii\db\Query;
