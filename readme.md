@@ -3,12 +3,14 @@
 - Thank you for  Yii Team 
 - [yii2.0](http://github.com/yiisoft/yii2) 
 - [yii2.0 milestones](http://github.com/yiisoft/yii2/issues/milestones)
-- [Composer] (https://getcomposer.org/doc/03-cli.md#composer-process-timeout)
+- [get composer] (http://getcomposer.org/download/)
 
-### Install
+### Install  
 
 ```
-  php composer.phar install  
+  php composer.phar install  / composer install  
+
+  COMPOSER_PROCESS_TIMEOUT=4000 php composer.phar update
 ```
 ### Commication
 

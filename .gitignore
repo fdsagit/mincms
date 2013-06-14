@@ -1,5 +1,6 @@
 # windows thumbnail cache
 Thumbs.db 
+.DS_Store
 /formbuiler
 /protected/modules/document
 /public/themes/ljftaichi.com 
@@ -18,3 +19,4 @@ Thumbs.db
 /public/themes/ljftaichi.com
 
 /cronjob/backup
+/composer.phar

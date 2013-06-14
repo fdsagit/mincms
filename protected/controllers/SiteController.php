@@ -2,10 +2,7 @@
 use app\core\DB;
 use app\core\FrontController;
 use app\models\LoginForm;
-use app\models\ContactForm;
-use app\vendor\Geo;
- 
- 
+use app\models\ContactForm; 
 class SiteController extends FrontController
 { 
 	public function actions()
@@ -24,8 +21,7 @@ class SiteController extends FrontController
 	} 
  	function actionTest(){   
  		$this->active = 'site.test';  
- 	//	echo Geo::getCity() . ', ' . Geo::getCountry();exit;
- 		$data['cart_test'] = DB::all('cart_test');
+  		$data['cart_test'] = DB::all('cart_test');
 		echo $this->render('test',$data);
  	}
 	 
