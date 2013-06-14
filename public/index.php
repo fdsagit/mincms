@@ -1,17 +1,17 @@
 <?php 
 // comment out the following line to disable debug mode
 defined('YII_DEBUG') or define('YII_DEBUG', true); 
-require (__DIR__ . '/../vendor/yiisoft/yii2/yii/Yii.php');
+@include (__DIR__ . '/../vendor/yiisoft/yii2/yii/Yii.php');
 @require(__DIR__ . '/../vendor/autoload.php');  
-
+ 
+ 
 /**
 * set comm yii path
 */
-/*if(!class_exists('Yii')){
+if(!class_exists('Yii')){
 	$frameworkPath = __DIR__ . '/../../yii2/framework/yii'; 
 	require($frameworkPath . '/Yii.php');
-}*/
-
+}
 if(true === YII_DEBUG){
 	error_reporting(E_ALL & ~(E_STRICT | E_NOTICE));
 	if(!file_exists(__DIR__.'/assets'))

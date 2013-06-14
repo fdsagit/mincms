@@ -10,7 +10,7 @@
 ```
   php composer.phar install  / composer install  
 
-  COMPOSER_PROCESS_TIMEOUT=4000 php composer.phar update
+  COMPOSER_PROCESS_TIMEOUT=4000  composer update
 ```
 ### Commication
 
