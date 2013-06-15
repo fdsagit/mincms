@@ -5,12 +5,18 @@
 */
 class Widget extends \app\modules\content\Widget
 {  
-  
+	
+  	static function content_type(){  
+		return "<input type='hidden' name='Field[relate]' value='file'>";
+	}
  	static function node_type(){  
 		 return 'int';
 	}
 	function run(){  
-		$name = $this->name;  
- 		echo $this->form->field($this->model,$name)->textArea();	 
+		$name = $this->name;   
+ 		$id = "NodeActiveRecord[".$name."]";
+ 		echo widget('plupload',array(
+ 			'field'=>$id
+ 		));	 
 	}
 }

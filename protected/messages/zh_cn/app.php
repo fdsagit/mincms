@@ -33,7 +33,7 @@ return  array (
   'update sucessful' => '更新成功',
   'form widget' => '表单',
   'return back' => '返回上一层',
-  'link' => '链接',
+  'link' => '操作',
   'memo' => '备注',
   'port' => '端口',
   'smtp' => 'SMTP',

@@ -7,6 +7,15 @@
 * @date 2013
 */
 class DB{
+	static function queryAll($sql){
+		return static::queryRow($sql,true);
+	}
+	static function queryRow($sql,$flag=false){
+		$command = \Yii::$app->db->createCommand($sql);
+		if(false === $flag)
+			return $command->queryRow();
+		return $command->queryAll();
+	}
 	static function one($table,$getway=array()){
 		$command = static::_query($table,$getway);
 		return $command->queryRow(); 

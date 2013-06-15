@@ -8,13 +8,14 @@ class Widget extends \yii\base\Widget
     public $form;
   	public $value;
   	public $_opt;
+  	public $slug;
+  	public $structure;
   	function init(){
   		parent::init();
-  		$name = $this->name;  
-		if($_GET['name']){
-			$st = Classes::structure($_GET['name']);
-			$this->_opt = $st[$name]['widget_config'];
-		}
+  		$name = $this->name;   
+		$this->slug = $_GET['name'];
+		$this->structure =  Classes::structure($this->slug);
+		$this->_opt = $this->structure[$name]['widget_config']; 
   		if(!$this->value)
   			$this->value = $this->model->{$this->name};
   	}

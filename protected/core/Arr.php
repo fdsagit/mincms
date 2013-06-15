@@ -13,6 +13,12 @@ class Arr
 	static $_j = 0;
 	static $tree; 
  	static $deep = 0; 
+ 	
+ 	static function first($arr){
+		foreach($arr as $ar){
+			return $ar;
+		}
+	}
  	/**
  	* 判断数组有没有值
  	*

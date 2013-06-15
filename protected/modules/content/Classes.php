@@ -1,7 +1,7 @@
 <?php 
 namespace app\modules\content; 
 use app\core\DB;  
- 
+use app\core\Arr;
 /**
  *  
  * @author Sun < mincms@outlook.com >
@@ -9,6 +9,21 @@ use app\core\DB;
  */
 class Classes
 {
+	static function all($slug,$params=array()){ 
+		$table = "node_".$slug;// node table   
+		$all = DB::all($table,$params); 
+		foreach($all as $model){
+			$node = static::one($slug,$model['id']);
+			$node->id = $model['id'];
+			$node->uid = $model['uid'];
+			$node->created = $model['created'];
+			$node->updated = $model['updated'];
+			$node->admin = $model['admin'];
+			$node->display = $model['display']; 
+			$out[] = $node;
+		}
+		return $out; 
+	}
 	/**
 	*
 	$data = node_pager('post');
@@ -121,19 +136,57 @@ class Classes
 		$s = static::structure($slug);
 		$relate = $s[$field]['relate'];   
 		if($relate == 'file'){
-			 $value = static::array_first($value);
+			 $value = Arr::first($value);
 			 return image($value['path'],array(
 			 	'resize'=>array(160,160)
 			 ));
-		}
-					
-		
+		} 
 	}
-	static function array_first($arr){
-		foreach($arr as $ar){
-			return $ar;
+	static function table_columns(){
+		$row = DB::queryAll("show tables");
+ 		foreach($row as $r){
+ 			$table = Arr::first($r);
+ 			$columns = DB::queryAll("SHOW COLUMNS FROM ".$table);
+ 			if(
+ 					strpos($table,'content_')===false 
+ 					&& strpos($table,'_relate')===false
+ 					&& strpos($table,'auth_')===false
+ 					&& strpos($table,'comment_')===false
+ 					&& strpos($table,'core_')===false
+ 					&& strpos($table,'file_')===false
+ 					&& strpos($table,'cart_')===false 
+ 					&& strpos($table,'email_')===false  	
+ 			){
+	 			foreach($columns as $col){
+	 				//show table , fields
+	 				$f = $col['Field'];
+	 				if(  strpos($f,'id') === false
+	 				) {
+	 					$out[$table][] = $f;
+	 				}
+	 			} 
+ 			}
+ 			
+ 		} 
+		unset($tables , $table);
+		foreach($out as $tab=>$col){   
+			$table[$tab] = $tab;
+			if(strpos($tab,'node_')===false)
+				$tables[$tab] = Arr::first($col);
+			else{
+				// content type
+				$slug = str_replace('node_','',$tab);
+				$stuct =  Classes::structure($slug);
+		 		foreach($stuct as $field=>$config){
+		 			$fs[] = $field;		 			
+		 		}
+		 		$tables[$tab] = Arr::first($fs);
+			} 
 		}
+		$data = array('table'=>$table,'tables'=>$tables);		
+		return $data;
 	}
+	
 
 	 
  
@@ -146,7 +199,8 @@ class Classes
 	*/
  	static function structure($slug){
  		$one = DB::one('content_type_field',array(
- 				'where'=>array('slug'=>$slug)
+ 				'where'=>array('slug'=>$slug),
+ 				'orWhere'=>array('id'=>$slug),
  		));
  		$all = DB::all('content_type_field',array(
  			'where'=>array('pid'=>$one['id'])

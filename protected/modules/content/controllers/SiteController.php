@@ -23,10 +23,12 @@ class SiteController extends \app\core\AuthController
 		static function content_type(){  
 			return "<input type='hidden' name='Field[relate]' value='file'>";
 		}
-		*/
-		$new = \app\modules\content\models\Field::widgets(false);
+		*/  
 		$w = $_POST['w'];
-		return $new[$w];
+		if($w){
+			$new = \app\modules\content\models\Field::widgets(false);
+			return $new[$w];
+		}
 	}
 	public function actionCreate()
 	{  
