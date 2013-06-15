@@ -21,6 +21,7 @@ class SiteController extends FrontController
 		return $this->render('index');
 	} 
  	function actionTest(){   
+ 		dump(node('img',6));
  		$this->active = 'site.test';  
  		$data = node_pager('post',null,1);
   		$data['cart_test'] = DB::all('cart_test'); 

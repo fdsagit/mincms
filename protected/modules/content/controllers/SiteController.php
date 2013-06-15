@@ -14,6 +14,20 @@ class SiteController extends \app\core\AuthController
 		$first[0] = __('please select');
 		$this->widget = $first+$this->widget;
 	}
+	function actionAjax(){
+		if(!is_ajax()) exit('access deny');
+		/**
+		* create relate table
+		* autoload widget from content module.
+		* 
+		static function content_type(){  
+			return "<input type='hidden' name='Field[relate]' value='file'>";
+		}
+		*/
+		$new = \app\modules\content\models\Field::widgets(false);
+		$w = $_POST['w'];
+		return $new[$w];
+	}
 	public function actionCreate()
 	{  
 		$this->view->title = __('create content type');

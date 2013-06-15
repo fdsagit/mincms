@@ -7,7 +7,7 @@ class Validate extends \app\core\ActiveRecord
  
 	public static function tableName()
     {
-        return 'content_validate';
+        return 'content_type_validate';
     } 
     function scenarios() {
 		 return array( 

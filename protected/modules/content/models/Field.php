@@ -7,7 +7,7 @@ class Field extends \app\core\ActiveRecord
  
 	public static function tableName()
     {
-        return 'content_field';
+        return 'content_type_field';
     } 
     function scenarios() {
 		 return array( 
@@ -75,7 +75,12 @@ class Field extends \app\core\ActiveRecord
 			return Html::a(__('link'),url('content/site/index',array('pid'=>$this->id)));
 		return Html::a(__('return back'),url('content/site/index',array('pid'=>$model->pid)));
 	}
-	
+	function beforeSave($insert){
+		parent::beforeSave($insert);
+		$this->relate = $_POST['Field']['relate'];
+		$this->list = $_POST['Field']['list'];
+		return true;
+	}
 	function afterSave($insert){  
 		parent::afterSave($insert);
  		$model = Widget::find(array(
@@ -99,6 +104,9 @@ class Field extends \app\core\ActiveRecord
 	 	\Yii::import('@app/vendor/Spyc');
  	    $rule = \Spyc::YAMLLoad($_POST['rule']);
  	    $this->_validate($rule);
+ 	    
+ 	    $widget_config = \Spyc::YAMLLoad($_POST['widget_config']);
+ 	    $this->_widget_config($widget_config);
 	  	
 	}
 	function beforeDelete(){
@@ -106,11 +114,25 @@ class Field extends \app\core\ActiveRecord
 		Widget::find(array('field_id'=>$this->id ))->delete();
 	 	\app\modules\content\models\Validate::find(array('field_id'=>$this->id ))->delete();
 	}
+ 
 	function getwidget(){
 		$model = Widget::find(array(
  			'field_id'=>$this->id 
 	 	));
 		return $model->name;
+	}
+	function getwidget_config(){
+		$model = Widget::find(array(
+ 			'field_id'=>$this->id 
+	 	));
+	 	
+	 	$all = unserialize($model->memo);
+	 	if($all){
+	 		foreach($all as $k=>$v){
+	 			$str .= $k.":".$v.chr(13);
+	 		}
+	 	}
+		return $str; 
 	}
 	function getrule(){
 		$model = \app\modules\content\models\Validate::find(array(
@@ -119,21 +141,39 @@ class Field extends \app\core\ActiveRecord
 	 	$all = unserialize($model->value);
 	 	if($all){
 	 		foreach($all as $k=>$v){
-	 			$str .= $k.":".$v.'';
+	 			$str .= $k.":".$v.chr(13);
 	 		}
 	 	}
 		return $str;
 	}
- 	function widgets(){
+ 	function widgets($flag=true){
  		$list = scandir(__DIR__.'/../widget/');
 		foreach($list as $vo){   
 			if($vo !="."&& $vo !=".." && $vo !=".svn" )
 			{ 
 				$li[$vo] = $vo;
+				$cls = "\app\modules\content\widget\\$vo\widget";
+				if(method_exists($cls,'content_type'))
+					$rt[$vo] = $cls::content_type();
 			}
 		}
-		return $li;
+		if($flag === true)
+			return $li;	
+		return $rt;
  	}
+ 	
+ 	function _widget_config($value){
+ 		$one = \app\modules\content\models\Widget::find(array(
+ 			'field_id'=>$this->id
+ 		));
+ 		if(!$one){
+ 			$one = new \app\modules\content\models\Widget; 
+ 		} 
+ 		
+ 		$one->field_id = $this->id;
+		$one->memo = serialize($value);
+		$one->save();
+ 	} 
  	/**
  	* set validate
  	*/

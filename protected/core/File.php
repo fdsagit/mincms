@@ -1,4 +1,5 @@
 <?php namespace app\core;  
+use app\core\DB;
 /**
 *  
 * 
@@ -54,11 +55,11 @@ class File extends \yii\helpers\Html
 	}
 	function _upload_db($old,$to,$path,$size,$type){
 		$data = file_get_contents($old);
-		$uniqid =  md5($data);
-		$query = new Query;
-		$query->select('id,path')->from('file')->where(array('uniqid'=>$uniqid));
-		$command = $query->createCommand();
-		$row = $command->queryRow(); 
+		$uniqid =  md5($data); 
+		$row = DB::one('file',array(
+			'select'=>'id,path',
+			'where'=>array('uniqid'=>$uniqid)
+		)); 
 		if(!$row){ 
 			copy($old,$to);   
 			$data = array(
@@ -70,19 +71,16 @@ class File extends \yii\helpers\Html
 					'created' =>time(),
 					'admin'=>$this->admin
 				); 
-			\Yii::$app->db->createCommand()->insert('file', $data)->execute(); 
+			DB::insert('file', $data); 
 		 
 		}
 		else if(!file_exists(root_path().$row['path'])){  
 			copy($old,root_path().$row['path']);  
-		}
-		 
-		$query = new Query;
-		$query->select('id,path,type')
-			->from('file')->where(array('uniqid'=>$uniqid));
-		$command = $query->createCommand();
-		$row = $command->queryRow(); 
-
+		} 
+		$row = DB::one('file',array(
+			'select'=>'id,path,type',
+			'where'=>array('uniqid'=>$uniqid)
+		));  
 		@unlink($old);
 		return $row;
 	}
@@ -116,13 +114,16 @@ class File extends \yii\helpers\Html
 	*/
 	static function input($files,$field){
 	 	 if(!$files)return; 
-	 	 foreach($files as $f){ $f = (object)$f;
+	 	 foreach($files as $f){ $f = (object)$f; 
 		 	$tag .= "<div class='file'><span class='icon-remove hander'></span>
 		 	<input type='hidden' name='".$field."[]' value='".$f->id."' >";
 			$flag = false;
 			if(strpos($f->type,'image')!==false){
-				$flag = true;
-				$tag .= "<a href=".base_url().'/'.$f->path." rel='lightbox[]'><img src='".base_url().'/'.$f->path."'/></a>";
+				$flag = true;  
+				$tag .= "<a href=".base_url().$f->path."  '>"
+				.image($f->path,array(
+					'resize'=>array(160,160)
+				))."</a>";
 			} 
 			else if(in_array(File::extension($f->path),array('flv','mp4','avi','rmvb','webm'))){
 				$flag = true;

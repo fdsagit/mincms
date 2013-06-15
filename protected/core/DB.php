@@ -70,9 +70,9 @@ class DB{
 		return \Yii::$app->db->createCommand()
 			->update($table,$columns,$condition,$params)->execute();   	
 	}
-	static function delete($table, $condition, &$params){ 
+	static function delete($table, $condition = '', $params = array()){ 
 		return \Yii::$app->db->createCommand()
-			->delete($table, $condition, $params);   	
+			->delete($table, $condition , $params)->execute();   		
 	}
 	static function _query($table,$getway=array()){ 
 		$query = new \yii\db\Query;

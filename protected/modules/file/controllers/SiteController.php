@@ -28,9 +28,9 @@ class SiteController extends \app\core\AuthController
 		
 		if(!$rt) return; 
 		$new[] = $rt;  
-		$out = File::input($new,$name);
-		$rt->tag = $out;
-		die(json_encode($rt)); 
+		$out = File::input($new,$name); 
+		$rt['tag'] = $out; 
+		die($out); 
 	}
 
 	 

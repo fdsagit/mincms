@@ -7,7 +7,7 @@ class Widget extends \app\core\ActiveRecord
  
 	public static function tableName()
     {
-        return 'content_widget';
+        return 'content_type_widget';
     } 
     function scenarios() {
 		 return array( 

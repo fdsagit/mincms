@@ -11,7 +11,7 @@ $this->registerAssetBundle('bootstrap');
 
 widget('select2');
 js("$(function(){
-	$('.flash-message').delay(2500).fadeOut();
+	$('.flash-message,.info').delay(2500).fadeOut();
 });");
 ?>
 <?php $this->beginPage(); ?>

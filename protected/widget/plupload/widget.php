@@ -34,9 +34,7 @@ class Widget extends \yii\base\Widget
 	 
 	});
 
-	uploader.bind('Init', function(up, params) {
-		$('#".$filelist."').html(\"<div>Current runtime: \" + params.runtime + \"</div>\");
-	});
+ 
 
 	$('#uploadfiles').click(function(e) {
 		uploader.start();

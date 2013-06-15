@@ -42,7 +42,7 @@ $form = ActiveForm::begin(array(
 js_file('js/php.js');
 js_file('js/jquery.form.js');
 
-$out= "<ul class='alert alert-success'>";
+$out= "<ul class='alert alert-success info'>";
 $out.= '<li>'.$message.'</li>';
 $out.="</ul>"; 
 js("

@@ -37,10 +37,10 @@ return array(
 		'log' => array(
 			'class' => 'yii\logging\Router',
 			'targets' => array(
-				array(
+				/*array(
 					'class' => 'yii\logging\FileTarget',
 					'levels' => array('error', 'warning'),
-				),
+				),*/
 				array(
 					'class' => 'yii\logging\DebugTarget',
 				)

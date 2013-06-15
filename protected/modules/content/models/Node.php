@@ -9,6 +9,141 @@ use \app\core\DB;
 */
 class Node{ 
 	/**
+ 	*  save content base on FormBuilder
+ 	* @params $name content_type_name
+ 	* @params $model Model
+ 	* @params $attrs 属性
+ 	* @params $return 为true时返回nid
+ 	*/
+ 	static function save($name,$model,$attrs,$nid=null,$return=false){  
+ 		
+ 		foreach($attrs as $key=>$value){
+ 			$model->$key = $value; 
+ 		} 
+ 		$out = "##ajax-form-alert##:";
+ 		if(!$model->validate()){
+ 			$errors = $model->getErrors(); 
+ 			$out.= "<ul class='alert alert-error info'>";
+ 			foreach($errors as $key=>$e){
+ 				foreach($e as $r)
+ 					$out.= '<li>'.$r.'</li>';
+ 			}
+ 			$out.="</ul>"; 
+ 			if(true === $return){
+ 				return $out;
+ 			}
+ 			exit($out);
+ 		}  
+ 		// get  structure 
+ 		$structs = Classes::structure($name); 
+ 		$table = "node_".$name;// node table  
+ 		//data to [relate] like [node_post_relate]
+ 		$relate = $table.'_relate'; 
+ 		if($nid>0){   
+ 		 	$display = 1;
+ 		 	if($model->display)
+ 				$display = $model->display; 
+ 		    	DB::update($table,array( 
+			 			'updated'=>time(),
+			 			'display'=>$display, 
+			 		),'id=:id',array( ':id'=>$nid)
+			 		);  
+ 		 
+ 		}else{ 
+	 		DB::insert($table,array(
+		 			'created'=>time(),
+		 			'updated'=>time(),
+		 			'uid'=>uid()
+		 		)); 
+	 		$nid = DB::id();
+ 		}   
+ 		foreach($structs as $k=>$v){
+ 			if($value = $model->$k){ //属性有值时 才会查寻数据库
+ 				$fid = $v['fid'];//字段ID
+ 				$table = "content_".$v['mysql'];  
+ 				$batchs[$table][$fid][] = $value; 
+ 				$wherein[$table][] = $value;  
+ 			}
+ 		} 
+ 		/**  
+		[content_text] => Array
+		    (
+		        [3] => Array
+		            (
+		                [0] => 222
+		            )
+
+		    ) 
+ 		*/  
+ 		foreach($batchs as $table=>$value){ 
+ 		 	foreach($value as $fid=>$v){ //$k  filed_id
+ 		 		foreach($v as $_v){ // $_v value 
+ 		 			if(is_array($_v)){
+ 		 				if($nid>0){
+ 		 					DB::delete($relate,'nid=:nid and fid=:fid',
+	 		 					array( 
+					 				':nid'=>$nid ,
+					 				':fid'=>$fid 
+					 			)
+				 			); 
+				 		}
+ 		 				foreach($_v as $_val){
+ 		 					$value = static::__save_array($table , $_val ,$relate ,$fid ,$nid);
+ 		 					DB::insert($relate,array( 
+				 				'nid'=>$nid ,
+				 				'fid'=>$fid,
+				 				'value'=>$value
+				 			)); 
+ 		 				}
+ 		 			}else{
+ 		 				$value = static::__save_array($table , $_v ,$relate ,$fid ,$nid); 
+						//$value  is node value id
+						if(!$nid){
+							DB::insert($relate,array( 
+				 				'nid'=>$nid ,
+				 				'fid'=>$fid,
+				 				'value'=>$value
+				 			)); 
+						}elseif($one['value']!=$value){
+							 DB::update($relate,array(  
+				 				'value'=>$value
+				 			 ),'nid=:nid and fid=:fid',array(
+				 			 	':nid'=>$nid ,
+				 				':fid'=>$fid,
+				 			 ));
+						}
+ 		 			}
+ 		 			 
+ 		 		}
+ 		 	} 
+ 		} 
+ 		$out.= 1; 
+		Classes::remove_cache($name,$nid);
+		// create cache
+		Classes::one($name,$nid);
+		if(true === $return){
+			return $nid;
+		}
+		exit($out);  
+ 	}
+ 	static function __save_array($table , $_v ,$relate ,$fid ,$nid){
+ 		$one = DB::one($table,array(
+			'where'=>array(
+				'value'=>$_v
+			)
+		));
+		//$value  is node value id
+		if(!$one){
+			DB::insert($table,array( 
+ 				'value'=>$_v 
+ 			));
+ 			$value = DB::id();
+		}else{
+			$value = $one['id'];
+		}
+		return $value;
+ 	}
+	/**
 	 * 设置验证规则
 	 */
 	 function set_rules($data){
@@ -78,133 +213,6 @@ class Node{
 	static function delete_cache($name,$nid){
 		$cache_id = "node_{$name}_{$nid}"; 
 		\Yii::$app->cache->delete($cache_id);
-	} 
- 	/**
- 	*  save content base on FormBuilder
- 	* @params $name content_type_name
- 	* @params $model Model
- 	* @params $attrs 属性
- 	* @params $return 为true时返回nid
- 	*/
- 	static function save($name,$model,$attrs,$node_id=null,$return=false){  
- 		
- 		foreach($attrs as $key=>$value){
- 			$model->$key = $value; 
- 		} 
- 		$out = "##ajax-form-alert##:";
- 		if(!$model->validate()){
- 			$errors = $model->getErrors(); 
- 			$out.= "<ul class='alert alert-error'>";
- 			foreach($errors as $key=>$e){
- 				foreach($e as $r)
- 					$out.= '<li>'.$r.'</li>';
- 			}
- 			$out.="</ul>"; 
- 			if(true === $return){
- 				return $out;
- 			}
- 			exit($out);
- 		}  
- 		// get  structure 
- 		$structs = Classes::structure($name); 
- 		$table = "node_".$name;// node table  
- 		//data to [relate] like [node_post_relate]
- 		$relate = $table.'_relate'; 
- 		if($node_id>0){  
- 			$nid =  $node_id;
- 		 	$display = 1;
- 		 	if($model->display)
- 				$display = $model->display; 
- 		    	DB::update($table,array( 
-			 			'updated'=>time(),
-			 			'display'=>$display, 
-			 		),array(
-			 			'id=:id',
-			 			array( ':id'=>$nid)
-			 		));  
- 		 
- 		}else{ 
-	 		DB::insert($table,array(
-		 			'created'=>time(),
-		 			'updated'=>time(),
-		 			'uid'=>uid()
-		 		)); 
-	 		$nid = DB::id();
- 		}   
- 		foreach($structs as $k=>$v){
- 			if($value = $model->$k){ //属性有值时 才会查寻数据库
- 				$fid = $v['fid'];//字段ID
- 				$table = "content_".$v['mysql'];  
- 				$batchs[$table][$fid][] = $value; 
- 				$wherein[$table][] = $value;  
- 			}
- 		} 
- 		/**  
-		[content_text] => Array
-		    (
-		        [3] => Array
-		            (
-		                [0] => 222
-		            )
-
-		    ) 
- 		*/ 
- 		foreach($batchs as $table=>$value){ 
- 		 	foreach($value as $fid=>$v){ //$k  filed_id
- 		 		foreach($v as $_v){ // $_v value
- 		 			$one = DB::one($table,array(
- 		 				'where'=>array(
- 		 					'value'=>$_v
- 		 				)
- 		 			));
- 		 			//$value  is node value id
- 		 			if(!$one){
- 		 				DB::insert($table,array( 
-	 		 				'value'=>$_v 
-	 		 			));
-	 		 			$value = DB::id();
- 		 			}else{
- 		 				$value = $one['id'];
- 		 			}
- 		 			// insert data to [relate] like [node_post_relate]
- 		 			$one = DB::one($relate,array(
- 		 				'where'=>array(
- 		 					'nid'=>$nid,
- 		 					'fid'=>$fid,
- 		 				)
- 		 			));
- 		 			//$last_id  is node value id
- 		 			if(!$one){
- 		 				DB::insert($relate,array( 
-	 		 				'nid'=>$nid ,
-	 		 				'fid'=>$fid,
-	 		 				'value'=>$value
-	 		 			)); 
- 		 			}elseif($one['value']!=$value){
- 		 				 DB::update($relate,array(  
-	 		 				'value'=>$value
-	 		 			 ),'nid=:nid and fid=:fid',array(
-	 		 			 	':nid'=>$nid ,
-	 		 				':fid'=>$fid,
-	 		 			 ));
- 		 			}
- 		 			 
- 		 		}
- 		 	} 
- 		} 
- 		$out.= 1; 
-		Classes::remove_cache($name,$nid);
-		// create cache
-		Classes::one($name,$nid);
-		if(true === $return){
-			return $nid;
-		}
-		exit($out);  
- 	}
- 	 
- 	 
- 	
-	 
- 
+	}  
  	
 }

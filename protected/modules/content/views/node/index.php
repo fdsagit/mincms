@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use app\modules\content\Classes;
 /**
  * @var yii\base\View $this
  */
@@ -37,21 +38,28 @@ $this->params['breadcrumbs'][] = __('list');
     <?php }?>
   </tbody>
 </table>
-<?php }else{?>
+<?php }else{
+$fields = Classes::structure($name);
+ 
+?>
 	 <?php echo Html::a('<i class="icon-plus-sign"></i>',url('content/node/create',array('name'=>$name)));?> 
 	 <table class="table">
 	  <thead>
 	    <tr> 
-	      <th><?php echo __('name');?></th>
-	      <th><?php echo __('slug');?></th>
+		 <?php foreach($fields as $title=>$v){ 
+				if($v['list']==1){?>
+	      	<th><?php echo __($title);?></th>
+	     <?php }}?>
 	      <th><?php echo __('action');?></th>
 	    </tr>
 	  </thead>
 	  <tbody>
 	    <?php foreach($models as $model){?>
 	    <tr> 
-	      <td><?php echo $model->title;?></td>
-	      <td><?php echo $model->body;?></td>
+	    <?php foreach($fields as $title=>$v){ 
+				if($v['list']==1){?>
+	      <td><?php echo Classes::field_show_list($name,$title,$model->$title);?></td>
+	   <?php }}?>
 	      <td>
 	      	<?php echo Html::a('<i class="icon-edit"></i>',url('content/node/update',array('name'=>$name,'id'=>$model->id)));?>    
 	      </td>

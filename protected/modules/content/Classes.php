@@ -41,9 +41,7 @@ class Classes
 			'pages' => $pager->pages
 		);
 	}
-	
-	
-	/**
+		/**
 	* load one full data
 	*/
 	static function one($slug,$nid){  
@@ -57,29 +55,87 @@ class Classes
 			foreach($structs as $k=>$v){ 
 				$fid = $v['fid'];//×Ö¶ÎID
 				$table = "content_".$v['mysql'];  
-				$one = DB::one($relate,array(
+				$all = DB::all($relate,array(
 					'where'=>array(
 						'nid'=>$nid,
 						'fid'=>$fid,
 					)
 				));
-				$batchs[$table][$v['slug']] = $one['value'];  
+				if(count($all) == 1){
+					$one = $all[0]['value'];
+				}else{
+					foreach($all as $al){
+						$one[] = $al['value'];
+					}
+				}
+				$batchs[$table][$v['slug']] = $one;  
 	 		}
-	 	 	$row = (object)array();
+	 	 	$row = (object)array(); 
 			foreach($batchs as $table=>$value_ids){
-			 	foreach($value_ids as $field_name=>$_id){
-					$one = DB::one($table,array(
+			 	foreach($value_ids as $field_name=>$_id){ 
+					$all = DB::all($table,array(
 						'where'=>array(
 						 	'id'=>$_id
 						)
-					));
-					$row->$field_name = $one['value']; 
+					)); 
+					if(count($all) == 1){
+						$one = $all[0]['value'];
+					}else{ 
+						$one = array();
+						foreach($all as $al){
+							$one[] = $al['value'];
+						} 
+						
+					} 
+					$row->$field_name = $one; 
 				}
 			} 
-			cache($cacheId,$row);
+			
+			// relate ship 
+			$s = static::structure($slug); 
+			foreach($row as $k=>$v){
+				$relate = $s[$k]['relate'];  
+				if($relate){
+					if($relate == 'file'){
+						$all = DB::all('file',array(
+							'where'=>array(
+								'id'=>$v
+							)
+						));
+						$row->$k = $all; 
+					}
+				}
+			}
+		//	dump($row);
+			
+		//	cache($cacheId,$row);
 		}
 		return $row;
 	}
+	/**
+	* set value for /node/index field. 
+	* value is string or array
+	*/
+	static function field_show_list($slug,$field,$value){
+		if(!is_array($value)) return $value;
+		$s = static::structure($slug);
+		$relate = $s[$field]['relate'];   
+		if($relate == 'file'){
+			 $value = static::array_first($value);
+			 return image($value['path'],array(
+			 	'resize'=>array(160,160)
+			 ));
+		}
+					
+		
+	}
+	static function array_first($arr){
+		foreach($arr as $ar){
+			return $ar;
+		}
+	}
+
+	 
  
 	static function remove_cache($slug,$nid){
 		$cacheId = "module_content_node_{$slug}_{$nid}";
@@ -89,21 +145,22 @@ class Classes
 	* create formBuilder need field structure
 	*/
  	static function structure($slug){
- 		$one = DB::one('content_field',array(
+ 		$one = DB::one('content_type_field',array(
  				'where'=>array('slug'=>$slug)
  		));
- 		$all = DB::all('content_field',array(
+ 		$all = DB::all('content_type_field',array(
  			'where'=>array('pid'=>$one['id'])
  		)); 
  		foreach($all as $v){
  			$n = $v['slug'];
  			//get widget . widget is input/text/dropDonwList ...
- 			$w = DB::one('content_widget',array(
+ 			$w = DB::one('content_type_widget',array(
  				'where'=>array('field_id'=>$v['id'])
  			));
  			$out[$n]['widget'] = $widget = $w['name'];
+ 			$out[$n]['widget_config'] = unserialize($w['memo']);
  			//get validates
- 			$vali = DB::one('content_validate',array(
+ 			$vali = DB::one('content_type_validate',array(
  				'where'=>array('field_id'=>$v['id'])
  			));
  			$validates = unserialize($vali['value']);
@@ -111,6 +168,8 @@ class Classes
  			$out[$n]['slug'] = $v['slug'];
  			$out[$n]['name'] = $v['name'];
  			$out[$n]['fid'] = $v['id'];
+ 			$out[$n]['relate'] = $v['relate'];
+ 			$out[$n]['list'] = $v['list'];
  			$cls = "\app\modules\content\widget\\$widget\widget"; 
  			$out[$n]['mysql'] = $cls::node_type(); 
  		}

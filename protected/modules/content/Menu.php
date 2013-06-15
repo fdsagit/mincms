@@ -6,7 +6,6 @@ class Menu
 		$menu['content'] = array( 
 			'content'=>array('content/node/index'),
 			'content type'=>array('content/site/index'),  
-			'add'=>array('content/node/create'), 
 		);
 	 
 			
