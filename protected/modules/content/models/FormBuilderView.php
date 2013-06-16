@@ -42,7 +42,7 @@ $form = ActiveForm::begin(array(
 js_file('js/php.js');
 js_file('js/jquery.form.js');
 
-$out= "<ul class='alert alert-success info'>";
+$out= "<ul class='alert alert-success flash-message'>";
 $out.= '<li>'.$message.'</li>';
 $out.="</ul>"; 
 js("
@@ -55,6 +55,8 @@ $('#".$id."').ajaxForm(function(data) {
 		$('.".$id."').html(\"".$out."\"); 
 		".$script."
 	}
+	$('.flash-message').delay(2500).fadeOut();
+	$('input,textarea').val('');
      
 }); 
 ");	

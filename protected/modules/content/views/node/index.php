@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Html;
 use app\modules\content\Classes;
+use yii\widgets\ActiveForm; 
 /**
  * @var yii\base\View $this
  */
@@ -11,7 +12,7 @@ $this->params['breadcrumbs'][] = __('list');
 ?>
 <blockquote>
 	<h3>
-		<?php echo $this->title; ?> 
+		<?php echo $name;?>
 	</h3>
 </blockquote>
 	
@@ -42,10 +43,15 @@ $this->params['breadcrumbs'][] = __('list');
 $fields = Classes::structure($name);
  
 ?>
-	 <?php echo Html::a('<i class="icon-plus-sign"></i>',url('content/node/create',array('name'=>$name)));?> 
+<?php echo Html::a('<i class="icon-plus-sign"></i>',url('content/node/create',array('name'=>$name)));?> 
+<?php $form = ActiveForm::begin(array(
+	'options' => array('class' => 'form-horizontal','id'=>'sort'),
+	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
+)); ?><?php echo Html::hiddenInput('name',$name);?>
 	 <table class="table">
 	  <thead>
 	    <tr> 
+		<th><?php echo __('id');?></th>
 		 <?php foreach($fields as $title=>$v){ 
 				if($v['list']==1){?>
 	      	<th><?php echo __($title);?></th>
@@ -54,19 +60,36 @@ $fields = Classes::structure($name);
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <?php foreach($models as $model){?>
+	    <?php if(!$models) return;foreach($models as $model){?>
 	    <tr> 
+	    <td><i class="drag"></i><?php echo Html::hiddenInput('ids[]',$model->id).$model->id;?></td>
 	    <?php foreach($fields as $title=>$v){ 
 				if($v['list']==1){?>
 	      <td><?php echo Classes::field_show_list($name,$title,$model->$title);?></td>
 	   <?php }}?>
 	      <td>
-	      	<?php echo Html::a('<i class="icon-edit"></i>',url('content/node/update',array('name'=>$name,'id'=>$model->id)));?>    
+	      	<?php echo Html::a('<i class="icon-edit"></i>',url('content/node/update',array('name'=>$name,'id'=>$model->id)));?> 
+	      	 &nbsp;   
+	        <?php if($model->display == 1){?>
+	        	<a href="<?php echo url('content/node/display',array('name'=>$name,'id'=>$model->id));?> ">
+	        		<img src="<?php echo base_url();?>img/right.png" />
+	        	</a>
+	        <?php }else{?>
+	        	<a href="<?php echo url('content/node/display',array('name'=>$name,'id'=>$model->id));?> ">
+	        		<img src="<?php echo base_url();?>img/error.png" />
+	        	</a> 
+	        <?php }?>
+	      	   
 	      </td>
 	    </tr>
 	    <?php }?>
 	  </tbody>
-	</table>
+	</table> 
+
+<?php 
+\app\core\UI::sort('#sort',url('content/node/sort'));
+ActiveForm::end(); 
+?>
 	<div class='pagination'>
 		<?php  echo \app\core\LinkPager::widget(array(
 		      'pagination' => $pages,

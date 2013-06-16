@@ -28,6 +28,16 @@ class Modules{
 				} 
 			} 
 		} 
+		$all = DB::queryAll('select * from route  order by sort desc,id asc');
+		if($all){
+			foreach($all as $v){
+				$a = $v['route'];
+				$a = str_replace('[','<',$a);
+				$a = str_replace(']','>',$a); 
+				$route[$a] = $v['route_to'];
+ 			}  
+			cache_pre('route',$route);
+		}
 		cache_pre('all_modules',$out); 
 		cache_pre('hooks',$action); 
 		

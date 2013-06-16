@@ -58,7 +58,7 @@ js("
 		if(r==1){
 			html = '<a class=\"ajax_add\" id=\"+id+\"><i class=\"icon-plus\"></i></a>';
 		}
-		$.post('".url('core/modules/add')."', { id: id ,YII_CSRF_TOKEN:'".Yii::$app->request->csrfToken."'},
+		$.post('".url('core/modules/add')."', { id: id },
 		function(data) { 
 			 if(data==1){
 			 	$(j).html(html);

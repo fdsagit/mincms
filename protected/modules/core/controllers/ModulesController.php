@@ -10,7 +10,7 @@ class ModulesController extends \app\core\AuthController
 	* 内核主要模块，不能改动。
 	*/
 	protected $_core_modules = array(
-		'core', 'auth','imagecache','file'
+		'core', 'auth','imagecache','file' ,'route'
 	);
 	
 	function init(){ 

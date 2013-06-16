@@ -1,5 +1,6 @@
 <?php 
 return  array (
+  'action' => '操作',
   'pay the bill' => '去结算',
   'delete' => '删除',
   'product action' => '操作',

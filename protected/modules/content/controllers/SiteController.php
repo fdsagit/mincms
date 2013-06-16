@@ -64,8 +64,7 @@ class SiteController extends \app\core\AuthController
 	}
 	public function actionDelete($id){
 		if($_POST['action']==1){
-			 
-			$model = Field::find($id); 
+			$model = Field::find($id);  
 			$model->delete();
 			echo json_encode(array('id'=>array($id),'class'=>'alert-success','message'=>__('delete success')));
 			exit;

@@ -17,6 +17,14 @@ return array(
 			'yii',
 		),
 	),
-	
+	'jq' => array(
+		'basePath' => '@wwwroot',
+		'baseUrl' => '@www', 
+		'js' => array(
+		 
+			'js/jquery-ui.js'
+		),
+	 
+	),
 	 
 );

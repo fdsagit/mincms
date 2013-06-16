@@ -16,11 +16,11 @@ class SiteController extends FrontController
 	}
  
 	public function actionIndex()
-	{     
-		
+	{      
 		$this->active = 'site.index';  
 		return $this->render('index');
 	} 
+	
  	function actionTest(){    
  		$this->active = 'site.test';  
  		dump(node('post',1));

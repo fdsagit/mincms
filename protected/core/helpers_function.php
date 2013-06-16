@@ -16,3 +16,6 @@ function node($name,$id){
 function node_pager($slug,$params=array(),$config=null,$route=null){
 	return \app\modules\content\Classes::pager($slug,$params,$config,$route); 
 }
+function node_all($slug,$params=array()){
+	return \app\modules\content\Classes::all($slug,$params); 
+}

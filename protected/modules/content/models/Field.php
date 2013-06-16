@@ -2,6 +2,7 @@
 use app\modules\content\models\Widget;
 use yii\helpers\Html;
 use app\core\DB;
+use app\modules\content\Classes;
 class Field extends \app\core\ActiveRecord 
 { 
  
@@ -25,15 +26,7 @@ class Field extends \app\core\ActiveRecord
 	} 
 	//检查原密码是否正确
 	function check($attribute){
-		if(in_array($this->$attribute, array(
-			'id',
-			'display',
-			'sort',
-			'created',
-			'updated',
-			'admin',
-			'uid'
-		))){
+		if(in_array($this->$attribute, Classes::default_columns())){
 			$this->addError('slug',__('slug not allowed')); 
 		}
 		$model = static::find()->where(array('slug'=>$this->$attribute,'pid'=>$this->pid))->one();
@@ -111,8 +104,13 @@ class Field extends \app\core\ActiveRecord
 	}
 	function beforeDelete(){
 		parent::beforeDelete();
-		Widget::find(array('field_id'=>$this->id ))->delete();
-	 	\app\modules\content\models\Validate::find(array('field_id'=>$this->id ))->delete();
+		$model = Widget::find(array('field_id'=>$this->id ));
+		if($model)
+			$model->delete();
+	 	$model = \app\modules\content\models\Validate::find(array('field_id'=>$this->id ));
+	 	if($model)
+	 		$model->delete();
+	 	return true;
 	}
  
 	function getwidget(){

@@ -11,7 +11,28 @@ class Classes
 {
 	static function all($slug,$params=array()){ 
 		$table = "node_".$slug;// node table   
-		$all = DB::all($table,$params); 
+		$wh = $params['where'];
+		$params['orderBy'] = $params['orderBy']?:"sort desc , id desc";
+		$flag = false;
+		if($wh){
+			foreach($wh as $w=>$v){
+				if(!in_array($w,static::default_columns())){
+					$flag = true;
+				}
+			}
+		}
+		if($flag === false){ 
+			$all = DB::all($table,$params); 
+		}else{
+			$_params = static::params($slug,$params); 
+			$sql = "SELECT t.* FROM  $table t " . $_params['sql'] ;
+			if($_params['where']) 
+				$sql .= " WHERE ".$_params['where'];
+			$sql .= " ORDER BY ".$_params['orderBy'];
+			if($params['limit'])
+				$sql .= " LIMIT  ".$params['limit'];
+			$all = DB::queryAll($sql); 
+		} 
 		foreach($all as $model){
 			$node = static::one($slug,$model['id']);
 			$node->id = $model['id'];
@@ -23,6 +44,71 @@ class Classes
 			$out[] = $node;
 		}
 		return $out; 
+	}
+	/**
+	* where , orderBy , and so on conditions.
+	* some fileds not in the master table. like node_post
+	* it is in node_post_relate
+	* 
+	*/
+	static function params($slug,$params){
+		$structure = static::structure($slug); 
+		$relate_table = "node_{$slug}_relate";
+		/**
+		'where'=>array(
+			'type'=>1
+		),
+		*/
+		$wh = $params['where'];
+		if($wh){
+			foreach($wh as $w=>$v){
+				if(!in_array($w,static::default_columns())){
+					$f = $structure[$w];  
+					$fid = $f['fid'];
+					$relate = $f['relate'];
+					if($relate){
+						$int_table = "content_int";
+						$one = DB::one($int_table,array(
+							'select'=>'id',
+							'where'=>array(
+								'value'=>$v
+							)
+						)); 
+						$value = $one['id'];
+					}
+					$alias = $slug.'_'.$f['slug'];
+				 	$sql .= "
+				 		LEFT JOIN $relate_table $alias
+				 		ON {$alias}.nid = t.id 
+				 	";
+				 	$where .= " {$alias}.fid = $fid
+				 			AND `value` = $value";
+					  
+				}
+			}
+		}
+		$orderBy = $params['orderBy']; 
+		$arr = explode(',',$orderBy);
+		unset($orderBy);
+		foreach($arr as $v){
+			$ar = explode(' ',$v); 
+			foreach($ar as $k=>$v){
+				if($v){
+					$new[] = $v;
+				}
+			}
+			
+		}
+		$i = 0; 
+		foreach($new as $v){
+			if($i%2 != 0 ){
+				$field = $new[$i-1];
+				$sort = $v;
+			 	$orderBy .= $field . " ".$sort .",";
+			}
+			$i++;
+		} 
+		return array('sql'=>$sql,'where'=>$where ,'orderBy'=>substr($orderBy,0,-1));
 	}
 	/**
 	*
@@ -38,9 +124,40 @@ class Classes
 	*/
 	static function pager($slug,$params=array(),$config=null,$route=null){
 		$table = "node_".$slug;// node table   
+		$wh = $params['where'];
+		$params['orderBy'] = $params['orderBy']?:"sort desc , id desc";
 		if(!is_array($config)) $config = array('pageSize'=>$config);
-		$pager = DB::pagination($table,$params,$config,$route);
-		$models = $pager->models;
+		$flag = false;
+		if($wh){
+			foreach($wh as $w=>$v){
+				if(!in_array($w,static::default_columns())){
+					$flag = true;
+				}
+			}
+		}
+		if($flag === false){  
+			$pager = DB::pagination($table,$params,$config,$route);
+			$models = $pager->models;
+		}else{
+			$_params = static::params($slug,$params); 
+			$sql = "SELECT t.* FROM  $table t " . $_params['sql'] ;
+			$count_sql = " SELECT count(*) count FROM  $table t  " .$_params['sql'] ;
+			if($_params['where']) {
+				$sql .= " WHERE ".$_params['where'];
+				$count_sql .= " WHERE ".$_params['where'];
+			} 
+			$one = DB::queryRow($count_sql); 
+			$count = $one['count'];  
+			$pages = new \yii\data\Pagination($count,$config); 
+			if($route)
+				$pages->route = $route;
+			$offset = $pages->offset > 0 ? $pages->offset:0;
+			$limit = $pages->limit > 0 ? $pages->limit:10;     
+			$sql .= " ORDER BY ".$_params['orderBy'];
+			$sql .= " LIMIT $offset,$limit ";
+			$models = DB::queryAll($sql);  
+		} 
+	 
 		foreach($models as $model){
 			$node = static::one($slug,$model['id']);
 			$node->id = $model['id'];
@@ -86,14 +203,16 @@ class Classes
 			$return = $all; 
 		}else{
 			$relate = str_replace('node_' , '' ,$relate);  
-			if(is_array($v) && count($v) > 0){ 
-				foreach($v as $_v){
+		
+			if(is_array($v) ){ 
+				if( count($v) < 1 ) return ;
+				foreach($v as $_v){	
 					$r = (array)static::_one($relate,$_v);   
 					if($r)
 						$vo[] = Arr::first($r);
 				}
 				$return = $vo;
-			}else{
+			}else{ 
 				$r = (array)static::_one($relate,$v);  
 				if($r)
 		 			$return = Arr::first($r);
@@ -208,13 +327,13 @@ class Classes
  			$w = DB::one('content_type_widget',array(
  				'where'=>array('field_id'=>$v['id'])
  			));
- 			$out[$n]['widget'] = $widget = $w['name'];
+ 			$widget =  $out[$n]['widget'] = $w['name'];
  			$out[$n]['widget_config'] = unserialize($w['memo']);
  			//get validates
  			$vali = DB::one('content_type_validate',array(
  				'where'=>array('field_id'=>$v['id'])
  			));
- 			$validates = unserialize($vali['value']);
+ 			$validates = unserialize($vali['value']); 
  			$out[$n]['validates'] = $validates;
  			$out[$n]['slug'] = $v['slug'];
  			$out[$n]['name'] = $v['name'];
@@ -226,6 +345,17 @@ class Classes
  		}
  	 
  		return $out;
+ 	}
+ 	static function default_columns(){
+ 		return array(
+			'id',
+			'display',
+			'sort',
+			'created',
+			'updated',
+			'admin',
+			'uid'
+		);
  	}
  	 
  

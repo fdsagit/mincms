@@ -9,17 +9,26 @@ $modules['core'] = 1;
 $modules['auth'] = 1;
 $modules['imagecache'] = 1;
 $modules['file'] = 1;
+$modules['route'] = 1; 
 $module['debug'] = array(
 	 'class' => "yii\debug\Module"
-);
+); 
 if($modules){
 	foreach($modules as $k=>$v){
 		$module[$k] = array(
 			 'class' => 'app\modules\\'.$k.'\Module'
 	    );
 	}
-}
+} 
 $modules = $module;	  
+$route = cache_pre('route')?:array();
+$default_route = array(
+	'admin'=>'core/config/index',
+	'imagine'=>'imagecache/site/index',
+	'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
+);
+$routes = array_merge( $route , $default_route);
+ 
 return array(
 	'id' => 'hello',
 	'timeZone'=>'Asia/Shanghai',
@@ -63,18 +72,7 @@ return array(
 			'class' => 'yii\web\UrlManager',
 			'enablePrettyUrl'=>true,
 			'suffix'=>'.html',
-			'rules'=>array(
-				
-				'post/<id:\d+>/<title:.*?>'=>'post/view',
-				'posts/<tag:.*?>'=>'post/index', 
-					
-				/**
-				* default router
-				*/
-				'admin'=>'core/config/index',
-				'imagine'=>'imagecache/site/index',
-				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
-			),  
+			'rules'=>$routes,  
 		), 
 		'user' => array(
 			'class' => 'yii\web\User',  
