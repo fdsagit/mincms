@@ -49,9 +49,10 @@ $this->params['breadcrumbs'][] = $this->title;
 					function widget_ajax(w){
 						$.post('".url('content/site/ajax')."',{w:w},function(data){ 
 							$('#relate_div').html(data);
+							
 							$('#Field_relate option').each(function(i){  
 								if($(this).val() == relate){
-									$(this).attr('selected' , 'selected');
+									$(this).attr('selected' , true);
 								}
 							});
 						});

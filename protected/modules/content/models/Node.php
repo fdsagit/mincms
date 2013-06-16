@@ -97,8 +97,15 @@ class Node{
  		 				}
  		 			}else{
  		 				$value = static::__save_array($table , $_v ,$relate ,$fid ,$nid); 
+ 		 				
+ 		 				$one = DB::one($relate,array( 
+				 				'where'=>array(
+					 				'nid'=>$nid ,
+					 				'fid'=>$fid,
+				 			 	)
+				 			)); 
 						//$value  is node value id
-						if(!$nid){
+						if(!$one){ 
 							DB::insert($relate,array( 
 				 				'nid'=>$nid ,
 				 				'fid'=>$fid,
@@ -120,7 +127,9 @@ class Node{
  		$out.= 1; 
 		Classes::remove_cache($name,$nid);
 		// create cache
+		
 		Classes::one($name,$nid);
+	 
 		if(true === $return){
 			return $nid;
 		}

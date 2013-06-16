@@ -56,75 +56,98 @@ class Classes
 			'pages' => $pager->pages
 		);
 	}
-		/**
-	* load one full data
-	*/
-	static function one($slug,$nid){  
+	static function one($slug,$nid){
 		$cacheId = "module_content_node_{$slug}_{$nid}";
 		$row = cache($cacheId);
 		if(!$row){
-			$table = "node_".$slug;// node table  
-	 		//data to [relate] like [node_post_relate]
-	 		$relate = $table.'_relate'; 
-			$structs = static::structure($slug); 
-			foreach($structs as $k=>$v){ 
-				$fid = $v['fid'];//×Ö¶ÎID
-				$table = "content_".$v['mysql'];  
-				$all = DB::all($relate,array(
-					'where'=>array(
-						'nid'=>$nid,
-						'fid'=>$fid,
-					)
-				));
-				if(count($all) == 1){
-					$one = $all[0]['value'];
-				}else{
-					foreach($all as $al){
-						$one[] = $al['value'];
-					}
-				}
-				$batchs[$table][$v['slug']] = $one;  
-	 		}
-	 	 	$row = (object)array(); 
-			foreach($batchs as $table=>$value_ids){
-			 	foreach($value_ids as $field_name=>$_id){ 
-					$all = DB::all($table,array(
-						'where'=>array(
-						 	'id'=>$_id
-						)
-					)); 
-					if(count($all) == 1){
-						$one = $all[0]['value'];
-					}else{ 
-						$one = array();
-						foreach($all as $al){
-							$one[] = $al['value'];
-						} 
-						
-					} 
-					$row->$field_name = $one; 
-				}
-			} 
-			
+			$row = static::_one($slug,$nid);
 			// relate ship 
 			$s = static::structure($slug); 
 			foreach($row as $k=>$v){
+				//get relation value
 				$relate = $s[$k]['relate'];  
 				if($relate){
-					if($relate == 'file'){
-						$all = DB::all('file',array(
-							'where'=>array(
-								'id'=>$v
-							)
-						));
-						$row->$k = $all; 
-					}
+					$row->$k = static::_relation($s , $k ,$v , $relate);
 				}
-			}
+			} 
 		//	dump($row);
 			
 		//	cache($cacheId,$row);
 		}
+		return $row;
+	}
+	static function  _relation($s , $k ,$v , $relate){ 
+		if($relate == 'file'){
+			$all = DB::all('file',array(
+				'where'=>array(
+					'id'=>$v
+				)
+			));
+			$return = $all; 
+		}else{
+			$relate = str_replace('node_' , '' ,$relate);  
+			if(is_array($v) && count($v) > 0){ 
+				foreach($v as $_v){
+					$r = (array)static::_one($relate,$_v);   
+					if($r)
+						$vo[] = Arr::first($r);
+				}
+				$return = $vo;
+			}else{
+				$r = (array)static::_one($relate,$v);  
+				if($r)
+		 			$return = Arr::first($r);
+			}
+			
+		}
+ 		return $return;
+	}
+	/**
+	* load one full data
+	*/
+	static function _one($slug,$nid){   
+		$table = "node_".$slug;// node table  
+ 		//data to [relate] like [node_post_relate]
+ 		$relate = $table.'_relate'; 
+		$structs = static::structure($slug); 
+		foreach($structs as $k=>$v){ 
+			$fid = $v['fid'];//å­—æ®µID 
+			$table = "content_".$v['mysql'];  
+			$all = DB::all($relate,array(
+				'where'=>array(
+					'nid'=>$nid,
+					'fid'=>$fid,
+				)
+			));
+			if(count($all) == 1){
+				$one = $all[0]['value'];
+			}else{
+				foreach($all as $al){
+					$one[] = $al['value'];
+				}
+			}
+			$batchs[$table][$v['slug']] = $one;  
+ 		}
+ 	 	$row = (object)array(); 
+		foreach($batchs as $table=>$value_ids){
+		 	foreach($value_ids as $field_name=>$_id){ 
+				$all = DB::all($table,array(
+					'where'=>array(
+					 	'id'=>$_id
+					)
+				)); 
+				if(count($all) == 1){
+					$one = $all[0]['value'];
+				}else{ 
+					$one = array();
+					foreach($all as $al){
+						$one[] = $al['value'];
+					} 
+					
+				} 
+				$row->$field_name = $one; 
+			}
+		}  
 		return $row;
 	}
 	/**
@@ -143,46 +166,20 @@ class Classes
 		} 
 	}
 	static function table_columns(){
-		$row = DB::queryAll("show tables");
- 		foreach($row as $r){
- 			$table = Arr::first($r);
- 			$columns = DB::queryAll("SHOW COLUMNS FROM ".$table);
- 			if(
- 					strpos($table,'content_')===false 
- 					&& strpos($table,'_relate')===false
- 					&& strpos($table,'auth_')===false
- 					&& strpos($table,'comment_')===false
- 					&& strpos($table,'core_')===false
- 					&& strpos($table,'file_')===false
- 					&& strpos($table,'cart_')===false 
- 					&& strpos($table,'email_')===false  	
- 			){
-	 			foreach($columns as $col){
-	 				//show table , fields
-	 				$f = $col['Field'];
-	 				if(  strpos($f,'id') === false
-	 				) {
-	 					$out[$table][] = $f;
-	 				}
-	 			} 
- 			}
- 			
- 		} 
+	 
+	 	$all = DB::all('content_type_field');
 		unset($tables , $table);
-		foreach($out as $tab=>$col){   
-			$table[$tab] = $tab;
-			if(strpos($tab,'node_')===false)
-				$tables[$tab] = Arr::first($col);
-			else{
-				// content type
-				$slug = str_replace('node_','',$tab);
-				$stuct =  Classes::structure($slug);
-		 		foreach($stuct as $field=>$config){
-		 			$fs[] = $field;		 			
-		 		}
-		 		$tables[$tab] = Arr::first($fs);
-			} 
+		foreach($all as $v){   
+			$slug = $v['slug'];
+			$stuct =  Classes::structure($slug);
+			if(!$stuct) continue;
+	 		foreach($stuct as $field=>$config){
+	 			$fs[] = $field; 
+	 		}
+	 		$tables['node_'.$slug] = Arr::first($fs); 
+	 		$table['node_'.$slug] = 'node_'.$slug;
 		}
+	 
 		$data = array('table'=>$table,'tables'=>$tables);		
 		return $data;
 	}

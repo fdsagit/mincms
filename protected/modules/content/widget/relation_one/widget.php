@@ -1,4 +1,4 @@
-<?php namespace app\modules\content\widget\relation;  
+<?php namespace app\modules\content\widget\relation_one;  
 use app\modules\content\Classes;
 use yii\helpers\Html;
 use app\core\Arr;
@@ -39,7 +39,7 @@ class Widget extends \app\modules\content\Widget
  			} 
  		}
  		
- 		echo $this->form->field($this->model,$name.'[]')->dropDownList($values,array('multiple'=>'multiple')); 
+ 		echo $this->form->field($this->model,$name)->dropDownList($values); 
  		 
 	}
 }

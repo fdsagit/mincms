@@ -40,7 +40,7 @@ class FormBuilder extends \yii\base\Widget
 	 		* 如果有nid,说明是更新
 	 		* 需要先取出NODE的内容并赋值给model
 	 		*/
-	 		$row = Classes::one($this->name,$this->nid);
+	 		$row = Classes::_one($this->name,$this->nid);
 	 		foreach($row as $k=>$v){
 	 			$this->model->$k=$v;
 	 		} 
