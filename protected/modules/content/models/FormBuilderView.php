@@ -45,6 +45,9 @@ js_file('js/jquery.form.js');
 $out= "<ul class='alert alert-success flash-message'>";
 $out.= '<li>'.$message.'</li>';
 $out.="</ul>"; 
+if(!$_GET['id']){
+	$js = "$('input,textarea').val('');";
+}
 js("
 $('#".$id."').ajaxForm(function(data) { 
 	data = data.substr(strrpos(data,'##ajax-form-alert##:'));
@@ -56,7 +59,7 @@ $('#".$id."').ajaxForm(function(data) {
 		".$script."
 	}
 	$('.flash-message').delay(2500).fadeOut();
-	$('input,textarea').val('');
+	".$js."
      
 }); 
 ");	

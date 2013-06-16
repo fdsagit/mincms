@@ -30,7 +30,7 @@ class Classes
 				$sql .= " WHERE ".$_params['where'];
 			$sql .= " ORDER BY ".$_params['orderBy'];
 			if($params['limit'])
-				$sql .= " LIMIT  ".$params['limit'];
+				$sql .= " LIMIT  ".$params['limit']; 
 			$all = DB::queryAll($sql); 
 		} 
 		foreach($all as $model){
@@ -62,10 +62,11 @@ class Classes
 		$wh = $params['where'];
 		if($wh){
 			foreach($wh as $w=>$v){
+				$value = $v;
 				if(!in_array($w,static::default_columns())){
-					$f = $structure[$w];  
+					$f = $structure[$w];   
 					$fid = $f['fid'];
-					$relate = $f['relate'];
+					$relate = $f['relate']; 
 					if($relate){
 						$int_table = "content_int";
 						$one = DB::one($int_table,array(
@@ -73,17 +74,23 @@ class Classes
 							'where'=>array(
 								'value'=>$v
 							)
-						)); 
+						));  
 						$value = $one['id'];
-					}
+					}  
 					$alias = $slug.'_'.$f['slug'];
 				 	$sql .= "
 				 		LEFT JOIN $relate_table $alias
 				 		ON {$alias}.nid = t.id 
 				 	";
-				 	$where .= " {$alias}.fid = $fid
-				 			AND `value` = $value";
+				 	$where .= " {$alias}.fid = $fid	";
+				 	if($value){
+				 		$where .= " AND `value` = $value ";
+				 	}else{
+				 		$where .= " AND `value` = '' ";
+				 	}
 					  
+				}else{
+					$where .= " AND t.$w = $v	";
 				}
 			}
 		}
@@ -138,6 +145,7 @@ class Classes
 		if($flag === false){  
 			$pager = DB::pagination($table,$params,$config,$route);
 			$models = $pager->models;
+			$pages = $pager->pages;
 		}else{
 			$_params = static::params($slug,$params); 
 			$sql = "SELECT t.* FROM  $table t " . $_params['sql'] ;
@@ -155,7 +163,7 @@ class Classes
 			$limit = $pages->limit > 0 ? $pages->limit:10;     
 			$sql .= " ORDER BY ".$_params['orderBy'];
 			$sql .= " LIMIT $offset,$limit ";
-			$models = DB::queryAll($sql);  
+			$models = DB::queryAll($sql);   
 		} 
 	 
 		foreach($models as $model){
@@ -170,7 +178,7 @@ class Classes
 		}
 		return array(
 			'models' => $out,
-			'pages' => $pager->pages
+			'pages' => $pages
 		);
 	}
 	static function one($slug,$nid){
@@ -187,9 +195,7 @@ class Classes
 					$row->$k = static::_relation($s , $k ,$v , $relate);
 				}
 			} 
-		//	dump($row);
-			
-		//	cache($cacheId,$row);
+			cache($cacheId,$row);
 		}
 		return $row;
 	}
@@ -225,48 +231,54 @@ class Classes
 	* load one full data
 	*/
 	static function _one($slug,$nid){   
-		$table = "node_".$slug;// node table  
- 		//data to [relate] like [node_post_relate]
- 		$relate = $table.'_relate'; 
-		$structs = static::structure($slug); 
-		foreach($structs as $k=>$v){ 
-			$fid = $v['fid'];//字段ID 
-			$table = "content_".$v['mysql'];  
-			$all = DB::all($relate,array(
-				'where'=>array(
-					'nid'=>$nid,
-					'fid'=>$fid,
-				)
-			));
-			if(count($all) == 1){
-				$one = $all[0]['value'];
-			}else{
-				foreach($all as $al){
-					$one[] = $al['value'];
-				}
-			}
-			$batchs[$table][$v['slug']] = $one;  
- 		}
- 	 	$row = (object)array(); 
-		foreach($batchs as $table=>$value_ids){
-		 	foreach($value_ids as $field_name=>$_id){ 
-				$all = DB::all($table,array(
+		$cacheId = "_one_module_content_node_{$slug}_{$nid}";
+		$row = cache($cacheId);
+		if(!$row){
+			$table = "node_".$slug;// node table  
+	 		//data to [relate] like [node_post_relate]
+	 		$relate = $table.'_relate'; 
+			$structs = static::structure($slug); 
+			foreach($structs as $k=>$v){ 
+				$fid = $v['fid'];//字段ID 
+				$table = "content_".$v['mysql'];  
+				$all = DB::all($relate,array(
 					'where'=>array(
-					 	'id'=>$_id
+						'nid'=>$nid,
+						'fid'=>$fid,
 					)
-				)); 
+				));
 				if(count($all) == 1){
 					$one = $all[0]['value'];
-				}else{ 
-					$one = array();
+				}else{
 					foreach($all as $al){
 						$one[] = $al['value'];
+					}
+				}
+				$batchs[$table][$v['slug']] = $one;  
+	 		}
+	 	 	$row = (object)array(); 
+			foreach($batchs as $table=>$value_ids){
+			 	foreach($value_ids as $field_name=>$_id){ 
+					$all = DB::all($table,array(
+						'where'=>array(
+						 	'id'=>$_id
+						)
+					)); 
+					if(count($all) == 1){
+						$one = $all[0]['value'];
+					}else{ 
+						$one = array();
+						foreach($all as $al){
+							$one[] = $al['value'];
+						} 
+						
 					} 
-					
-				} 
-				$row->$field_name = $one; 
-			}
-		}  
+					if($one)
+						$row->$field_name = $one; 
+				}
+			}  
+			cache($cacheId,$row);
+		}
 		return $row;
 	}
 	/**
@@ -302,14 +314,8 @@ class Classes
 		$data = array('table'=>$table,'tables'=>$tables);		
 		return $data;
 	}
-	
-
 	 
- 
-	static function remove_cache($slug,$nid){
-		$cacheId = "module_content_node_{$slug}_{$nid}";
-		cache($cacheId,false);
-	}
+	
 	/**
 	* create formBuilder need field structure
 	*/

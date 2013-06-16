@@ -27,8 +27,7 @@ $default_route = array(
 	'imagine'=>'imagecache/site/index',
 	'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 );
-$routes = array_merge( $route , $default_route);
- 
+$routes = array_merge( $route , $default_route); 
 return array(
 	'id' => 'hello',
 	'timeZone'=>'Asia/Shanghai',

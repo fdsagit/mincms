@@ -125,11 +125,15 @@ class Node{
  		 	} 
  		} 
  		$out.= 1; 
-		Classes::remove_cache($name,$nid);
+		//remove cache
+		$cacheId = "_one_module_content_node_{$name}_{$nid}";
+		cache($cacheId,false);
+		$cacheId = "module_content_node_{$name}_{$nid}";
+		cache($cacheId,false);
 		// create cache
 		
 		Classes::one($name,$nid);
-	 
+	 	Classes::_one($name,$nid);
 		if(true === $return){
 			return $nid;
 		}

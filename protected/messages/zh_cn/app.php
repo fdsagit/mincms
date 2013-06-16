@@ -1,5 +1,6 @@
 <?php 
 return  array (
+  'route' => 'url路由',
   'action' => '操作',
   'pay the bill' => '去结算',
   'delete' => '删除',

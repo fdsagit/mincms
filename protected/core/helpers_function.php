@@ -14,8 +14,10 @@ function node($name,$id){
 	return \app\modules\content\Classes::one($name,$id); 
 }
 function node_pager($slug,$params=array(),$config=null,$route=null){
+	$params['where']['display'] = 1;
 	return \app\modules\content\Classes::pager($slug,$params,$config,$route); 
 }
 function node_all($slug,$params=array()){
+	$params['where']['display'] = 1;
 	return \app\modules\content\Classes::all($slug,$params); 
 }
