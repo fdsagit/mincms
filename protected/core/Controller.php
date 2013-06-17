@@ -30,9 +30,9 @@ class Controller extends \yii\web\Controller
 		hook('action_before'); 
 		return true;
 	}
-	public function afterAction($action)
+	public function afterAction($action, &$result)
 	{
-		parent::afterAction($action);
+		parent::afterAction($action, $result);
 		hook('action_after'); 
 		return true;
 	}
