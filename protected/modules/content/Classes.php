@@ -2,6 +2,7 @@
 namespace app\modules\content; 
 use app\core\DB;  
 use app\core\Arr;
+use app\core\Str;
 /**
  *  
  * @author Sun < mincms@outlook.com >
@@ -30,7 +31,7 @@ class Classes
 				$sql .= " WHERE ".$_params['where'];
 			$sql .= " ORDER BY ".$_params['orderBy'];
 			if($params['limit'])
-				$sql .= " LIMIT  ".$params['limit']; 
+				$sql .= " LIMIT  ".$params['limit'];  
 			$all = DB::queryAll($sql); 
 		} 
 		foreach($all as $model){
@@ -61,29 +62,31 @@ class Classes
 		*/
 		$wh = $params['where'];
 		if($wh){
-			foreach($wh as $w=>$v){
-				$value = $v;
+			foreach($wh as $w=>$v){ 
 				if(!in_array($w,static::default_columns())){
 					$f = $structure[$w];   
 					$fid = $f['fid'];
-					$relate = $f['relate']; 
+					$relate = $f['relate'];  
 					if($relate){
-						$int_table = "content_int";
-						$one = DB::one($int_table,array(
-							'select'=>'id',
-							'where'=>array(
-								'value'=>$v
-							)
-						));  
-						$value = $one['id'];
-					}  
+						$content_table = "content_int"; 
+					} else{
+						$content_table = "content_".$f['mysql']; 
+					}
+					$v = Str::escape_str($v);
+					$one = DB::one($content_table,array(
+						'select'=>'id',
+						'where'=>array(
+							'value'=>$v
+						)
+					)); 
+					$value = $one['id'];
 					$alias = $slug.'_'.$f['slug'];
 				 	$sql .= "
 				 		LEFT JOIN $relate_table $alias
 				 		ON {$alias}.nid = t.id 
 				 	";
 				 	$where .= " {$alias}.fid = $fid	";
-				 	if($value){
+				 	if($value){ 
 				 		$where .= " AND `value` = $value ";
 				 	}else{
 				 		$where .= " AND `value` = '' ";
@@ -115,6 +118,7 @@ class Classes
 			}
 			$i++;
 		} 
+	 
 		return array('sql'=>$sql,'where'=>$where ,'orderBy'=>substr($orderBy,0,-1));
 	}
 	/**

@@ -84,8 +84,20 @@ class File extends \yii\helpers\Html
 		@unlink($old);
 		return $row;
 	}
+	/**
+	* full name
+	* upload/1.jpg
+	*/
 	static function name($name){ 
 		return substr($name,0,strrpos($name,'.')); 
+	}
+	/**
+	* upload/1.jpg
+	* 1
+	*/
+	static function cute_name($name){ 
+		$n = strlen(static::ext($name)); 
+		return substr($name,strrpos($name,'/')+1,0-$n); 
 	}
 	static function ext($name){
 		return '.'.static::extension($name);

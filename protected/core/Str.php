@@ -158,5 +158,38 @@ class Str{
 		$content = preg_replace("/face=.+?['|\"]/",'',$content);//去除样式 只允许小写 正则匹配没有带 i 参数  
 		return $content;
 	}
+	/**
+	 * Escape String
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	bool	whether or not the string will be used in a LIKE condition
+	 * @return	string
+	 */
+	static function escape_str($str, $like = FALSE)
+	{
+		if (is_array($str))
+		{
+			foreach ($str as $key => $val)
+			{
+				$str[$key] = $this->escape_str($val, $like);
+			} 
+			return $str;
+		} 
+		if (function_exists('mysql_real_escape_string'))
+		{
+			$str = mysql_real_escape_string($str);
+		}
+		else
+		{
+			$str = addslashes($str);
+		} 
+		if ($like === TRUE)
+		{
+			$str = str_replace(array('%', '_'), array('\\%', '\\_'), $str);
+		}
+
+		return $str;
+	}
 	 
 }

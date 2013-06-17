@@ -1,7 +1,7 @@
 <?php 
 namespace app\modules\content\models; 
 use app\modules\content\models\NodeActiveRecord;
-use app\modules\content\models\Node;
+use app\modules\content\classes\Node;
 use app\modules\content\Classes;
 /**
 * 
@@ -56,7 +56,7 @@ class FormBuilder extends \yii\base\Widget
 	 			$attrs_data[$get] = $_POST['NodeActiveRecord'][$get];
 	 		}
 
-	 	 	Node::save($this->name,$this->model,$attrs_data,$this->nid);
+	 	 	Node::save_model($this->name,$this->model,$attrs_data,$this->nid);
 	 	}  
 	 	$data['nid'] = $this->nid; 
 	 	$data['data'] = $this->data; 

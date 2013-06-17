@@ -1,6 +1,9 @@
 <?php namespace app\modules\content\controllers; 
 use app\modules\content\models\Field;
+use app\modules\content\models\FieldView;
 use app\modules\content\models\Widget;
+use app\modules\content\Classes;
+use app\core\DB;
 /** 
 * @author Sun < mincms@outlook.com >
 */
@@ -13,6 +16,34 @@ class SiteController extends \app\core\AuthController
 		$this->widget = Field::widgets();
 		$first[0] = __('please select');
 		$this->widget = $first+$this->widget;
+	}
+	/**
+	* set search filed
+	*
+	*/
+	function actionSearch($slug , $name){
+	 	$one = DB::one('content_type_field',array(
+	 		'where'=>array('slug'=>$slug,'pid'=>0)
+	 	));
+	 	if(!$one) exit('access deny');
+	 	$fid = $one['id'];	  
+	 	$model = FieldView::find()->where(array('fid'=>$fid))->one(); 
+	 	
+	 	if(!$model){
+	 		$model = new FieldView;
+	 		$model->search = array($name=>$name);
+	 	}else{
+	 		if($model->search && in_array($name , $model->search )){ 
+	 			unset($model->search[$name]);
+	 		}else{
+	 			$one->search[$name] = $name;
+	 		}
+	 	}
+	 	$model->fid = $fid; 
+	 	$model->save();
+	 	flash('success',__('set search filter success'));
+	 	$this->redirect(url('content/node/index',array('name'=>$slug)));
+	 	
 	}
 	function actionAjax(){
 		if(!is_ajax()) exit('access deny');

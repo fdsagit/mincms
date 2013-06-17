@@ -4,7 +4,7 @@
   	  cursor: pointer;
 	  background:url("../img/drag.png"); 
 	  background-position: 0px 47px;
-	  padding: 6px;
+	  padding: 7px;
 	  margin-right: 8px;
 } 
 .hander{cursor:pointer;}

@@ -1,5 +1,6 @@
 <?php 
 return  array (
+  'select file' => '选择文件',
   'route' => 'url路由',
   'action' => '操作',
   'pay the bill' => '去结算',

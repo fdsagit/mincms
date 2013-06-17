@@ -1,4 +1,4 @@
-<?php namespace app\modules\content\models; 
+<?php namespace app\modules\content\classes; 
 use app\modules\content\models\Field;
 use app\modules\content\models\NodeActiveRecord;
 use app\modules\content\Classes;
@@ -9,13 +9,52 @@ use \app\core\DB;
 */
 class Node{ 
 	/**
+	* 
+	$node = node_save('post',array(
+  	 	'title'=>1,
+  	 	 'body'=>$str
+  	 ));
+	*/
+	static function save($name,$array=array(),$nid=null){
+		if($array['id']) {
+			$nid = $array['id'];
+			unset($array['id']);
+		}
+		$model = new NodeActiveRecord;
+	 	$structure = Classes::structure($name); 
+		$model::$table = $name;
+		if($nid>0){
+			$row = Classes::_one($name,$nid);
+	 		foreach($row as $k=>$v){
+	 			$model->$k=$v;
+	 		} 
+		}
+		$data = Node::set_rules($structure);
+		//加载插件
+		if($plugins) {
+			/*foreach($plugins as $pk=>$plugin)
+			widget($pk,$plugin);*/
+		}
+		$attrs_data = $data['attrs'];  
+	 	/**
+	 	* 验证规则赋值给Model中的ruels属性
+	 	*/
+		$model->rules = $data['rules']; 
+		$attrs = array();
+ 		foreach($attrs_data as $get){
+ 			$attrs[$get] = trim($array[$get]);
+ 		}
+ 		$return = static::save_model($name,$model,$attrs,$nid,true);
+ 		return str_replace('##ajax-form-alert##','',$return);
+	}
+	/**
  	*  save content base on FormBuilder
  	* @params $name content_type_name
  	* @params $model Model
  	* @params $attrs 属性
  	* @params $return 为true时返回nid
  	*/
- 	static function save($name,$model,$attrs,$nid=null,$return=false){  
+ 	static function save_model($name,$model,$attrs,$nid=null,$return=false){  
  		
  		foreach($attrs as $key=>$value){
  			$model->$key = $value; 
@@ -134,7 +173,7 @@ class Node{
 		
 		Classes::one($name,$nid);
 	 	Classes::_one($name,$nid);
-		if(true === $return){
+		if(true === $return){ 
 			return $nid;
 		}
 		exit($out);  

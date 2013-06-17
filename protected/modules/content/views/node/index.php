@@ -43,6 +43,8 @@ $this->params['breadcrumbs'][] = __('list');
 $fields = Classes::structure($name);
  
 ?>
+
+<?php echo $this->render('search',array('slug'=>$name));?>
 <?php echo Html::a('<i class="icon-plus-sign"></i>',url('content/node/create',array('name'=>$name)));?> 
 <?php $form = ActiveForm::begin(array(
 	'options' => array('class' => 'form-horizontal','id'=>'sort'),

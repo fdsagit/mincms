@@ -47,6 +47,7 @@ class UI
 			        return ui;
 			    };
 		 	 	$( '".$id." tbody' ).sortable({
+		 	 	handle:'.drag',
 				helper: fixHelper,
 				start:function(e, ui){  
 					node_form_sort=$('".$id."').serialize();
