@@ -44,12 +44,13 @@ $fields = Classes::structure($name);
  
 ?>
 
-<?php echo $this->render('search',array('slug'=>$name));?>
+<?php echo $this->render('search',array('slug'=>$name,'fid'=>$fid,'model'=>$model ,'filters'=>$filters));?>
 <?php echo Html::a('<i class="icon-plus-sign"></i>',url('content/node/create',array('name'=>$name)));?> 
 <?php $form = ActiveForm::begin(array(
 	'options' => array('class' => 'form-horizontal','id'=>'sort'),
 	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
 )); ?><?php echo Html::hiddenInput('name',$name);?>
+
 	 <table class="table">
 	  <thead>
 	    <tr> 

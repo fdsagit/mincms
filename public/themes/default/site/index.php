@@ -46,8 +46,8 @@
           <p>We use very good php 5.3 framework <a href="https://github.com/yiisoft/yii2" target="_blank">Yii 2</a> <br>
            
           </p> 
-          <h4>BoosTrap</h4>
-          <p>Default theme use <a href="http://twitter.github.io/bootstrap/" target="_blank">Twitter BoosTrap</a></p>
+          <h4>BootStrap</h4>
+          <p>Default theme use <a href="http://twitter.github.io/bootstrap/" target="_blank">Twitter BootStrap</a></p>
 
           
         </div>

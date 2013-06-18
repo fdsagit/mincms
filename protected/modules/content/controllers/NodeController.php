@@ -72,11 +72,62 @@ class NodeController extends \app\core\AuthController
 			exit;
 		} 
 	}
-	public function actionIndex($name=null)
+	/***
+	* content list
+	*/
+	public function actionIndex($name=null,$rest=null)
 	{    
 	 	if($name) {
-	 		$data = Classes::pager($name,array('orderBy'=>'sort desc,id desc'));
+	 		/**
+		 	* set filter cookie.
+		 	* if no post [NodeActiveRecord] will try use cookie
+		 	*/
+		 	$filterCookieId = "filter_cookie_".md5(cookie('guest_unique').uid().$name); 
+		 	$filters =  cookie($filterCookieId);  
+		 	if($rest){
+		 		remove_cookie($filterCookieId);  
+		 		flash('success',__('reset filter success'));
+		 		redirect(url('content/node/index',array('name'=>$name)));
+		 	}
+		 	if($_POST['NodeActiveRecord']){ 
+		 		$post = $_POST['NodeActiveRecord'];
+		 	 	$filters = array();
+		 	 	$hidden = $_POST['hidden']; 
+		 		foreach($post as $k=>$v){
+		 			if($v){ 
+		 				if($hidden[$k]){
+		 					$filters[] = array($k,'like',trim($v));
+		 				}
+		 				else{
+		 					$filters[$k] = trim($v);
+		 				}
+		 			}
+		 		} 
+		 		if($filters)
+		 			cookie($filterCookieId,$filters); 
+		 	}
+		 	$condition['orderBy'] = 'sort desc,id desc';
+		 	if($filters){
+		 		$condition['where'] = $filters;
+		 	}
+		 	  
+		 	/**
+		 	* load pager data
+		 	*/
+	 		$data = Classes::pager($name,$condition);
 	 		$data['name'] = $name;
+	 		$one = DB::one('content_type_field',array(
+		 		'where'=>array('slug'=>$name,'pid'=>0)
+		 	)); 
+		 	if(!$one['id']) {
+		 		
+		 		exit;
+		 	}
+		 	$fid = $one['id'];	
+		 	$data['fid']  = $fid;
+		 	$data['filters']  = $filters;
+		  
+		 	
 	 	}
 		$data['types'] = Field::find()->where(array('pid'=>0))->all(); 
  		

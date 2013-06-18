@@ -24,13 +24,14 @@ class SiteController extends \app\core\AuthController
  		$file = new File;
  		$file->uid = uid();
  		$file->admin = 1;
+ 		
 		$rt = $file->upload();  
 		
 		if(!$rt) return; 
 		$new[] = $rt;  
-		$out = File::input($new,$name); 
-		$rt['tag'] = $out; 
-		die($out); 
+		$out = File::input($new,$name);
+		echo $out;
+		exit(); 
 	}
 
 	 

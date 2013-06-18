@@ -3,6 +3,7 @@ namespace app\modules\content;
 use app\core\DB;  
 use app\core\Arr;
 use app\core\Str;
+use app\modules\content\models\FieldView;
 /**
  *  
  * @author Sun < mincms@outlook.com >
@@ -31,7 +32,7 @@ class Classes
 				$sql .= " WHERE ".$_params['where'];
 			$sql .= " ORDER BY ".$_params['orderBy'];
 			if($params['limit'])
-				$sql .= " LIMIT  ".$params['limit'];  
+				$sql .= " LIMIT  ".$params['limit'];   
 			$all = DB::queryAll($sql); 
 		} 
 		foreach($all as $model){
@@ -62,7 +63,13 @@ class Classes
 		*/
 		$wh = $params['where'];
 		if($wh){
+			$where = " 1=1 ";
+			$i=1;
 			foreach($wh as $w=>$v){ 
+				$i++;
+				if(is_array($v)){
+					$w = $v[0];
+				}
 				if(!in_array($w,static::default_columns())){
 					$f = $structure[$w];   
 					$fid = $f['fid'];
@@ -71,29 +78,76 @@ class Classes
 						$content_table = "content_int"; 
 					} else{
 						$content_table = "content_".$f['mysql']; 
-					}
-					$v = Str::escape_str($v);
-					$one = DB::one($content_table,array(
-						'select'=>'id',
-						'where'=>array(
-							'value'=>$v
-						)
-					)); 
-					$value = $one['id'];
-					$alias = $slug.'_'.$f['slug'];
-				 	$sql .= "
-				 		LEFT JOIN $relate_table $alias
-				 		ON {$alias}.nid = t.id 
-				 	";
-				 	$where .= " {$alias}.fid = $fid	";
-				 	if($value){ 
-				 		$where .= " AND `value` = $value ";
-				 	}else{
-				 		$where .= " AND `value` = '' ";
+					} 
+					$alias = $slug.'_'.$f['slug'].$i;
+					if(is_array($v)){
+						$a = $v[0];
+						$b = $v[1];
+						$c = $v[2];
+						$c = Str::escape_str($c); 
+						if(trim(strtolower($b))=='like'){
+							$c = "%$c%";
+						}
+						$all = DB::all($content_table,array(
+							'select'=>'id',
+							'where'=>array(
+								$b ,'value', $c
+							)
+						)); 
+						if($all){
+							$value = array();
+							foreach($all as $al){
+								$value[] = $al['id'];
+							}
+						}
+						$sql .= "
+					 		LEFT JOIN $relate_table $alias
+					 		ON {$alias}.nid = t.id 
+					 	";
+					 	$where .= " AND {$alias}.fid = $fid	";
+					 	if($value){ 
+					 		$where .= " AND {$alias}.`value` in( ".implode(',',$value) .")";
+					 	}else{
+					 		$where .= " AND {$alias}.`value` = '' ";
+					 	} 
+						 
+					} else{
+						$v = Str::escape_str($v);
+						$one = DB::one($content_table,array(
+							'select'=>'id',
+							'where'=>array(
+								'value'=>$v
+							)
+						)); 
+						$value = $one['id']; 
+					 	$sql .= "
+					 		LEFT JOIN $relate_table $alias
+					 		ON {$alias}.nid = t.id 
+					 	";
+					 	$where .= " {$alias}.fid = $fid	";
+					 	if($value){ 
+					 		$where .= " AND {$alias}.`value` = $value ";
+					 	}else{
+					 		$where .= " AND {$alias}.`value` = '' ";
+					 	}
 				 	}
 					  
 				}else{
-					$where .= " AND t.$w = $v	";
+					if(is_array($v)){
+						$a = $v[0];
+						$b = $v[1];
+						$c = $v[2];
+						$c = Str::escape_str($c); 
+						if(trim(strtolower($b))=='like'){
+							$c = "%$c%";
+						}
+						$where .= " AND t.$a $b $c	";
+					} 
+					else{
+						$v = Str::escape_str($v);
+						$where .= " AND t.$w = $v	";
+					}
+					 
 				}
 			}
 		}
@@ -141,11 +195,15 @@ class Classes
 		$flag = false;
 		if($wh){
 			foreach($wh as $w=>$v){
+				if(is_array($v)){
+					$w = $v[0];
+				}
 				if(!in_array($w,static::default_columns())){
 					$flag = true;
-				}
+				} 
 			}
 		}
+		 
 		if($flag === false){  
 			$pager = DB::pagination($table,$params,$config,$route);
 			$models = $pager->models;
@@ -158,6 +216,7 @@ class Classes
 				$sql .= " WHERE ".$_params['where'];
 				$count_sql .= " WHERE ".$_params['where'];
 			} 
+		 
 			$one = DB::queryRow($count_sql); 
 			$count = $one['count'];  
 			$pages = new \yii\data\Pagination($count,$config); 
@@ -331,6 +390,10 @@ class Classes
  		$all = DB::all('content_type_field',array(
  			'where'=>array('pid'=>$one['id'])
  		)); 
+ 		$field_id = $one['id'];
+ 		$model = FieldView::find()->where(array('fid'=>$field_id))->one(); 
+ 		$show_list = $model->list;
+		$filter = $model->search;  
  		foreach($all as $v){
  			$n = $v['slug'];
  			//get widget . widget is input/text/dropDonwList ...
@@ -349,11 +412,19 @@ class Classes
  			$out[$n]['name'] = $v['name'];
  			$out[$n]['fid'] = $v['id'];
  			$out[$n]['relate'] = $v['relate'];
- 			$out[$n]['list'] = $v['list'];
+ 			$is_search = $is_list = 0;
+ 			if($show_list && in_array($n,$show_list)){
+ 				$is_list = 1;
+ 			}
+ 			if($filter && in_array($n,$filter)){
+ 				$is_search = 1;
+ 			}
+ 			$out[$n]['list'] = $is_list;
+ 			$out[$n]['filter'] = $is_search;
  			$cls = "\app\modules\content\widget\\$widget\widget"; 
  			$out[$n]['mysql'] = $cls::node_type(); 
  		}
- 	 
+ 	  
  		return $out;
  	}
  	static function default_columns(){
@@ -367,6 +438,9 @@ class Classes
 			'uid'
 		);
  	}
+ 	 
+	 
+
  	 
  
 }

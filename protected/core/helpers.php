@@ -169,9 +169,9 @@ function __($message,$category='app',  $params = array(), $language = null){
 * set cookie or get cookie
 */
 function cookie($name,$value=null,$expire=null){  
-	if(false === $value)
+	if(false === $value){ 
 		\Yii::$app->response->cookies->remove($name); 
-	elseif($value==null){  
+	}elseif($value==null){  
 		return \Yii::$app->request->cookies->getValue($name); 
 	} 
 	$options['name'] = $name;

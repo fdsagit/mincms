@@ -12,7 +12,7 @@ class Widget extends \app\modules\content\Widget
 	
 	function run(){  
 		 $name = $this->name;  
-		 if(is_array($this->model->$name)) $this->model->$name = '';
+		 if(is_array($this->model->$name)) $this->model->$name = ''; 
  		 echo $this->form->field($this->model,$name)->textInput(); 
 	}
 }

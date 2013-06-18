@@ -1,5 +1,6 @@
 <?php 
 namespace app\modules\content; 
+use app\modules\content\models\NodeActiveRecord;
 class Widget extends \yii\base\Widget
 {
 	public $label;
@@ -16,8 +17,15 @@ class Widget extends \yii\base\Widget
 		$this->slug = $_GET['name'];
 		$this->structure =  Classes::structure($this->slug);
 		$this->_opt = $this->structure[$name]['widget_config']; 
-  		if(!$this->value)
-  			$this->value = $this->model->{$this->name};
+		if(!$this->model){
+			$model =  new NodeActiveRecord;
+			$model::$table = $this->name;
+			$this->model = $model;
+			$this->model->rules = array(); 
+		} 
+  		if($this->value)
+  			$this->model->$name = $this->value;
+  			
   	}
   	 
 }

@@ -12,12 +12,12 @@ use app\modules\imagecache\libraries\Driver;
  */
 
 //namespace Fuel\Core;
-
+include __DIR__.'/Bmp.php';
 class Gd extends Driver
 {
 
 	protected $image_data = null;
-	protected $accepted_extensions = array('png', 'gif', 'jpg', 'jpeg');
+	protected $accepted_extensions = array('png', 'gif', 'jpg', 'jpeg','bmp');
 	protected $gdresizefunc = "imagecopyresampled";
 
 	public function load($filename, $return_data = false, $force_extension = false)
@@ -345,7 +345,7 @@ class Gd extends Driver
 		{
 			$vars[] = floor(($this->config['quality'] / 100) * 9);
 		}
-
+		if($filetype=='bmp') $filetype='jpeg';
 		call_user_func_array('image'.$filetype, $vars);
 		if ($this->config['persistence'] === false)
 		{

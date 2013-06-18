@@ -21,27 +21,30 @@ class SiteController extends \app\core\AuthController
 	* set search filed
 	*
 	*/
-	function actionSearch($slug , $name){
+	function actionSearch($slug , $name ,$type='search'){
 	 	$one = DB::one('content_type_field',array(
 	 		'where'=>array('slug'=>$slug,'pid'=>0)
 	 	));
 	 	if(!$one) exit('access deny');
 	 	$fid = $one['id'];	  
 	 	$model = FieldView::find()->where(array('fid'=>$fid))->one(); 
-	 	
+	  
 	 	if(!$model){
 	 		$model = new FieldView;
-	 		$model->search = array($name=>$name);
+	 		$model->$type = array($name=>$name);
 	 	}else{
-	 		if($model->search && in_array($name , $model->search )){ 
-	 			unset($model->search[$name]);
+	 		$search = $model->$type;
+	 		if($model->$type && in_array($name , $model->$type )){  
+	 			unset($search[$name]);
+	 		 	$model->$type = $search;
 	 		}else{
-	 			$one->search[$name] = $name;
+	 		 	$search[$name] = $name;
+	 			$model->$type = $search;
 	 		}
-	 	}
+	 	} 
 	 	$model->fid = $fid; 
 	 	$model->save();
-	 	flash('success',__('set search filter success'));
+	 	flash('success',__('set success'));
 	 	$this->redirect(url('content/node/index',array('name'=>$slug)));
 	 	
 	}

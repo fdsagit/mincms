@@ -8,10 +8,26 @@ use yii\base\Theme;
 class Controller extends \yii\web\Controller
 { 
 	public $theme = 'classic';
-	//启用的菜单
+	/**
+	* active menu
+	* 启用的菜单
+	*/
 	public $active; 
+	/**
+	* guest unique cookie
+	* 访问用户的唯一值
+	*/
+	public $guest_unique;
+	
 	function init(){
 		parent::init();  
+		$unique = cookie('guest_unique');  
+		if(!$unique){ 
+			$unique = uniqid(); 
+			cookie('guest_unique',$unique);
+		}
+		$this->guest_unique = $unique; 
+		
 		language(); 
 		hook('action_init');  
 		/*

@@ -1,5 +1,11 @@
 <?php 
 return  array (
+  'reset filter success' => '清空搜索条件成功',
+  'reset filter' => '重置过滤条件',
+  'filter' => '过滤',
+  'set display filed in list' => '设置在列表中显示字段',
+  'set search filed' => '设置搜索字段',
+  'set field' => '设置字段',
   'select file' => '选择文件',
   'route' => 'url路由',
   'action' => '操作',

@@ -172,7 +172,7 @@ class Str{
 		{
 			foreach ($str as $key => $val)
 			{
-				$str[$key] = $this->escape_str($val, $like);
+				$str[$key] = static::escape_str($val, $like);
 			} 
 			return $str;
 		} 
