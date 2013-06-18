@@ -1,5 +1,6 @@
 <?php 
 return  array (
+  'update' => '更新',
   'set filter success' => '设置过滤成功',
   'update content type' => '更新内容类型',
   'rules' => '验证规则',
