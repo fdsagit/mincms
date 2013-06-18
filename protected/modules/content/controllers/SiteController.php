@@ -45,6 +45,9 @@ class SiteController extends \app\core\AuthController
 	 	$model->fid = $fid; 
 	 	$model->save();
 	 	flash('success',__('set success'));
+	 	$cacheId = "modules_content_Class_structure{$slug}";
+		cache($cacheId,false);
+		
 	 	$this->redirect(url('content/node/index',array('name'=>$slug)));
 	 	
 	}
@@ -59,8 +62,10 @@ class SiteController extends \app\core\AuthController
 		}
 		*/  
 		$w = $_POST['w'];
-		if($w){
-			$new = \app\modules\content\models\Field::widgets(false);
+		if($w){ 
+			$selected = $_POST['selected'];	
+			$new = \app\modules\content\models\Field::widgets(false,$selected);
+		 
 			return $new[$w];
 		}
 	}

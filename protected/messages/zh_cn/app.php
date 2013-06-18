@@ -1,5 +1,9 @@
 <?php 
 return  array (
+  'set filter success' => '设置过滤成功',
+  'update content type' => '更新内容类型',
+  'rules' => '验证规则',
+  'widget config' => '挂件配置',
   'reset filter success' => '清空搜索条件成功',
   'reset filter' => '重置过滤条件',
   'filter' => '过滤',

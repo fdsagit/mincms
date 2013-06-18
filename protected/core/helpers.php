@@ -65,10 +65,13 @@ function ip(){
 * setting language
 */
 function language($name='language'){
-	if($_GET[$name] || cookie($name) ){
- 		if($_GET['language']){
- 			cookie($name,$_GET['language']);
+	if($_GET[$name]){
+ 		if($_GET[$name]){
+ 			cookie($name,$_GET[$name]);
  		}
+ 		return \Yii::$app->language = $_GET[$name];
+ 	}elseif(cookie($name)){
+ 		
  		return \Yii::$app->language = cookie($name);
  	}
 }

@@ -78,6 +78,7 @@ return array(
 			'autoRenewCookie'=>false,
 			'identityCookie'=>array('name' => 'admin_identity', 'httponly' => true),
 			'identityClass' => 'app\modules\auth\models\User',
+			'authTimeout'=>time()+15*60
 		),
 		'view' => array( 
             'theme' => array(

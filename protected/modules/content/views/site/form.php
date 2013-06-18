@@ -14,15 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		'form'=>false,
 		'yaml' => "@app/modules/content/forms/".$name.".yaml",
 	));?>
-	<div class="control-group">
-		<label class="control-label"><?php echo __('is list');?></label>
-		<div class="controls">
-			<?php echo Html::checkbox('Field[list]',$model->list,array(
-				0=>__('no'),
-				1=>__('yes'),
-			));?>
-		</div>
-	</div>
+	 
 	<div class="control-group">
 		<label class="control-label"><?php echo __('form widget');?></label>
 		<div class="controls">
@@ -40,28 +32,23 @@ $this->params['breadcrumbs'][] = $this->title;
 	  			$relate = $model->relate;  
 				js("
 					var w = $('#widget').val(); 
-					var relate = '".$relate."'; 
+					var relate = \"".$relate."\"; 
 					widget_ajax(w);
 					$('#widget').change(function(){
 						var w = $(this).val();
 						widget_ajax(w);
 					});
 					function widget_ajax(w){
-						$.post('".url('content/site/ajax')."',{w:w},function(data){ 
-							$('#relate_div').html(data);
-							
-							$('#Field_relate option').each(function(i){  
-								if($(this).val() == relate){
-									$(this).attr('selected' , true);
-								}
-							});
+						$.post('".url('content/site/ajax')."',{w:w , selected:relate},function(data){ 
+							$('#relate_div').html(data);  
+							$('select').select2();
 						});
 					}
 				");
 				 
 			?>
 		</div>
-		<div id='relate_div'>
+		<div id='relate_div' style="margin-top: 20px;">
 		</div>
 	</div>
 </div>

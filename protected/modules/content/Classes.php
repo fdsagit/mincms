@@ -12,38 +12,49 @@ use app\modules\content\models\FieldView;
 class Classes
 {
 	static function all($slug,$params=array()){ 
-		$table = "node_".$slug;// node table   
-		$wh = $params['where'];
-		$params['orderBy'] = $params['orderBy']?:"sort desc , id desc";
-		$flag = false;
-		if($wh){
-			foreach($wh as $w=>$v){
-				if(!in_array($w,static::default_columns())){
-					$flag = true;
+		$cacheID = "module_content_class_pager_list".$slug;
+		if($params){
+			$cacheID .=json_encode($params);
+		} 
+		$cacheID = md5($cacheID); 
+		$out = cache($cacheID);
+		if(!$out){
+			
+			$table = "node_".$slug;// node table   
+			$wh = $params['where'];
+			$params['orderBy'] = $params['orderBy']?:"sort desc , id desc";
+			$flag = false;
+			if($wh){
+				foreach($wh as $w=>$v){
+					if(!in_array($w,static::default_columns())){
+						$flag = true;
+					}
 				}
 			}
-		}
-		if($flag === false){ 
-			$all = DB::all($table,$params); 
-		}else{
-			$_params = static::params($slug,$params); 
-			$sql = "SELECT t.* FROM  $table t " . $_params['sql'] ;
-			if($_params['where']) 
-				$sql .= " WHERE ".$_params['where'];
-			$sql .= " ORDER BY ".$_params['orderBy'];
-			if($params['limit'])
-				$sql .= " LIMIT  ".$params['limit'];   
-			$all = DB::queryAll($sql); 
-		} 
-		foreach($all as $model){
-			$node = static::one($slug,$model['id']);
-			$node->id = $model['id'];
-			$node->uid = $model['uid'];
-			$node->created = $model['created'];
-			$node->updated = $model['updated'];
-			$node->admin = $model['admin'];
-			$node->display = $model['display']; 
-			$out[] = $node;
+			if($flag === false){ 
+				$all = DB::all($table,$params); 
+			}else{
+				$_params = static::params($slug,$params); 
+				$sql = "SELECT t.* FROM  $table t " . $_params['sql'] ;
+				if($_params['where']) 
+					$sql .= " WHERE ".$_params['where'];
+				$sql .= " ORDER BY ".$_params['orderBy'];
+				if($params['limit'])
+					$sql .= " LIMIT  ".$params['limit'];   
+				$all = DB::queryAll($sql); 
+			} 
+			foreach($all as $model){
+				$node = static::one($slug,$model['id']);
+				$node->id = $model['id'];
+				$node->uid = $model['uid'];
+				$node->created = $model['created'];
+				$node->updated = $model['updated'];
+				$node->admin = $model['admin'];
+				$node->display = $model['display']; 
+				$out[] = $node;
+			}
+			if(true !== YII_DEBUG)
+				cache($cacheID,$out );
 		}
 		return $out; 
 	}
@@ -124,7 +135,7 @@ class Classes
 					 		LEFT JOIN $relate_table $alias
 					 		ON {$alias}.nid = t.id 
 					 	";
-					 	$where .= " {$alias}.fid = $fid	";
+					 	$where .= " AND {$alias}.fid = $fid	";
 					 	if($value){ 
 					 		$where .= " AND {$alias}.`value` = $value ";
 					 	}else{
@@ -188,61 +199,81 @@ class Classes
 	<?php }?>
 	*/
 	static function pager($slug,$params=array(),$config=null,$route=null){
-		$table = "node_".$slug;// node table   
-		$wh = $params['where'];
-		$params['orderBy'] = $params['orderBy']?:"sort desc , id desc";
-		if(!is_array($config)) $config = array('pageSize'=>$config);
-		$flag = false;
-		if($wh){
-			foreach($wh as $w=>$v){
-				if(is_array($v)){
-					$w = $v[0];
-				}
-				if(!in_array($w,static::default_columns())){
-					$flag = true;
-				} 
+		$cacheID = "module_content_class_pager_list".$slug;
+		if($params){
+			$cacheID .=json_encode($params);
+		}
+		if($config){
+			if(is_array($config)){
+				$cacheID .=json_encode($config);
+			}else{
+				$cacheID .=$config;
 			}
 		}
+		$cacheID .= $route;
+		$cacheID = md5($cacheID); 
+		$row = cache($cacheID);
+		if(!$row){
+			$table = "node_".$slug;// node table   
+			$wh = $params['where'];
+			$params['orderBy'] = $params['orderBy']?:"sort desc , id desc";
+			if(!is_array($config)) $config = array('pageSize'=>$config);
+			$flag = false;
+			if($wh){
+				foreach($wh as $w=>$v){
+					if(is_array($v)){
+						$w = $v[0];
+					}
+					if(!in_array($w,static::default_columns())){
+						$flag = true;
+					} 
+				}
+			}
 		 
-		if($flag === false){  
-			$pager = DB::pagination($table,$params,$config,$route);
-			$models = $pager->models;
-			$pages = $pager->pages;
-		}else{
-			$_params = static::params($slug,$params); 
-			$sql = "SELECT t.* FROM  $table t " . $_params['sql'] ;
-			$count_sql = " SELECT count(*) count FROM  $table t  " .$_params['sql'] ;
-			if($_params['where']) {
-				$sql .= " WHERE ".$_params['where'];
-				$count_sql .= " WHERE ".$_params['where'];
+			if($flag === false){  
+				$pager = DB::pagination($table,$params,$config,$route);
+				$models = $pager->models;
+				$pages = $pager->pages;
+			}else{
+				$_params = static::params($slug,$params); 
+				$sql = "SELECT t.* FROM  $table t " . $_params['sql'] ;
+				$count_sql = " SELECT count(*) count FROM  $table t  " .$_params['sql'] ;
+				if($_params['where']) {
+					$sql .= " WHERE ".$_params['where'];
+					$count_sql .= " WHERE ".$_params['where'];
+				} 
+			  
+				$one = DB::queryRow($count_sql); 
+				$count = $one['count'];  
+				$pages = new \yii\data\Pagination($count,$config); 
+				if($route)
+					$pages->route = $route;
+				$offset = $pages->offset > 0 ? $pages->offset:0;
+				$limit = $pages->limit > 0 ? $pages->limit:10;     
+				$sql .= " ORDER BY ".$_params['orderBy'];
+				$sql .= " LIMIT $offset,$limit ";
+				
+				$models = DB::queryAll($sql);   
 			} 
 		 
-			$one = DB::queryRow($count_sql); 
-			$count = $one['count'];  
-			$pages = new \yii\data\Pagination($count,$config); 
-			if($route)
-				$pages->route = $route;
-			$offset = $pages->offset > 0 ? $pages->offset:0;
-			$limit = $pages->limit > 0 ? $pages->limit:10;     
-			$sql .= " ORDER BY ".$_params['orderBy'];
-			$sql .= " LIMIT $offset,$limit ";
-			$models = DB::queryAll($sql);   
-		} 
-	 
-		foreach($models as $model){
-			$node = static::one($slug,$model['id']);
-			$node->id = $model['id'];
-			$node->uid = $model['uid'];
-			$node->created = $model['created'];
-			$node->updated = $model['updated'];
-			$node->admin = $model['admin'];
-			$node->display = $model['display']; 
-			$out[] = $node;
+			foreach($models as $model){
+				$node = static::one($slug,$model['id']);
+				$node->id = $model['id'];
+				$node->uid = $model['uid'];
+				$node->created = $model['created'];
+				$node->updated = $model['updated'];
+				$node->admin = $model['admin'];
+				$node->display = $model['display']; 
+				$out[] = $node;
+			}
+			$row = array(
+				'models' => $out,
+				'pages' => $pages
+			);
+			if(true !== YII_DEBUG)
+				cache($cacheID,$row );
 		}
-		return array(
-			'models' => $out,
-			'pages' => $pages
-		);
+		return $row;
 	}
 	static function one($slug,$nid){
 		$cacheId = "module_content_node_{$slug}_{$nid}";
@@ -359,9 +390,8 @@ class Classes
 			 ));
 		} 
 	}
-	static function table_columns(){
-	 
-	 	$all = DB::all('content_type_field');
+	static function table_columns(){ 
+	 	$all = DB::all('content_type_field',array('where'=>array('pid'=>0)));
 		unset($tables , $table);
 		foreach($all as $v){   
 			$slug = $v['slug'];
@@ -372,8 +402,7 @@ class Classes
 	 		}
 	 		$tables['node_'.$slug] = Arr::first($fs); 
 	 		$table['node_'.$slug] = 'node_'.$slug;
-		}
-	 
+		} 
 		$data = array('table'=>$table,'tables'=>$tables);		
 		return $data;
 	}
@@ -383,47 +412,52 @@ class Classes
 	* create formBuilder need field structure
 	*/
  	static function structure($slug){
- 		$one = DB::one('content_type_field',array(
- 				'where'=>array('slug'=>$slug),
- 				'orWhere'=>array('id'=>$slug),
- 		));
- 		$all = DB::all('content_type_field',array(
- 			'where'=>array('pid'=>$one['id'])
- 		)); 
- 		$field_id = $one['id'];
- 		$model = FieldView::find()->where(array('fid'=>$field_id))->one(); 
- 		$show_list = $model->list;
-		$filter = $model->search;  
- 		foreach($all as $v){
- 			$n = $v['slug'];
- 			//get widget . widget is input/text/dropDonwList ...
- 			$w = DB::one('content_type_widget',array(
- 				'where'=>array('field_id'=>$v['id'])
- 			));
- 			$widget =  $out[$n]['widget'] = $w['name'];
- 			$out[$n]['widget_config'] = unserialize($w['memo']);
- 			//get validates
- 			$vali = DB::one('content_type_validate',array(
- 				'where'=>array('field_id'=>$v['id'])
- 			));
- 			$validates = unserialize($vali['value']); 
- 			$out[$n]['validates'] = $validates;
- 			$out[$n]['slug'] = $v['slug'];
- 			$out[$n]['name'] = $v['name'];
- 			$out[$n]['fid'] = $v['id'];
- 			$out[$n]['relate'] = $v['relate'];
- 			$is_search = $is_list = 0;
- 			if($show_list && in_array($n,$show_list)){
- 				$is_list = 1;
- 			}
- 			if($filter && in_array($n,$filter)){
- 				$is_search = 1;
- 			}
- 			$out[$n]['list'] = $is_list;
- 			$out[$n]['filter'] = $is_search;
- 			$cls = "\app\modules\content\widget\\$widget\widget"; 
- 			$out[$n]['mysql'] = $cls::node_type(); 
- 		}
+ 		$cacheId = "modules_content_Class_structure{$slug}";
+		$out = cache($cacheId);
+		if(!$out){
+	 		$one = DB::one('content_type_field',array(
+	 				'where'=>array('slug'=>$slug),
+	 				'orWhere'=>array('id'=>$slug),
+	 		));
+	 		$all = DB::all('content_type_field',array(
+	 			'where'=>array('pid'=>$one['id'])
+	 		)); 
+	 		$field_id = $one['id'];
+	 		$model = FieldView::find()->where(array('fid'=>$field_id))->one(); 
+	 		$show_list = $model->list;
+			$filter = $model->search;  
+	 		foreach($all as $v){
+	 			$n = $v['slug'];
+	 			//get widget . widget is input/text/dropDonwList ...
+	 			$w = DB::one('content_type_widget',array(
+	 				'where'=>array('field_id'=>$v['id'])
+	 			));
+	 			$widget =  $out[$n]['widget'] = $w['name'];
+	 			$out[$n]['widget_config'] = unserialize($w['memo']);
+	 			//get validates
+	 			$vali = DB::one('content_type_validate',array(
+	 				'where'=>array('field_id'=>$v['id'])
+	 			));
+	 			$validates = unserialize($vali['value']); 
+	 			$out[$n]['validates'] = $validates;
+	 			$out[$n]['slug'] = $v['slug'];
+	 			$out[$n]['name'] = $v['name'];
+	 			$out[$n]['fid'] = $v['id'];
+	 			$out[$n]['relate'] = $v['relate'];
+	 			$is_search = $is_list = 0;
+	 			if($show_list && in_array($n,$show_list)){
+	 				$is_list = 1;
+	 			}
+	 			if($filter && in_array($n,$filter)){
+	 				$is_search = 1;
+	 			}
+	 			$out[$n]['list'] = $is_list;
+	 			$out[$n]['filter'] = $is_search;
+	 			$cls = "\app\modules\content\widget\\$widget\widget"; 
+	 			$out[$n]['mysql'] = $cls::node_type(); 
+	 		}
+	 		cache($cacheId,$out);
+	 	}
  	  
  		return $out;
  	}

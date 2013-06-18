@@ -40,7 +40,7 @@ class NodeController extends \app\core\AuthController
 		$display = $one['display']==1?0:1;
 		DB::update($table,array(
 			'display'=>$display
-		),'id=:id',array(':id'=>$id));
+		),'id=:id',array(':id'=>$id)); 
 		flash('success',__('sucessful'));
 		$this->redirect(url('content/node/index',array('name'=>$name)));
 	}
@@ -105,6 +105,7 @@ class NodeController extends \app\core\AuthController
 		 		} 
 		 		if($filters)
 		 			cookie($filterCookieId,$filters); 
+		 		flash('success',__('set filter success'));
 		 	}
 		 	$condition['orderBy'] = 'sort desc,id desc';
 		 	if($filters){

@@ -44,8 +44,8 @@ js("$(function(){
 			)); ?>
 			
 		 		
-			<div style="padding-top: 6px;">	
-				<?php echo widget('select2',array('i18n'=>true)); ?>
+			<div style="padding-top: 6px; float:right;">	
+				<?php echo widget('switchlanguage'); ?>
 			</div>
       </div><!--/.nav-collapse -->
       

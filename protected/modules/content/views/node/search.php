@@ -54,15 +54,16 @@ foreach($cols as $k => $v){
 <?php }?>
 </div>
 <div style='clear:both;'></div>
-<blockquote id='search' class='hander'>
-	<?php echo __('filter');?>
+<blockquote id='search' class="hander ">
+	<span class="<?php if($filters){?> label label-important<?php }?>"><?php echo __('filter');?></span>
 </blockquote>
-<div id='filter' <?php if(!$filters){?> style="display:none" <?php }?> class='well'>
+<div id='filter'  style="display:none"  class='well'>
 	
  <?php $form = ActiveForm::begin(array(
-	'options' => array('class' => 'form-horizontal'),
+	'options' => array('class' => 'form-horizontal' ,'id'=>'form_search'),
 	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
 )); ?>
+
  	<?php  
  	/**
  	* show filter columns
@@ -104,7 +105,7 @@ foreach($cols as $k => $v){
 		<?php echo __('reset filter'); ?>
 	</a>
 </div>
-<?php if(true === $show_form) ActiveForm::end(); ?>
+<?php ActiveForm::end(); ?>
 
 </div>
 

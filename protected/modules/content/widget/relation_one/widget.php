@@ -13,11 +13,11 @@ class Widget extends \app\modules\content\Widget
 	/***
 	* when content type choice relation
 	*/
-  	static function content_type(){  
+  	static function content_type($selected=null){  
   		$arr = Classes::table_columns();  
   		$id = $_GET['id'];  
   		$str = '<div class="control-group">';  
- 		$str .= "<p class='controls'>".Html::dropDownList('Field[relate]',null,$arr['table'],
+ 		$str .= "<p class='controls'>".Html::dropDownList('Field[relate]',$selected,$arr['table'],
  			array('id'=>'Field_relate'))."</p>"; 
   	 	$str .= "</div>"; 
  		return $str; 

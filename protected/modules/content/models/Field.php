@@ -70,8 +70,7 @@ class Field extends \app\core\ActiveRecord
 	}
 	function beforeSave($insert){
 		parent::beforeSave($insert);
-		$this->relate = $_POST['Field']['relate'];
-		$this->list = $_POST['Field']['list'];
+		$this->relate = $_POST['Field']['relate'];  
 		return true;
 	}
 	function afterSave($insert){  
@@ -100,6 +99,16 @@ class Field extends \app\core\ActiveRecord
  	    
  	    $widget_config = \Spyc::YAMLLoad($_POST['widget_config']);
  	    $this->_widget_config($widget_config);
+ 	    //cache Classes cache
+ 	    
+ 	    if($this->pid == 0){
+ 	    	$slug = $this->slug;
+ 	    }else{
+ 	    	$model = static::find(array('id'=>$this->pid));
+ 	    	$slug = $model->slug;
+ 	    }
+ 	    $cacheId = "modules_content_Class_structure".$slug;
+		cache($cacheId,false);
 	  	
 	}
 	function beforeDelete(){
@@ -144,7 +153,7 @@ class Field extends \app\core\ActiveRecord
 	 	}
 		return $str;
 	}
- 	function widgets($flag=true){
+ 	function widgets($flag=true,$selected=null){
  		$list = scandir(__DIR__.'/../widget/');
 		foreach($list as $vo){   
 			if($vo !="."&& $vo !=".." && $vo !=".svn" )
@@ -152,7 +161,7 @@ class Field extends \app\core\ActiveRecord
 				$li[$vo] = $vo;
 				$cls = "\app\modules\content\widget\\$vo\widget";
 				if(method_exists($cls,'content_type'))
-					$rt[$vo] = $cls::content_type();
+					$rt[$vo] = $cls::content_type($selected);
 			}
 		}
 		if($flag === true)

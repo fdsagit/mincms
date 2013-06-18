@@ -7,7 +7,7 @@ use yii\widgets\ActiveForm;
  */
  
 $this->title = __('content');
-$this->params['breadcrumbs'][] =  array('label'=>__('content'),'url'=>url('content/site/index'));  
+$this->params['breadcrumbs'][] =  array('label'=>__('content'),'url'=>url('content/node/index'));  
 $this->params['breadcrumbs'][] = __('list'); 
 ?>
 <blockquote>
