@@ -8,13 +8,13 @@ css("img {margin-right:10px;margin-bottom:10px;}");
 <div id="play"></div>
 <?php echo widget('jwplayer',array(
 	'tag'=>'play',
-	'file'=>base_url().'1.mp4',
+	'file'=>base_url().'upload/1.mp4',
 ));?>	
 <hr>
 <div id="ckplayer"></div>
 <?php echo widget('ckplayer',array(
 	'tag'=>'ckplayer',
-	'file'=>base_url().'1.mp4',
+	'file'=>base_url().'upload/1.mp4',
 ));?>	
 <hr>
 <input id='datepicker'>
