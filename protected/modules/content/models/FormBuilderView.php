@@ -46,7 +46,7 @@ $out= "<ul class='alert alert-success flash-message'>";
 $out.= '<li>'.$message.'</li>';
 $out.="</ul>"; 
 if(!$_GET['id']){
-	$js = "$('input,textarea').val('');";
+	$js = "$('input,textarea').val('');$('.file').remove();";
 }
 js("
 $('#".$id."').ajaxForm(function(data) { 

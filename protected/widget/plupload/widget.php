@@ -9,6 +9,7 @@ class Widget extends \yii\base\Widget
  	public $options; 
  	public $url;
  	public $field='field';//字段名
+ 	public $values;//image values
 	function run(){  
 		$base = publish(__DIR__.'/assets'); 
  		js_file($base.'/browserplus-min.js'); 
@@ -73,15 +74,22 @@ class Widget extends \yii\base\Widget
 		data = data.response;  
 	 	$('#".$filelist."').append(data); 
 		$('#' + file.id + \" \").html(\"\");
+		plupload_after();
+	});
+	plupload_after();
+	function plupload_after(){
 		$('#".$container." .file .icon-remove').click(function(){
 			$(this).parent('div.file:first').remove();
 		});
-	});
- 
+		
+		$( '#".$filelist." ' ).sortable();
+    }
  		");
  		echo $this->render('@app/widget/plupload/views/index',array(
  			'container'=>$container,
  			'filelist'=>$filelist,
+ 			'field'=>$this->field,
+ 			'values'=>$this->values,
  			'pickfiles'=>$pickfiles
  		));
  	 

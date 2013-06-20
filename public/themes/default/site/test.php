@@ -2,15 +2,49 @@
 use yii\helpers\Html;
 css("img {margin-right:10px;margin-bottom:10px;}");
 ?> 
-<div class='pagination'>
-	<?php  echo \app\core\LinkPager::widget(array(
-	      'pagination' => $pages,
-	  ));?>
-</div>
-<?php foreach($models as $model){?>
-	<p><?php  dump($model);?> </p>
-<?php }?>	
+
+<?php //echo $row;?>
+<?php // echo $pages;?>
+<div id="play"></div>
+<?php echo widget('jwplayer',array(
+	'tag'=>'play',
+	'file'=>base_url().'1.mp4',
+));?>	
+<hr>
+<div id="ckplayer"></div>
+<?php echo widget('ckplayer',array(
+	'tag'=>'ckplayer',
+	'file'=>base_url().'1.mp4',
+));?>	
+<hr>
+<input id='datepicker'>
+<?php widget('datepicker',array('tag'=>'#datepicker'));?>
 	
+	
+<div id="map" style="width:300px;height:300px;"></div>
+<?php widget('gmap',array(
+	'tag'=>'map',
+	'address'=>'上海',	
+));?>
+
+
+<!--<textarea id='jqte' style="width:300px;"></textarea>-->
+<?php //widget('jqte',array('tag'=>'#jqte'));?>	
+	
+	
+<div id="galleria" style="width:600px;height:400px;">
+	<?php for($i=1;$i<5;$i++){ $f = 't/'.$i.'.jpg';   ?>
+    <a href="<?php echo image_url($f,array('resize'=>array(600,400,true,true)));?>"><img src="<?php echo image_url($f,array('resize'=>array(300,200)));?>"     
+    	data-big="<?php echo image_url($f,array('resize'=>array(600,400)));?>" data-title="My title 1" data-description="My description 1"></a>
+    <?php }?>
+</div>
+<?php widget('gallery',array(
+	'tag'=>'#galleria',
+	'theme'=>'twelve',// classic , azur ,dots,fullscreen,twelve
+));
+?> 
+ 
+
 <h3><?php echo __('cart test');?></h3>
 <hr>
 

@@ -22,3 +22,10 @@ input.watermark {margin-right:10px;margin-bottom:10px;}
 .form-actions{padding-left: 10px;}
 .imagecache_form{margin-left:180px;width:300px; }
 .imagecache_form .icon-trash {float:right;}
+.flash-message{
+	position: fixed;
+	top: 0px;
+	z-index: 10000;
+	margin: 0;
+	width: 1119px;
+}

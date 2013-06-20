@@ -115,7 +115,7 @@ class NodeController extends \app\core\AuthController
 		 	/**
 		 	* load pager data
 		 	*/
-	 		$data = Classes::pager($name,$condition);
+	 		$data = Classes::pager($name,$condition,50);
 	 		$data['name'] = $name;
 	 		$one = DB::one('content_type_field',array(
 		 		'where'=>array('slug'=>$name,'pid'=>0)

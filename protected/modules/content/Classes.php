@@ -30,7 +30,7 @@ class Classes
 						$flag = true;
 					}
 				}
-			}
+			} 
 			if($flag === false){ 
 				$all = DB::all($table,$params); 
 			}else{
@@ -41,8 +41,9 @@ class Classes
 				$sql .= " ORDER BY ".$_params['orderBy'];
 				if($params['limit'])
 					$sql .= " LIMIT  ".$params['limit'];   
+			 
 				$all = DB::queryAll($sql); 
-			} 
+			}  
 			foreach($all as $model){
 				$node = static::one($slug,$model['id']);
 				$node->id = $model['id'];
@@ -85,11 +86,11 @@ class Classes
 					$f = $structure[$w];   
 					$fid = $f['fid'];
 					$relate = $f['relate'];  
-					if($relate){
-						$content_table = "content_int"; 
+					if(!$relate){ 
+						$content_table = "content_".$f['mysql'];   
 					} else{
-						$content_table = "content_".$f['mysql']; 
-					} 
+						$content_table = $relate;  
+					}
 					$alias = $slug.'_'.$f['slug'].$i;
 					if(is_array($v)){
 						$a = $v[0];
@@ -99,12 +100,25 @@ class Classes
 						if(trim(strtolower($b))=='like'){
 							$c = "%$c%";
 						}
-						$all = DB::all($content_table,array(
-							'select'=>'id',
-							'where'=>array(
-								$b ,'value', $c
-							)
-						)); 
+						if(!$relate){
+							$all = DB::all($content_table,array(
+								'select'=>'id',
+								'where'=>array(
+									$b ,'value', $c
+								)
+							)); 
+						}else{
+							/**
+							* 此处在关联时有问题
+							*
+							*/
+							/*$all = DB::all($relate,array(
+								'select'=>'id',
+								'where'=>array(
+									'id' =>$v
+								)
+							)); */
+						}
 						if($all){
 							$value = array();
 							foreach($all as $al){
@@ -124,14 +138,19 @@ class Classes
 						 
 					} else{
 						$v = Str::escape_str($v);
-						$one = DB::one($content_table,array(
-							'select'=>'id',
-							'where'=>array(
-								'value'=>$v
-							)
-						)); 
-						$value = $one['id']; 
-					 	$sql .= "
+						if(!$relate){
+							$one = DB::one($content_table,array(
+								'select'=>'id',
+								'where'=>array(
+									'value'=>$v
+								)
+							)); 
+							$value = $one['id']; 
+							
+						} else{
+							 $value = $v;  
+						}
+						$sql .= "
 					 		LEFT JOIN $relate_table $alias
 					 		ON {$alias}.nid = t.id 
 					 	";
@@ -141,6 +160,8 @@ class Classes
 					 	}else{
 					 		$where .= " AND {$alias}.`value` = '' ";
 					 	}
+						
+					 	
 				 	}
 					  
 				}else{
@@ -198,7 +219,7 @@ class Classes
 		<p><?php  dump($model);?> </p>
 	<?php }?>
 	*/
-	static function pager($slug,$params=array(),$config=null,$route=null){
+	static function pager($slug,$params=array(),$config=10,$route=null){
 		$cacheID = "module_content_class_pager_list".$slug;
 		if($params){
 			$cacheID .=json_encode($params);
@@ -281,25 +302,28 @@ class Classes
 		if(!$row){
 			$row = static::_one($slug,$nid);
 			// relate ship 
-			$s = static::structure($slug); 
-			foreach($row as $k=>$v){
+			$s = static::structure($slug);  
+			foreach($row as $k=>$v){ 
 				//get relation value
-				$relate = $s[$k]['relate'];  
+				$relate = $s[$k]['relate'];   
 				if($relate){
 					$row->$k = static::_relation($s , $k ,$v , $relate);
 				}
 			} 
-			cache($cacheId,$row);
+			if(true !== YII_DEBUG)
+				cache($cacheId,$row);
 		}
 		return $row;
 	}
 	static function  _relation($s , $k ,$v , $relate){ 
 		if($relate == 'file'){
-			$all = DB::all('file',array(
-				'where'=>array(
-					'id'=>$v
-				)
-			));
+			$condition['where']  = array(
+				'id'=>$v
+			);
+			if(is_array($v))
+				$condition['orderBy']  = array('FIELD (`id`, '.implode(',',$v).')'=>''); 
+			
+			$all = DB::all('file',$condition);
 			$return = $all; 
 		}else{
 			$relate = str_replace('node_' , '' ,$relate);  
@@ -332,46 +356,58 @@ class Classes
 	 		//data to [relate] like [node_post_relate]
 	 		$relate = $table.'_relate'; 
 			$structs = static::structure($slug); 
-			foreach($structs as $k=>$v){ 
+			foreach($structs as $k=>$v){  
 				$fid = $v['fid'];//字段ID 
 				$table = "content_".$v['mysql'];  
+				$is_relate = $v['relate']; //判断是不是关联表的值
+				unset($one); 
 				$all = DB::all($relate,array(
 					'where'=>array(
 						'nid'=>$nid,
 						'fid'=>$fid,
-					)
-				));
+					),
+					'orderBy'=>'id asc'
+				)); 
 				if(count($all) == 1){
 					$one = $all[0]['value'];
 				}else{
 					foreach($all as $al){
 						$one[] = $al['value'];
 					}
-				}
+				} 
 				$batchs[$table][$v['slug']] = $one;  
-	 		}
-	 	 	$row = (object)array(); 
+				if($is_relate)
+					 $new_relate[$v['slug']]= $is_relate;
+	 		} 
+	 	 	$row = (object)array();  
 			foreach($batchs as $table=>$value_ids){
 			 	foreach($value_ids as $field_name=>$_id){ 
-					$all = DB::all($table,array(
-						'where'=>array(
-						 	'id'=>$_id
-						)
-					)); 
-					if(count($all) == 1){
-						$one = $all[0]['value'];
-					}else{ 
-						$one = array();
-						foreach($all as $al){
-							$one[] = $al['value'];
-						} 
-						
+			 		$condition = array();
+			 		$condition['where'] = array(
+					 	'id'=>$_id
+					);
+					if(is_array($_id)){ 
+						$condition['orderBy']  = array('FIELD (`id`, '.implode(',',$_id).')'=>''); 
 					} 
+					if($new_relate[$field_name]) { 
+					 	$one = $_id;
+					}else{
+						$all = DB::all($table,$condition);   
+						if(count($all) == 1){
+							$one = $all[0]['value'];
+						}else{ 
+							$one = array();
+							foreach($all as $al){
+								$one[] = $al['value'];
+							}  
+						}  
+					}
 					if($one)
 						$row->$field_name = $one; 
 				}
-			}  
-			cache($cacheId,$row);
+			} 
+			if(true !== YII_DEBUG) 
+				cache($cacheId,$row);
 		}
 		return $row;
 	}
@@ -383,11 +419,13 @@ class Classes
 		if(!is_array($value)) return $value;
 		$s = static::structure($slug);
 		$relate = $s[$field]['relate'];   
-		if($relate == 'file'){
-			 $value = Arr::first($value);
-			 return image($value['path'],array(
-			 	'resize'=>array(160,160)
-			 ));
+		if($relate == 'file'){  
+			 $value = Arr::first($value); 
+			 if(is_array($value) && $value['path']){
+				 return image($value['path'],array(
+				 	'resize'=>array(160,160)
+				 ));
+			 }
 		} 
 	}
 	static function table_columns(){ 

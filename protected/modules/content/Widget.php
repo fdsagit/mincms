@@ -25,7 +25,8 @@ class Widget extends \yii\base\Widget
 		} 
   		if($this->value)
   			$this->model->$name = $this->value;
-  			
+  		else
+  			$this->value = $this->model->$name;
   	}
   	 
 }

@@ -5,7 +5,10 @@
 * @author Sun < mincms@outlook.com >
 * @since Yii 2.0
 */
-
+function image_url($file,$option=null){
+	$url =  module_class('imagecache.Classes.image',$file,$option);
+	return $url;
+}
 function image($file,$option=null,$params=null){
 	$url =  module_class('imagecache.Classes.image',$file,$option);
 	return \yii\helpers\Html::img($url,$params);

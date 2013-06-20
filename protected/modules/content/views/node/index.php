@@ -64,7 +64,7 @@ $fields = Classes::structure($name);
 	  </thead>
 	  <tbody>
 	    <?php if(!$models) return;foreach($models as $model){?>
-	    <tr> 
+	    <tr id="node_<?php echo $model->id;?>"> 
 	    <td><i class="drag"></i><?php echo Html::hiddenInput('ids[]',$model->id).$model->id;?></td>
 	    <?php foreach($fields as $title=>$v){ 
 				if($v['list']==1){?>
@@ -93,9 +93,9 @@ $fields = Classes::structure($name);
 \app\core\UI::sort('#sort',url('content/node/sort'));
 ActiveForm::end(); 
 ?>
-	<div class='pagination'>
-		<?php  echo \app\core\LinkPager::widget(array(
-		      'pagination' => $pages,
-		  ));?>
-	</div>
+ 
+<?php  echo \app\core\LinkPager::widget(array(
+      'pagination' => $pages,
+  ));?>
+	 
 <?php }?>

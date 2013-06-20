@@ -26,5 +26,12 @@ return array(
 		),
 	 
 	),
+	'yii/jquery' => array(
+		'basePath' => '@wwwroot',
+		'baseUrl' => '@www', 
+		'js' => array( 
+		 	'js/jquery.js'
+		),
+	),
 	 
 );

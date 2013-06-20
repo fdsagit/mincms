@@ -2,7 +2,8 @@
 use app\modules\content\models\Field;
 use app\modules\content\models\NodeActiveRecord;
 use app\modules\content\Classes;
-use \app\core\DB;
+use app\core\DB;
+use app\core\Arr; 
 /**
 * 
 * @author Sun < mincms@outlook.com >
@@ -54,8 +55,7 @@ class Node{
  	* @params $attrs 属性
  	* @params $return 为true时返回nid
  	*/
- 	static function save_model($name,$model,$attrs,$nid=null,$return=false){  
- 		
+ 	static function save_model($name,$model,$attrs,$nid=null,$return=false){   
  		foreach($attrs as $key=>$value){
  			$model->$key = $value; 
  		} 
@@ -96,14 +96,18 @@ class Node{
 		 		)); 
 	 		$nid = DB::id();
  		}   
- 		foreach($structs as $k=>$v){
+ 		foreach($structs as $k=>$v){ 
  			if($value = $model->$k){ //属性有值时 才会查寻数据库
  				$fid = $v['fid'];//字段ID
  				$table = "content_".$v['mysql'];  
- 				$batchs[$table][$fid][] = $value; 
+ 				unset($_check_relate[$table][$fid]);
+ 				if($v['relate']){
+ 					$_check_relate[$table][$fid] = true;  
+ 				}
+ 				$batchs[$table][$fid][] = $value;  
  				$wherein[$table][] = $value;  
- 			}
- 		} 
+ 			} 
+ 		}   
  		/**  
 		[content_text] => Array
 		    (
@@ -114,10 +118,13 @@ class Node{
 
 		    ) 
  		*/  
- 		foreach($batchs as $table=>$value){ 
- 		 	foreach($value as $fid=>$v){ //$k  filed_id
- 		 		foreach($v as $_v){ // $_v value 
+ 	   
+ 		foreach($batchs as $table=>$values){ 
+ 			//echo Arr::deep($value); 
+ 		 	foreach($values as $fid=>$v){ //$k  filed_id
+ 		 		foreach($v as $_v){ // $_v value  
  		 			if(is_array($_v)){
+ 		 				$_v = array_unique ($_v); 
  		 				if($nid>0){
  		 					DB::delete($relate,'nid=:nid and fid=:fid',
 	 		 					array( 
@@ -125,24 +132,29 @@ class Node{
 					 				':fid'=>$fid 
 					 			)
 				 			); 
-				 		}
- 		 				foreach($_v as $_val){
- 		 					$value = static::__save_array($table , $_val ,$relate ,$fid ,$nid);
+				 		}  
+ 		 				foreach($_v as $_nv){ 
+ 		 					if(! $_check_relate[$table][$fid] )
+ 		 						$value = static::__save_array($table , $_nv ,$relate ,$fid ,$nid); 
+ 		 					else
+ 		 			 			$value = $_nv;
  		 					DB::insert($relate,array( 
 				 				'nid'=>$nid ,
 				 				'fid'=>$fid,
 				 				'value'=>$value
 				 			)); 
- 		 				}
- 		 			}else{
- 		 				$value = static::__save_array($table , $_v ,$relate ,$fid ,$nid); 
- 		 				
+ 		 				} 
+ 		 			}else{  
+ 		 				if(! $_check_relate[$table][$fid] )
+ 		 					$value = static::__save_array($table , $_v ,$relate ,$fid ,$nid);  
+ 		 			 	else
+ 		 			 		$value = $_v; 
  		 				$one = DB::one($relate,array( 
 				 				'where'=>array(
 					 				'nid'=>$nid ,
 					 				'fid'=>$fid,
 				 			 	)
-				 			)); 
+				 			));  
 						//$value  is node value id
 						if(!$one){ 
 							DB::insert($relate,array( 
@@ -162,7 +174,7 @@ class Node{
  		 			 
  		 		}
  		 	} 
- 		} 
+ 		}  
  		$out.= 1; 
 		//remove cache
 		$cacheId = "_one_module_content_node_{$name}_{$nid}";
@@ -185,14 +197,14 @@ class Node{
 			)
 		));
 		//$value  is node value id
-		if(!$one){
+		if(!$one){ 
 			DB::insert($table,array( 
  				'value'=>$_v 
  			));
- 			$value = DB::id();
+ 			$value = DB::id(); 
 		}else{
 			$value = $one['id'];
-		}
+		} 
 		return $value;
  	}
 	/**

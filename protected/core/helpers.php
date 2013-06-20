@@ -153,7 +153,8 @@ function root_path(){
 	return Yii::$app->basePath.'/../public/';
 }
 
-function url_action($url,$parmas=null){ 
+function url_action($url=null,$parmas=null){ 
+	if(!$url)  $url = \Yii::$app->controller->action->id;
 	$url = \Yii::$app->controller->id.'/'.$url;
 	$module = \Yii::$app->controller->module->id; 
 	if($module && $module!=\Yii::$app->id)

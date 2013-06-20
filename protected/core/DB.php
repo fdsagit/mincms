@@ -21,7 +21,7 @@ class DB{
 		return $command->queryRow(); 
 	}
 	static function all($table,$getway=array()){
-		$command = static::_query($table,$getway);
+		$command = static::_query($table,$getway); 
 		return $command->queryAll();  
 	}
 	
@@ -91,7 +91,6 @@ class DB{
 				$query = $query->$key($value); 
 			}
 		} 
-		return $query->createCommand(); 
-		$row = $command->queryAll();  
+		return $query->createCommand();  
 	}
 }
