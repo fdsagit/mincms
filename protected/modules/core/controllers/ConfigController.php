@@ -51,7 +51,7 @@ class ConfigController extends \app\core\AuthController
 	}
 	public function actionIndex()
 	{    
-		$rt = \app\core\Pagination::run('\app\modules\core\models\Config');  
+		$rt = \app\core\Pagination::run('\app\modules\core\models\Config' , 'active');  
  		
 		return $this->render('index', array(
 		   'models' => $rt->models,

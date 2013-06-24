@@ -1,15 +1,18 @@
 <?php
+ 
 /**
-* Yii 2.0 Helpers
 * 
-* @author Sun < mincms@outlook.com >
-* @since Yii 2.0
+* @author Sun <mincms@outlook.com>
+* @copyright 2013 The MinCMS Group
+* @license personal
+* @license http://mincms.com/licenses
 */
 
 /**
-* create clean url
-* @param  string $url 
-* @param  array $parmas 
+* return URL
+* @param $url String 
+* @param $parmas Array 
+* @return string
 */
 function redirect($url,$parmas=null){ 
 	return \Yii::$app->response->redirect($url,$parmas);

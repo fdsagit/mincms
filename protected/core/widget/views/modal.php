@@ -13,7 +13,7 @@
     
   </div>
   <div class="modal-footer">
-    	<?php echo \app\core\Html::button(__('run'), null, null, array('class' => 'btn btn-primary')); ?>
+    	<?php echo \app\core\Html::button(__('run'),  array('class' => 'btn btn-primary')); ?>
   </div>
 </div>
 

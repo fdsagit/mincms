@@ -21,7 +21,12 @@ class SiteController extends FrontController
 		
 		$this->active = 'site.index';  
 		return $this->render('index');
-	} 
+	}
+	public function actionDebug()
+	{      
+	 //	$this->layout = false;
+		return $this->render('debug');
+	}  
 	
  	function actionTest(){    
  		$this->active = 'site.test';  

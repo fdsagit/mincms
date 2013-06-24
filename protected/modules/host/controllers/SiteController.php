@@ -20,7 +20,7 @@ class SiteController extends \app\core\AuthController
 			$value = 0;
 		else
 			$value = 1;
-		Classes::set_config($this->config_key,$value);
+		Classes::set_config_lock($this->config_key,$value);
 		cache_pre_delete('hooks');
 		flash('success',__('sucessful'));
 		$this->redirect(url('host/site/index'));

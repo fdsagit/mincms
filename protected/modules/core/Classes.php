@@ -26,5 +26,22 @@ class Classes
 		}
 		
 	}
+	static function set_config_lock($name,$value){
+		$one = DB::one('core_config',array(
+			'where'=>array('slug'=>$name) 
+		));
+		if($one){
+			DB::update('core_config',array(
+				'body'=>$value
+			),'slug=:slug',array(':slug'=>$name));
+		}else{
+			DB::insert('core_config',array(
+				'slug'=>$name,
+				'body'=>$value,
+				'lock'=>1
+			));
+		}
+		
+	}
 
 }
