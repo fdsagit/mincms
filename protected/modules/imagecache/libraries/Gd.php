@@ -10,7 +10,7 @@ use app\modules\imagecache\libraries\Driver;
  * @copyright  2010 - 2013 Fuel Development Team
  * @link       http://fuelphp.com
  */
-
+ini_set('memory_limit','512M');
 //namespace Fuel\Core;
 include __DIR__.'/Bmp.php';
 class Gd extends Driver

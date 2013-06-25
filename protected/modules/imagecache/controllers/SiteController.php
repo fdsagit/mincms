@@ -45,8 +45,7 @@ class SiteController extends FrontController
 		$new_name = root_path().'imagine/'.$name.'.'.$ext;
 		//取得encode的数组
 		$json = substr($name,$l+1);   
-		$name = substr($name,0,$l); 
-		$name = "upload/".$name; 
+		$name = substr($name,0,$l);   
 		$arr = explode('/',$name); 
 		//完整文件名
 		$file = $name.'.'.$ext;

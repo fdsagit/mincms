@@ -29,7 +29,7 @@ class Controller extends \yii\web\Controller
 		$this->guest_unique = $unique; 
 		
 		language(); 
-		hook('action_init');  
+		hook('action_init',$this);  
 		/*
 		* load modules 
 		* 加载模块
@@ -43,13 +43,13 @@ class Controller extends \yii\web\Controller
 	public function beforeAction($action)
 	{
 		parent::beforeAction($action);
-		hook('action_before'); 
+		hook('action_before',$this); 
 		return true;
 	}
 	public function afterAction($action, &$result)
 	{
 		parent::afterAction($action, $result);
-		hook('action_after'); 
+		hook('action_after',$this); 
 		return true;
 	}
 	function redirect($url){

@@ -24,7 +24,7 @@ class Config extends \app\core\ActiveRecord
 	}   
 	public static function active($query)
     {
-        $query->andWhere('lock = 0');
+        $query->andWhere('`lock` = 0');
     }
  
 }

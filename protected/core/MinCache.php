@@ -47,7 +47,7 @@ class MinCache{
 		}elseif(static::$type == 'apc'){
 			apc_delete($name);
 		}else{
-			@unlink($this->file);
+			@unlink(static::$file);
 		}
 	}
 }

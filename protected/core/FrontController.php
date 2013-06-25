@@ -11,7 +11,7 @@ class FrontController extends Controller
 	public $theme = 'default';
 	function init(){
 		parent::init();  
-	 	
+	 	hook('action_init_front',$this);  
 	}
  
 }

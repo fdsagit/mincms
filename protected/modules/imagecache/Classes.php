@@ -23,9 +23,9 @@ class Classes
 		$name = File::name($file);
 		$ext = File::ext($file);
 		//如果有upload/ 则替换
-		if(substr($name,0,7)=='upload/'){
+		/*if(substr($name,0,7)=='upload/'){
 			$name = substr($name,7);
-		} 
+		} */
 		return base_url()."imagine/".$name."=$s{$ext}";
 	}
 	

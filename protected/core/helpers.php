@@ -1,5 +1,4 @@
-<?php
- 
+<?php 
 /**
 * 
 * @author Sun <mincms@outlook.com>
@@ -10,8 +9,8 @@
 
 /**
 * return URL
-* @param $url String 
-* @param $parmas Array 
+* @param string $url  url path
+* @param array $parmas   url params
 * @return string
 */
 function redirect($url,$parmas=null){ 

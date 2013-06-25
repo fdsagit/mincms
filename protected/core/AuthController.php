@@ -23,7 +23,8 @@ class AuthController extends Controller
 		* ╪стьдё©И
 		*/
 		if(!cache_pre('all_modules'))
-			\app\core\Modules::load();  
+			\app\core\Modules::load();   
+		hook('action_init_auth',$this);  
 	  
 	}
 	/**

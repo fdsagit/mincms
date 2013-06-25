@@ -1,5 +1,13 @@
 <?php 
 return  array (
+  'selected' => '已选中',
+  'active' => '激活',
+  'licensed' => '授权',
+  'author' => '作者',
+  'front theme' => '前端皮肤',
+  'admin theme' => '后端皮肤',
+  'here can set front theme and backend theme' => '这里可以设置前端或后端的皮肤',
+  'themes' => '皮肤',
   'update' => '更新',
   'set filter success' => '设置过滤成功',
   'update content type' => '更新内容类型',
