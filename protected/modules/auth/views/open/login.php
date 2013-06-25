@@ -21,6 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
 	<?php echo $form->field($model, 'password')->passwordInput(); ?>
 	<?php //echo $form->field($model, 'rememberMe')->checkbox(); ?>
 	<div class="form-actions">
-		<?php echo Html::submitButton(__('login'), null, null, array('class' => 'btn btn-primary')); ?>
+		<?php echo Html::submitButton(__('login'),  array('class' => 'btn btn-primary')); ?>
 	</div>
 <?php ActiveForm::end(); ?>

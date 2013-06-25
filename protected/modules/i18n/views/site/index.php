@@ -32,7 +32,7 @@ use yii\widgets\ActiveForm;
 		<h6><?php echo __('translate file');?></h6>
 		<small><?php echo $name.' / '.$id;?> </small>
 		<?php echo Html::dropDownList('lan',$name,$dirs);?>
-		<?php echo Html::submitButton(__('save'), null, null, array('class' => 'btn ','style'=>'
+		<?php echo Html::submitButton(__('save'),  array('class' => 'btn ','style'=>'
 		float: right;
 width: 100px;
 height: 90px;

@@ -35,7 +35,7 @@ if($id>0) $cls = 'btn-success'
 		<?php echo $form->field($model, 'price')->textInput();  ?>  
 		<?php echo $form->field($model, 'img')->textInput();  ?>   
 		<div class="form-actions">
-			<?php echo Html::submitButton(__('save'), null, null, array('class' => "btn $cls")); ?>
+			<?php echo Html::submitButton(__('save'),  array('class' => "btn $cls")); ?>
 		</div> 
 		<?php ActiveForm::end(); ?>
 	</div>

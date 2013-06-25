@@ -17,6 +17,7 @@ class Widget extends \app\modules\content\Widget
   		$arr = Classes::table_columns();  
   		$id = $_GET['id'];  
   		$str = '<div class="control-group">';  
+  		if(!$arr['table']) return;
  		$str .= "<p class='controls'>".Html::dropDownList('Field[relate]',$selected,$arr['table'],
  			array('id'=>'Field_relate'))."</p>"; 
   	 	$str .= "</div>"; 

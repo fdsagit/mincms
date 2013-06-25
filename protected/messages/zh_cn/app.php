@@ -1,5 +1,6 @@
 <?php 
 return  array (
+  'save success' => '操作已成功',
   'selected' => '已选中',
   'active' => '激活',
   'licensed' => '授权',

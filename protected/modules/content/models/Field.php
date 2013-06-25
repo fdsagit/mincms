@@ -160,8 +160,9 @@ class Field extends \app\core\ActiveRecord
 			{ 
 				$li[$vo] = $vo;
 				$cls = "\app\modules\content\widget\\$vo\widget";
-				if(method_exists($cls,'content_type'))
+				if(method_exists($cls,'content_type')  ){  
 					$rt[$vo] = $cls::content_type($selected);
+				}
 			}
 		}
 		if($flag === true)

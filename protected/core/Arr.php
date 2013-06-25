@@ -78,8 +78,16 @@ class Arr
 	$d = \app\core\Arr::tree($out);
 	echo 'out:<br>';
 	dump($d);
+	
+	$all = Classes::all('taxonomy',array('orderBy'=>'sort desc,id desc'),true);   
+ 	foreach($all as $v){
+		$taxonomy[$v->id] = $v;
+	} 
+	$all = \app\core\Arr::tree($taxonomy); 
+	
 	*/
-	static function tree($data=array(),$value='name',$id='id',$pid='pid',$root=0){    
+	static function tree($data=array(),$value='name',$id='id',$pid='pid',$root=0){  
+		static::$tree = array();
 		$ids = static::_tree_id($data,$value,$id,$pid,$root);    
 		$out = static::loop($data,$ids,$value);  
 		return $out;
@@ -95,7 +103,8 @@ class Arr
 		$j++; 
 		if(is_array($ids)){
 			foreach($ids as $id=>$vo){  
-				static::$tree[$id] = $span . $data[$id][$value]; 
+				$vi = (array)$data[$id];
+				static::$tree[$id] = $span . $vi[$value]; 
 				static::loop($data,$vo,$value,$j); 
 			}
 			$j = 0; 
@@ -116,7 +125,7 @@ class Arr
 	*/
 	static function _tree_id($data=array(),$value='name',$id='id',$pid='pid',$root=0){  
 		foreach($data as $v){  
-			$v = (object)$v;
+			$v = (object)$v;  
 			if($v->$pid == $root){   
 				$s = static::_tree_id($data,$value,$id,$pid,$v->id);    
 				$_tree[$v->$id] = $s;  

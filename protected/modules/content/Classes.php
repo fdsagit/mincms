@@ -11,7 +11,7 @@ use app\modules\content\models\FieldView;
  */
 class Classes
 {
-	static function all($slug,$params=array()){ 
+	static function all($slug,$params=array(),$backend=false){ 
 		$cacheID = "module_content_class_pager_list".$slug;
 		if($params){
 			$cacheID .=json_encode($params);
@@ -45,7 +45,11 @@ class Classes
 				$all = DB::queryAll($sql); 
 			}  
 			foreach($all as $model){
-				$node = static::one($slug,$model['id']);
+				if(true == $backend){
+					$node = static::_one($slug,$model['id']);
+				}else{
+					$node = static::one($slug,$model['id']);
+				}
 				$node->id = $model['id'];
 				$node->uid = $model['uid'];
 				$node->created = $model['created'];
@@ -327,7 +331,10 @@ class Classes
 			$return = $all; 
 		}else{
 			$relate = str_replace('node_' , '' ,$relate);  
-		
+			if($relate && strpos($relate,'taxonomy:')!==false){
+				$relate = substr($relate,0,strpos($relate,':'));
+			}
+		 
 			if(is_array($v) ){ 
 				if( count($v) < 1 ) return ;
 				foreach($v as $_v){	
@@ -356,10 +363,14 @@ class Classes
 	 		//data to [relate] like [node_post_relate]
 	 		$relate = $table.'_relate'; 
 			$structs = static::structure($slug); 
+		  	if(!$structs) return;
 			foreach($structs as $k=>$v){  
 				$fid = $v['fid'];//字段ID 
 				$table = "content_".$v['mysql'];  
 				$is_relate = $v['relate']; //判断是不是关联表的值
+				if($is_relate && strpos($is_relate,'taxonomy:')!==false){
+					$is_relate = substr($is_relate,0,strpos($is_relate,':'));
+				} 
 				unset($one); 
 				$all = DB::all($relate,array(
 					'where'=>array(

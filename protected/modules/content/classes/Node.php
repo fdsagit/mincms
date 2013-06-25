@@ -96,6 +96,7 @@ class Node{
 		 		)); 
 	 		$nid = DB::id();
  		}   
+ 		
  		foreach($structs as $k=>$v){ 
  			if($value = $model->$k){ //属性有值时 才会查寻数据库
  				$fid = $v['fid'];//字段ID
@@ -148,7 +149,7 @@ class Node{
  		 				if(! $_check_relate[$table][$fid] )
  		 					$value = static::__save_array($table , $_v ,$relate ,$fid ,$nid);  
  		 			 	else
- 		 			 		$value = $_v; 
+ 		 			 		$value = $_v;  
  		 				$one = DB::one($relate,array( 
 				 				'where'=>array(
 					 				'nid'=>$nid ,
@@ -181,13 +182,12 @@ class Node{
 		cache($cacheId,false);
 		$cacheId = "module_content_node_{$name}_{$nid}";
 		cache($cacheId,false);
-		// create cache
-		
+		// create cache 
 		Classes::one($name,$nid);
 	 	Classes::_one($name,$nid);
 		if(true === $return){ 
 			return $nid;
-		}
+		} 
 		exit($out);  
  	}
  	static function __save_array($table , $_v ,$relate ,$fid ,$nid){

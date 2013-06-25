@@ -34,7 +34,7 @@ $form = ActiveForm::begin(array(
 <?php }?>
 	
 <div class="form-actions">
-	<?php echo Html::submitButton(__('save'), null, null, array('class' => 'btn ')); ?>
+	<?php echo Html::submitButton(__('save'),  array('class' => 'btn ')); ?>
 </div>
 </p>
 <?php ActiveForm::end();

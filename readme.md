@@ -19,19 +19,6 @@ QQ群：40933125
 ```
 after install please visit /public or set public dir as root
 
-###Work On Yii 2.0 Public Preview 
-```
-protected/      application code [项目代码]
-  core/       core namespace extend yii namespace code or widgets [继承部分yii核心类，方便使用与更新]
-public/         enter script [入口]
-schema/         database [数据库]
-```
-### Check requirements [检查环境是否可用]
-``` 
-visit /requirements.php  
-git clone https://github.com/yiisoft/yii2
-git pull https://github.com/yiisoft/yii2 	
-```
  
 
 

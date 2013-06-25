@@ -115,7 +115,7 @@ $form = ActiveForm::begin(array(
 <?php echo  $form->field($model, 'description')->textArea();  ?>
 
 <div class="form-actions">
-	<?php echo Html::submitButton(__('save'), null, null, array('class' => 'btn ')); ?>
+	<?php echo Html::submitButton(__('save'),  array('class' => 'btn ')); ?>
 </div>
  
 <?php ActiveForm::end(); 

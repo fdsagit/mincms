@@ -99,7 +99,7 @@ foreach($cols as $k => $v){
 	 
 	<?php }}?>
 <div class="form-actions">
-	<?php echo Html::submitButton(__('filter'), null, null, array('class' => 'btn ')); ?>
+	<?php echo Html::submitButton(__('filter'), array('class' => 'btn ')); ?>
 	&nbsp;&nbsp;
 	<a href="<?php echo url('content/node/index',array('name'=>$slug,'rest'=>1));?>" class='btn'>
 		<?php echo __('reset filter'); ?>
