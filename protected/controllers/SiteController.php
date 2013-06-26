@@ -17,9 +17,9 @@ class SiteController extends FrontController
  
 	public function actionIndex()
 	{      
-		$a = \app\modules\content\Classes::_one('post',13); 
+		/*$a = \app\modules\content\Classes::_one('post',13); 
 		dump($a);
-		dump(node('post',13));exit;
+		dump(node('post',13));exit;*/
 		
 		$this->active = 'site.index';  
 		return $this->render('index');
