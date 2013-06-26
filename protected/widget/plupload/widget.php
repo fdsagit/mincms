@@ -10,6 +10,7 @@ class Widget extends \yii\base\Widget
  	public $url;
  	public $field='field';//字段名
  	public $values;//image values
+ 	public $ext = 'jpg,gif,png';
 	function run(){  
 		$base = publish(__DIR__.'/assets'); 
  		js_file($base.'/browserplus-min.js'); 
@@ -29,8 +30,7 @@ class Widget extends \yii\base\Widget
 		flash_swf_url : '".$base."/plupload.flash.swf',
 		silverlight_xap_url : '".$base."plupload.silverlight.xap',
 		filters : [
-			{title : \"Image files\", extensions : \"jpg,gif,png\"},
-			{title : \"Zip files\", extensions : \"zip\"}
+			{title : \"".__('choice file')."\", extensions : \"".$this->ext."\"} 
 		],
 	 
 	});
@@ -74,10 +74,10 @@ class Widget extends \yii\base\Widget
 		data = data.response;  
 	 	$('#".$filelist."').append(data); 
 		$('#' + file.id + \" \").html(\"\");
-		plupload_after();
+		plupload_after_".md5($this->field)."();
 	});
-	plupload_after();
-	function plupload_after(){
+	plupload_after_".md5($this->field)."();
+	function plupload_after_".md5($this->field)."(){
 		$('#".$container." .file .icon-remove').click(function(){
 			$(this).parent('div.file:first').remove();
 		});

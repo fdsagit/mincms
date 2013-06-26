@@ -1,4 +1,5 @@
 <div id="<?php echo $container;?>">
+	<a id="<?php echo $pickfiles;?>" href="#" class='clear'><?php echo __('select file');?></a>
 	<div id="<?php echo $filelist;?>">
 		<?php if($values){
 			foreach($values as $v){?>
@@ -11,8 +12,8 @@
 		</div>
 		<?php }}?>
 	</div> 
-	<div style="clear:both;"></div>
-	<a id="<?php echo $pickfiles;?>" href="#"><?php echo __('select file');?></a>
+	
+	
 </div>
 <?php
 css('

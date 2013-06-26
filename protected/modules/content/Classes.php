@@ -282,7 +282,7 @@ class Classes
 			} 
 		 
 			foreach($models as $model){
-				$node = static::one($slug,$model['id']);
+				$node = static::one($slug,$model['id']); 
 				$node->id = $model['id'];
 				$node->uid = $model['uid'];
 				$node->created = $model['created'];
@@ -333,14 +333,13 @@ class Classes
 			$relate = str_replace('node_' , '' ,$relate);  
 			if($relate && strpos($relate,'taxonomy:')!==false){
 				$relate = substr($relate,0,strpos($relate,':'));
-			}
-		 
+			} 
 			if(is_array($v) ){ 
 				if( count($v) < 1 ) return ;
 				foreach($v as $_v){	
 					$r = (array)static::_one($relate,$_v);   
 					if($r)
-						$vo[] = Arr::first($r);
+						$vo[$_v] = Arr::first($r);
 				}
 				$return = $vo;
 			}else{ 
@@ -351,6 +350,12 @@ class Classes
 			
 		}
  		return $return;
+	
+	}
+	// check field value is array
+	static function _value_array($widget){
+		$widget = 'app\modules\content\widget\\'.$widget.'\Widget';  
+		return $widget::value_type(); 
 	}
 	/**
 	* load one full data
@@ -372,38 +377,41 @@ class Classes
 					$is_relate = substr($is_relate,0,strpos($is_relate,':'));
 				} 
 				unset($one); 
+				 
 				$all = DB::all($relate,array(
 					'where'=>array(
 						'nid'=>$nid,
 						'fid'=>$fid,
 					),
 					'orderBy'=>'id asc'
-				)); 
+				));  
 				if(count($all) == 1){
 					$one = $all[0]['value'];
-				}else{
+				}else{ 
 					foreach($all as $al){
-						$one[] = $al['value'];
+						$one[$al['value']] = $al['value'];
 					}
 				} 
+				
 				$batchs[$table][$v['slug']] = $one;  
 				if($is_relate)
 					 $new_relate[$v['slug']]= $is_relate;
 	 		} 
-	 	 	$row = (object)array();  
+	 	 	$row = (object)array();   
+	 	 	
 			foreach($batchs as $table=>$value_ids){
 			 	foreach($value_ids as $field_name=>$_id){ 
 			 		$condition = array();
 			 		$condition['where'] = array(
 					 	'id'=>$_id
-					);
+					); 
 					if(is_array($_id)){ 
 						$condition['orderBy']  = array('FIELD (`id`, '.implode(',',$_id).')'=>''); 
 					} 
 					if($new_relate[$field_name]) { 
 					 	$one = $_id;
-					}else{
-						$all = DB::all($table,$condition);   
+					}else{ 
+						$all = DB::all($table,$condition);    
 						if(count($all) == 1){
 							$one = $all[0]['value'];
 						}else{ 
@@ -412,6 +420,17 @@ class Classes
 								$one[] = $al['value'];
 							}  
 						}  
+					}
+					$rt = static::_value_array($structs[$field_name]['widget']);
+					if($rt){
+						$d = $one;
+						unset($one);
+						if($d){
+							if(!is_array($d))
+								$one[$d] = $d;
+							else
+								$one = $d;
+						}
 					}
 					if($one)
 						$row->$field_name = $one; 
@@ -437,7 +456,13 @@ class Classes
 				 	'resize'=>array(160,160)
 				 ));
 			 }
-		} 
+		} else{
+			if(is_array($value)){
+				return implode($value,',');
+			}
+			return $value;
+			
+		}
 	}
 	static function table_columns(){ 
 	 	$all = DB::all('content_type_field',array('where'=>array('pid'=>0)));

@@ -25,9 +25,9 @@ class Widget extends \app\modules\content\Widget
 			
  			$all = DB::all('file',$condition);  
  		}
- 		echo widget('plupload',array(
- 			'field'=>$id, 
- 			'values'=>$all
- 		));	 
+ 		$data['id'] = $id;
+ 		$data['all'] = $all;
+ 		$data['name'] = $name;
+ 		echo $this->render('@app/modules/content/widget/image/view',$data);	 
 	}
 }

@@ -1,6 +1,7 @@
 <?php 
 namespace app\modules\content; 
 use app\modules\content\models\NodeActiveRecord;
+use app\core\Arr;
 class Widget extends \yii\base\Widget
 {
 	public $label;
@@ -28,5 +29,37 @@ class Widget extends \yii\base\Widget
   		else
   			$this->value = $this->model->$name;
   	}
+  	
+  	function multiple($values,$type = 'dropDownList'){  
+ 		$id = "nodeactiverecord-".$this->name; 
+ 		$str = ""; 
+ 		if($this->value){
+ 			if(is_array($this->value)){ 
+ 				$sort = $values;
+ 				unset($values);
+ 				foreach(array_keys($this->value) as $i) {
+ 					$values[$i] = $sort[$i];
+ 				 	unset($sort[$i]);
+ 				}
+ 				$values = $sort+$values;  
+ 				$str = implode($this->value,','); 
+ 			}else
+ 				$str = $this->value;
+ 		}
+ 	 	if(!$values) $values = array();
+ 		echo $this->form->field($this->model,$this->name.'[]')->dropDownList($values,array('multiple'=>'multiple')); 
+ 		js("
+ 			var ret = [".$str."];
+ 			$('#".$id." option').each(function(){
+ 				var i = $(this).val(); 
+ 				if(in_array(i, ret)){
+ 					$(this).attr('selected',true);
+ 				}
+ 			});
+ 		"); 
+  	}
+  	function value_type(){
+	 	 return ;
+	}
   	 
 }
