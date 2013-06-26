@@ -1,8 +1,7 @@
 # windows thumbnail cache
 Thumbs.db 
 .DS_Store
-/formbuiler
-/protected/modules/document
+/formbuiler 
 /public/themes/ljftaichi.com 
 /public/imagine
 /protected/controllers/DefaultController.php
