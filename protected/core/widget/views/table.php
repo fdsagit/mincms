@@ -1,5 +1,8 @@
 <?php if(true===$create){?>
-<p><a href="<?php echo url_action('create');?>" class='label label-info'><?php echo __('create');?></a></p>
+<p><a href="<?php if(!$create_url){
+			 echo url_action('create');
+		 } else { echo $create_url;}?>" 
+	class='label label-info'><?php echo __('create');?></a></p>
 <?php }?>
 <table class="table table-hover table-bordered">
   <thead>

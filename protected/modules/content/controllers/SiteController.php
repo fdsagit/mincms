@@ -89,6 +89,9 @@ class SiteController extends \app\core\AuthController
 	{  
 		$this->view->title = __('update content type') ."#".$id;
 		$model = Field::find($id);
+		if($model->pid > 0 ){
+			$p = Field::find($model->pid);
+		}
 	 	$model->scenario = 'all';
 		if ($this->populate($_POST, $model) && $model->validate()) { 
 		 	$model->save(); 
@@ -98,6 +101,7 @@ class SiteController extends \app\core\AuthController
 		return $this->render('form', array(
 		   'model' => $model, 
 		   'name'=>'content',
+		    'p'=>$p,
 		   'widget'=>$this->widget
 		));
 	}
@@ -112,10 +116,12 @@ class SiteController extends \app\core\AuthController
 	public function actionIndex()
 	{    
 		$rt = \app\core\Pagination::run('\app\modules\content\models\Field','active');  
- 		
+ 		if($_GET['pid'])
+ 			$model = Field::find((int)$_GET['pid']);
 		return $this->render('index', array(
 		   'models' => $rt->models,
 		   'pages' => $rt->pages,
+		   'model'=>$model
 		));
 	}
 

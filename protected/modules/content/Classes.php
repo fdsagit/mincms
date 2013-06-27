@@ -452,9 +452,7 @@ class Classes
 		if($relate == 'file'){  
 			 $value = Arr::first($value); 
 			 if(is_array($value) && $value['path']){
-				 return image($value['path'],array(
-				 	'resize'=>array(160,160)
-				 ));
+				 return \app\core\File::input_one($value,$field ,false);
 			 }
 		} else{
 			if(is_array($value)){
@@ -490,12 +488,12 @@ class Classes
 		$out = cache($cacheId);
 		if(!$out){
 	 		$one = DB::one('content_type_field',array(
-	 				'where'=>array('slug'=>$slug),
+	 				'where'=>array('slug'=>$slug,'pid'=>0),
 	 				'orWhere'=>array('id'=>$slug),
 	 		));
 	 		$all = DB::all('content_type_field',array(
 	 			'where'=>array('pid'=>$one['id'])
-	 		)); 
+	 		));   
 	 		$field_id = $one['id'];
 	 		$model = FieldView::find()->where(array('fid'=>$field_id))->one(); 
 	 		$show_list = $model->list;

@@ -11,6 +11,7 @@ class Widget extends \yii\base\Widget
  	public $field='field';//字段名
  	public $values;//image values
  	public $ext = 'jpg,gif,png';
+ 	public $max_file_size = '10mb';
 	function run(){  
 		$base = publish(__DIR__.'/assets'); 
  		js_file($base.'/browserplus-min.js'); 
@@ -20,12 +21,12 @@ class Widget extends \yii\base\Widget
  		$filelist = 'f_'.md5(uniqid()).mt_rand(0,900000);
  		$pickfiles = 'p_'.md5(uniqid()).mt_rand(0,900000);
  		js("
- 			var uploader = new plupload.Uploader({
+ 			var uploader_".md5($this->field)." = new plupload.Uploader({
 		runtimes : 'gears,html5,flash,silverlight,browserplus',
 		browse_button : '".$pickfiles."',
 		container : '".$container."',
 		multipart_params:{field:'".$this->field."'},
-		max_file_size : '10mb',
+		max_file_size : '".$this->max_file_size."',
 		url : '".$this->url."',
 		flash_swf_url : '".$base."/plupload.flash.swf',
 		silverlight_xap_url : '".$base."plupload.silverlight.xap',
@@ -38,29 +39,29 @@ class Widget extends \yii\base\Widget
  
 
 	$('#uploadfiles').click(function(e) {
-		uploader.start();
+		uploader_".md5($this->field).".start();
 		e.preventDefault();
 	});
 
-	uploader.init();
+	uploader_".md5($this->field).".init();
 
-	uploader.bind('FilesAdded', function(up, files) {
+	uploader_".md5($this->field).".bind('FilesAdded', function(up, files) {
 		$.each(files, function(i, file) {
 			$('#".$filelist."').append(
 				'<div id=\"' + file.id + '\">' +
 				file.name + ' (' + plupload.formatSize(file.size) + ') <b></b>' +
 			'</div>');
-			uploader.start();  
+			uploader_".md5($this->field).".start();  
 		});
 
 		up.refresh(); // Reposition Flash/Silverlight
 	});
 
-	uploader.bind('UploadProgress', function(up, file) {
+	uploader_".md5($this->field).".bind('UploadProgress', function(up, file) {
 		$('#' + file.id + \" b\").html(file.percent + \"%\");
 	});
 
-	uploader.bind('Error', function(up, err) {
+	uploader_".md5($this->field).".bind('Error', function(up, err) {
 		$('#".$filelist."').append(\"<div>Error: \" + err.code +
 			\", Message: \" + err.message +
 			(err.file ? \", File: \" + err.file.name : \"\") +
@@ -69,7 +70,7 @@ class Widget extends \yii\base\Widget
 
 		up.refresh(); // Reposition Flash/Silverlight
 	});
-	uploader.bind('FileUploaded', function(up, file,data) {  
+	uploader_".md5($this->field).".bind('FileUploaded', function(up, file,data) {  
 		data = eval(data);
 		data = data.response;  
 	 	$('#".$filelist."').append(data); 

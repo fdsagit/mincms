@@ -126,44 +126,54 @@ class File extends \yii\helpers\Html
 	*/
 	static function input($files,$field){
 	 	 if(!$files)return; 
-	 	 foreach($files as $f){ $f = (object)$f; 
-		 	$tag .= "<div class='file'><span class='icon-remove hander'></span>
-		 	<input type='hidden' name='".$field."[]' value='".$f->id."' >";
+	 	 foreach($files as $f){ 
+		 	$tag .= static::input_one($f,$field);
+ 		}
+ 		 
+ 		return $tag;
+	 }
+	 static function input_one($f,$field,$is_tag = true){
+	 	
+	 	$f = (object)$f; 
+	 	if(true === $is_tag){
+		 	$tag = "<div class='file img-polaroid'><span class='icon-remove hander'></span>
+			 	<input type='hidden' name='".$field."[]' value='".$f->id."' >";
+		}
 			$flag = false;
 			if(strpos($f->type,'image')!==false){
 				$flag = true;  
 				$tag .= "<a href=".base_url().$f->path."  '>"
 				.image($f->path,array(
-					'resize'=>array(160,160)
+					'resize'=>array(160,120)
 				))."</a>";
 			} 
 			else if(in_array(File::extension($f->path),array('flv','mp4','avi','rmvb','webm'))){
 				$flag = true;
-				$tag .= "<img src='".base_url().'/img/video.png'."' />";
+				$tag .= "<img src='".image_url('img/video.png',array('resize'=>array(160,120,true)))."' />";
 			}
 			
 			switch (File::extension($f->path)) {
 				case 'zip': 
-					$tag .= "<img src='".base_url().'/img/zip.png'."' />";
+					$tag .= "<img src='".image_url('img/zip.png',array('resize'=>array(160,120,true)))."' />";
 					break;
 				case 'txt': 
-					$tag .= "<img src='".base_url().'/img/txt.png'."' />";
+					$tag .= "<img src='".image_url('img/txt.png',array('resize'=>array(160,120,true)))."' />";
 					break;
 				case 'pdf': 
-					$tag .= "<img src='".base_url().'/img/pdf.png'."' />";
+					$tag .= "<img src='".image_url('img/pdf.png',array('resize'=>array(160,120,true)))."' />";
 					break;
 				case 'doc': 
-					$tag .= "<img src='".base_url().'/img/word.png'."' />";
+					$tag .= "<img src='".image_url('img/word.png',array('resize'=>array(160,120,true)))."' />";
 					break;
 				default:
 					if(false === $flag)
-						$tag .= "<img src='".base_url().'/img/none.png'."' />";
+						$tag .= "<img src='".image_url('img/none.png',array('resize'=>array(160,120,true)))."' />";
 					break;
 
 			} 
-			$tag .="</div>"; 
- 		}
- 		 
- 		return $tag;
+			if(true === $is_tag){
+				$tag .="</div>"; 
+			}
+			return $tag;
 	 }
 }
