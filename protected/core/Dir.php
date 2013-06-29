@@ -1,23 +1,28 @@
 <?php namespace app\core;  
 /**
-*   
-* 
-* @author Sun < mincms@outlook.com >
+* dir class
+* @author Sun <mincms@outlook.com>
+* @copyright 2013 The MinCMS Group
+* @license http://mincms.com/licenses
+* @version 1.0.1
 */
 class Dir 
 { 
-    //保存数组在路径的静态变量中
+    /**
+    * keep list array
+    */
 	static $kep_list_file; 
 	/**
-	* 使用 
-	* Dir::listFile($dir,$contain);
-	* $dir 为完整的物理路径
-	* $search 为要搜索的关键字，允许为空。如要多个并的关系
-	* 请加,英文下的豆号分隔
-	* $uncontain 为必定不包含的字符,与$contain传参是一样的。
-	* 支持无限目录遍历
-	* 允许在目录中搜索关键字，对所有的目录
-	* $id 2012年2月8日
+	* list dir files and dirs
+	*
+	* Example:
+	* <code> 
+	* use \app\core\Dir;
+	* Dir::listFile('public'); 
+	* </code>  
+	* @param  string $dir   controller/action
+	* @param  string $contain  seach key. like 'Contorller' or 'Controller,Model' 
+	* @param  string $uncontain  uncontian key.
 	*/ 
 	static	function listFile($dir,$contain=null,$uncontain=null)
 	{    
@@ -71,7 +76,9 @@ class Dir
 		return self::$kep_list_file;
 	}
 	/**
-	* 该函数为搜索目录所用
+	* inner function can't use as Function.
+	*
+	* it is for listFile function
 	*/
 	static function _listFile($value,$string){
 		$tag = true;
@@ -89,11 +96,10 @@ class Dir
 		}
 		return $tag;
 	}	
-	// 以上为遍历目录功能
-	/*------------------------------------------------*/
+ 
 
 	/**
-	 * 创建一个目录树  
+	 * mkdir
 	 */
 	static function mkdir($dir, $mode = 0755)
 	{

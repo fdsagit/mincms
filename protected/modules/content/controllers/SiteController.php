@@ -74,7 +74,7 @@ class SiteController extends \app\core\AuthController
 		$this->view->title = __('create content type');
 		$model = new Field();
 	 	$model->scenario = 'all';
-		if ($this->populate($_POST, $model) && $model->validate()) { 
+		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save();
 		 	flash('success',__('create sucessful'));
 			refresh();
@@ -93,7 +93,7 @@ class SiteController extends \app\core\AuthController
 			$p = Field::find($model->pid);
 		}
 	 	$model->scenario = 'all';
-		if ($this->populate($_POST, $model) && $model->validate()) { 
+		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save(); 
 		 	flash('success',__('update sucessful'));
 			refresh();

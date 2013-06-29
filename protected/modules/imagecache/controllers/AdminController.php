@@ -28,7 +28,7 @@ class AdminController extends \app\core\AuthController
 		$model = new Image();
 	 	$model->scenario = 'all';
 	 	
-		if ($this->populate($_POST, $model) && $model->validate()) {  
+		if ($model->load($_POST) && $model->validate()) {  
 		 	$model->save(); 
 		 	flash('success',__('create sucessful'));
 			$this->redirect(url('imagecache/admin/index'));
@@ -43,7 +43,7 @@ class AdminController extends \app\core\AuthController
 		$this->view->title = __('update image') ."#".$id;
 		$model = Image::find($id);
 	 	$model->scenario = 'all';
-		if ($this->populate($_POST, $model) && $model->validate()) { 
+		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save();
 		 	flash('success',__('update sucessful'));
 			$this->redirect(url('imagecache/admin/index'));

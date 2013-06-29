@@ -1,18 +1,14 @@
 <?php namespace app\core;  
 
 /**
-public static function active($query)
-{
-	$pid = (int)$_GET['pid']?:0;
-    $query->andWhere('pid = '.$pid);
-}
-<div class='pagination'>
-<?php  echo \yii\widgets\LinkPager::widget(array(
-      'pagination' => $pages,
-  ));?>
-</div>
-* @author Sun < mincms@outlook.com >
+* Pagination
+* @author Sun <mincms@outlook.com>
+* @copyright 2013 The MinCMS Group
+* @license http://mincms.com/licenses 
+* @version 1.0.1 
 */
+
+
 class Pagination  
 {  
 	/**
@@ -55,15 +51,16 @@ class Pagination
 	 
  		
 	*/
-	static function next($count){
+	static function next($count,$size=10){
 		$page = (int)$_GET['page']?:1;
-		$next = $page+1;
-		if($page<=$count){
+		$next = $page+1; 
+		$pages = ceil($count/$size);
+		if($page<=$pages){
 			$params = array('page'=>$next);
 			if($_GET){
 				$params = array_merge($_GET,$params);
 			}
-			$url = url_action(null,$params);
+			$url = url_action(null,$params); 
 			echo "<div   class='pagination' style='display:none;'><a href='".$url."'></a></div>";
 		}else{
 			throw new Exception('exception');
@@ -108,23 +105,24 @@ class Pagination
 		return array($post,$p);
 	}
 	/**
-	*
-	Controller:
-	$rt = \app\core\Pagination::run('\app\modules\core\models\Config');  
- 		
-	return $this->render('index', array(
-	   'models' => $rt->models,
-	   'pages' => $rt->pages,
-	));
-	View:
-	echo app\core\widget\Table::widget(array(
-		'models'=>$models,
-		'pages'=>$pages,
-		'fields'=>array('slug','memo')	,
-		'title'=>__('do you want remove config')
-	));
-	*
-	*/
+	*   Pagination 
+	* 
+	*	Controller:
+	*   <code>
+	*	$rt = \app\core\Pagination::run('\app\modules\core\models\Config');  
+	*	return $this->render('index', array(
+	*	   'models' => $rt->models,
+	*	   'pages' => $rt->pages,
+	*	));
+	*	View:
+	*	echo app\core\widget\Table::widget(array(
+	*		'models'=>$models,
+	*		'pages'=>$pages,
+	*		'fields'=>array('slug','memo')	,
+	*		'title'=>__('do you want remove config')
+	*	));
+	* </code>
+	*/ 
 	static function run($model,$scope=null,$config=array('pageSize'=>10)){ 
 		$query = $model::find(); 
 		if($scope){

@@ -15,7 +15,7 @@ class UserController extends \app\core\AuthController
 		$this->view->title = __('create user');
 		$model = new \app\modules\auth\models\User();
 	 	$model->scenario = 'create';
-		if ($this->populate($_POST, $model) && $model->validate()) { 
+		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save();
 		 	flash('success',__('create user sucessful'));
 			refresh();
@@ -30,7 +30,7 @@ class UserController extends \app\core\AuthController
 		$this->view->title = __('update user') ."#".$id;
 		$model = \app\modules\auth\models\User::find($id);
 	 	$model->scenario = 'update';
-		if ($this->populate($_POST, $model) && $model->validate()) { 
+		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save();
 		 	flash('success',__('update password sucessful'));
 			refresh();

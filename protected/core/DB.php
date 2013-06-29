@@ -36,16 +36,23 @@ class DB{
 	static function id(){ 
 		return \Yii::$app->db->getLastInsertID();
 	}
-	/**  
-	$data = (array)node_pager('post');
-	return $this->render('test',$data);
-		
-	$models foreach
-	<div class='pagination'>
-	<?php  echo \app\core\LinkPager::widget(array(
-	      'pagination' => $pages,
-	  ));?>
-	</div>
+	
+	
+	/**
+	* DB pagination
+	*
+	* Example  
+	* <code>
+	*   $data = \app\core\DB::pagination('file');
+	*	return $this->render('test',$data);
+	*	foreach($models as $v){	
+	*	}
+	*	<div class='pagination'>
+	*	<?php  echo \app\core\LinkPager::widget(array(
+	*	      'pagination' => $pages,
+	*	  ));?>
+	*	</div>
+	* </code>
 	*/
 	static function pagination($table,$params=array(),$config=array('pageSize'=>10),$route=null){
 		$one = static::one($table,array(

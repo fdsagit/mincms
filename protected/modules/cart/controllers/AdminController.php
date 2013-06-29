@@ -28,7 +28,7 @@ class AdminController extends \app\core\AuthController
 		else
 			$model = new Tables();
 	 	$model->scenario = 'all'; 
-		if ($this->populate($_POST, $model) && $model->validate()) {  
+		if ($model->load($_POST) && $model->validate()) {  
 		 	$model->save();
 		 	if($id>0)
 		 		flash('success',__('update sucessful'));

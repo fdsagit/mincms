@@ -12,6 +12,8 @@ class FrontController extends Controller
 	function init(){
 		parent::init();  
 	 	hook('action_init_front',$this);  
+	 	\Yii::$app->language = 'en';
 	}
+ 
  
 }

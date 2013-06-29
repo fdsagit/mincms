@@ -54,46 +54,5 @@
       </div>
      
      
-     View default <label class='label label-info ' id="composer" >composer.json</label><br>
-     <pre class="prettyprint lang-js composer-show" style="display:none;">
-     	 { 
-	"require": {
-		"php": ">=5.3.0",
-		"yiisoft/yii2": "dev-master",
-		"yiisoft/yii2-composer": "dev-master",
-		"michelf/php-markdown":"1.3.x-dev",
-		"swiftmailer/swiftmailer": "5.0.*",
-		"imagine/Imagine":"dev-master"
-	},
-        "autoload": {
-	        "classmap": [
-	            
-	        ],
-	    	"files": [
-	            "protected/core/helpers.php"
-	    	],
-	        "psr-0": {
-	            "Michelf": "" ,
-		    "Imagine": "lib/"
-	        }
-	 }, 
-	"extra": {
-		"writable": [
-			"runtime",
-			"public/assets"
-		] 
-	}
-}
+   
  
-	 </pre>
-<?php 
- js("
-	 $('#composer').click(function(){  
-	 	if($('.composer-show').css('display')=='block'){
-	 		$('.composer-show').hide();
-	 	}else{
-	 		$('.composer-show').show();
-	 	}
-	 });
- ");	
-?>	

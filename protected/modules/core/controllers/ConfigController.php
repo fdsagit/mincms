@@ -16,7 +16,7 @@ class ConfigController extends \app\core\AuthController
 		$this->view->title = __('create config');
 		$model = new Config();
 	 	$model->scenario = 'all';
-		if ($this->populate($_POST, $model) && $model->validate()) { 
+		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save();
 		 	flash('success',__('create config sucessful'));
 			refresh();
@@ -31,7 +31,7 @@ class ConfigController extends \app\core\AuthController
 		$this->view->title = __('update config') ."#".$id;
 		$model = Config::find($id);
 	 	$model->scenario = 'all';
-		if ($this->populate($_POST, $model) && $model->validate()) { 
+		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save();
 		 	flash('success',__('update config sucessful'));
 			refresh();

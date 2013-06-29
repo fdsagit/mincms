@@ -1,27 +1,50 @@
 <?php 
 /**
-* 
+* comm functions
 * @author Sun <mincms@outlook.com>
 * @copyright 2013 The MinCMS Group
-* @license personal
 * @license http://mincms.com/licenses
+* @version 1.0.1
 */
 
 /**
-* return URL
-* @param string $url  url path
-* @param array $parmas   url params
-* @return string
+* redirect to other page
+*
+* Example:
+* <code> 
+* redirect( url('site/index') ); 
+* </code>  
+* @param  string $url   controller/action
+* @param  array $parmas  params 
 */
 function redirect($url,$parmas=null){ 
 	return \Yii::$app->response->redirect($url,$parmas);
 }
+/**
+* refresh current page
+*
+* Example:
+* <code> 
+* refresh();
+* </code>  
+*/
 function refresh(){ 
 	return Yii::$app->response->refresh();
 }
 /**
-* show widget from @app/widget
+* call widget ,the widget path under @app\widget
+*
+* Example:
+* <code> 
+* widget('ckeditor',array('tag'=>'ck'));
+* the widget should be exists under
+* @app\widget\ckeditor
+* </code>
+* @param  string $name   widget name
+* @param  array  $params  params
+* @return what's widget return,here will return same.
 */
+
 function widget($name,$params=null){
 	if(strpos($name,'::')!==false){
 		$arr  = explode('::',$name);
@@ -33,10 +56,24 @@ function widget($name,$params=null){
 	$cls = "app\widget\\$name\\$file";
 	return $cls::widget($params);
 }
+/**
+* call core widget. path is @app\core\widget
+*
+* Example:
+* <code> 
+* widget('modal');
+* </code>
+* @param  string $url   controller/action
+* @param  array $parmas  params
+* @return string  what's widget return,here will return same.
+*/
 function core_widget($name,$params=null){
 	$cls = "app\core\widget\\$name";
 	return $cls::widget($params);
 }
+/**
+* call module widget. path is @app\modules\$module\widget\$name 
+*/
 function module_widget($module,$name,$params=null){
 	if(strpos($name,'::')!==false){
 		$arr  = explode('::',$name);
@@ -48,23 +85,46 @@ function module_widget($module,$name,$params=null){
 	return $cls::widget($params);
 }
 /**
-* 设置及取得上级URL
+* get/set return url.
+*
+* Example:
+* <code> 
+* set return url path
+* return_url( url('site/index') );
+* get return url path
+* return_url();
+* </code>
+* @param  string $url  url path. can called url function
 */
 function return_url($url=null){
 	if($url)
 		return \Yii::$app->user->setReturnUrl($url);
 	return host().\Yii::$app->user->returnUrl;
 }
-
+/**
+* check current request is or not ajax request 
+*/
 function is_ajax(){ 
 	return \Yii::$app->request->isAjax ? true:false;
 }
+/**
+* get client ip address
+*/
 function ip(){
 	return \Yii::$app->request->userHostAddress;
 }
 
 /**
-* setting language
+* lauguage settings. it is support backend and front web page language set.
+* it is use cookie and GET request.
+*
+* Example:
+* <code> 
+* language();
+* language('admin_language'); 
+* </code>
+* @param  string $name   key 
+* @return string  current language 
 */
 function language($name='language'){
 	if($_GET[$name]){
@@ -77,15 +137,31 @@ function language($name='language'){
  		return \Yii::$app->language = cookie($name);
  	}
 }
+/**
+* get web host address
+* it is the same as  \Yii::$app->request->hostInfo
+*/
 function host(){
 	return \Yii::$app->request->hostInfo;
 }
  
  
 /**
-* setFlash/getFlash
-* @param  string $type 
-* @param  string $message 
+* get/set flash message
+*
+* Example:
+*
+* set flash message
+* <code> 
+* flash('success',__('success')); 
+* </code>
+* get flash message
+* <code> 
+* flash('success'); 
+* </code>
+* @param  string $type   flash message type
+* @param  array $message  message
+* @return string  if $message is null will return flash message
 */
 function flash($type,$message=null){ 
 	if($message)
@@ -93,42 +169,114 @@ function flash($type,$message=null){
 	return Yii::$app->session->getFlash($type);
 }
 /**
-* logined uid
+* backend administrator user id
+*
+* Example:
+* <code> 
+* uid();
+* </code>
+* @return string  administrator logined user id
 */
 function uid(){
 	return \Yii::$app->user->identity->id;
 }
 /**
-* Check Flash Message Exists Or Not
-* @param  string $type  
+* check flash message type is exists or not.
+*
+* Example:
+* <code> 
+* has_flash('success');
+* </code>
+* @param  string $type   flash message type
+* @return string  true/flase
 */
 function has_flash($type){ 
 	return Yii::$app->session->hasFlash($type); 
 }
 /**
-* Assets Manage
+* publish assets package
+*
+* Example:
+* <code> 
+* $path = publish( __DIR__.'/assets');
+* </code>
+* @param  string $assets   dir 
+* @return string  asset url
 */
 function publish($assets){
 	$base = \Yii::$app->view->getAssetManager()->publish($assets);
 	return $base[1];
 }
+/**
+* generation css link  
+*
+* Example:
+* <code> 
+* css_file('css/admin.css'); 
+* </code>
+* @param  string $url   css file url
+* @param  array $options   view \Yii::$app->view->registerCssFile
+* @param  string $key  view \Yii::$app->view->registerCssFile 
+*/
 function css_file($url, $options = array(), $key = null){
 	\Yii::$app->view->registerCssFile($url, $options , $key); 
 }
+/**
+* generation javascript link  
+*
+* Example:
+* <code> 
+* js_file('js/jquery.js'); 
+* </code>
+* @param  string $url   javascript file url
+* @param  array $options   view \Yii::$app->view->registerJsFile
+* @param  string $key  view \Yii::$app->view->registerJsFile 
+*/
 function js_file($url, $options = array(), $key = null){
 	\Yii::$app->view->registerJsFile($url, $options , $key); 
 }
+/**
+* generation css style  code
+*
+* Example:
+* <code> 
+* css("
+*	#top{
+*		color:blue;
+*	}	
+*  "); 
+* </code>
+* @param  string $css   css style code 
+*/
 function css($css){
 	\Yii::$app->view->registerCss($css); 
 }
+/**
+* generation javascript code  
+*
+* Example:
+* <code> 
+* js("
+	$('#top').hide();
+  "); 
+* </code>
+* @param  string $js   javascript style code 
+*/
 function js($js){
 	\Yii::$app->view->registerJs($js); 
 }
 
 /**
-* create clean url
-* @param  string $url 
-* @param  array $parmas 
+* generation url
+*
+* Example:
+* <code> 
+* url('site/index');
+* url('site/posts',array('id'=>1));
+* </code>
+* @param  string $url   controller/action
+* @param  array $parmas  params
+* @return string  url string
 */
 function url($url,$parmas=null){ 
 	if(true===$url || false===$url){
@@ -139,22 +287,48 @@ function url($url,$parmas=null){
 	}
 	return app\core\Html::url($url,$parmas);
 }
+/**
+* current used theme url
+*/
 function theme_url(){
 	return Yii::$app->view->theme->baseUrl.'/';
 }
+/**
+* current used theme path
+*/
 function theme_path(){
 	return Yii::$app->view->theme->basePath.'/';
 }
+/**
+* this application base url
+*/
 function base_url(){
 	return Yii::$app->request->baseUrl.'/';
 }
+/**
+* this application base path
+*/
 function base_path(){
 	return Yii::$app->basePath.'/';
 }
+/**
+* this application root path. it is relative [public] dir
+*/
 function root_path(){
 	return Yii::$app->basePath.'/../public/';
 }
-
+/**
+* current controller action's url
+*
+* Example:
+* <code> 
+* url_action('index'); 
+* if current controller is site. it is the same as url('site/index')
+* </code>
+* @param  string $url   action
+* @param  array $parmas  params
+* @return string  url path
+*/
 function url_action($url=null,$parmas=null){ 
 	if(!$url)  $url = \Yii::$app->controller->action->id;
 	$url = \Yii::$app->controller->id.'/'.$url;
@@ -164,15 +338,37 @@ function url_action($url=null,$parmas=null){
 	return app\core\Html::url($url,$parmas);
 }
 /**
-* i18n translation
-* @param  string $str 
-* @param  string $file 
+* translation i18n
+*
+* Example:
+* <code> 
+* __('welcome'); 
+* __('webcome','admin');
+* </code>
+* @param  string $message   message should be english
+* @param  array $category  category for translation. default value 'app'
+* @return string  tanslated string.
 */
 function __($message,$category='app',  $params = array(), $language = null){
 	return Yii::t($category, trim($message), $params = array(), $language = null);
 }
 /**
-* set cookie or get cookie
+* get/set cookie
+*
+* Example:
+* 
+* set cookie:
+* <code>  
+* cookie('language','en'); 
+* </code>
+* get cookie:
+* <code> 
+* cookie('language');
+* </code>
+* @param  string $name   cookie name
+* @param  array $value  params
+* @param  string $expire  expire time. default is forever
+* @return string  no $value return cookie value
 */
 function cookie($name,$value=null,$expire=null){  
 	if(false === $value){ 
@@ -186,12 +382,26 @@ function cookie($name,$value=null,$expire=null){
 	$cookie = new \yii\web\Cookie($options);
  	\Yii::$app->response->cookies->add($cookie); 
 }
+/**
+* remove cookie value
+*
+* Example:
+* <code> 
+* remove_cookie('language'); 
+* </code>
+* @param  string $name   cookie name 
+*/
 function remove_cookie($name){ 
 	cookie($name,false);
 }
 /**
-* 加载hook
-* @ $name 一般为 controller model
+* system hook very good for controller hook or others 
+* it is Hook.php file exists on modules/module_name/Hook.php
+*
+* Example:
+* <code>
+* hook('action_init');
+* </code>
 */
 function hook(){
 	$hooks = cache_pre('hooks');
@@ -209,8 +419,8 @@ function hook(){
  
 }
 /**
-* print_r
-* @param  string/object/array $str  
+* dump array style.
+* like print_r
 */
 function dump($str){
 	print_r('<pre>');
@@ -218,32 +428,93 @@ function dump($str){
 	print_r('</pre>');
 } 
 /**
-* before app start run.
-* set cache
+* cache something before application start
+*
+* Example:
+*
+* set cache:
+* <code>  
+* cache_pre('modules',array());
+* </code>
+* get cache:
+* <code>  
+* cache_pre('modules');
+* </code>
+* @param  string $name   cache key
+* @param  string $value  value
+* @return string   
 */
 function cache_pre($name,$value=null){ 
  	return MinCache::set($name,$value);
 }
+/**
+* delete cache
+* @param  string $name   cache key 
+*/
 function cache_pre_delete($name){ 
  	return MinCache::delete($name);
 }
+/**
+* Yii cache 
+*
+* Example:
+*
+* set cache:
+* <code> 
+* cache('a',123);
+* </code>
+* get cache:
+* <code> 
+* cache('a');
+* </code>
+* @param  string $name   cache key
+* @param  string $value  cache value
+* @param  string $expire  expire time. default forever
+* @return string  if $value null, return cache value
+*/
 function cache($name,$value=null,$expire=0){  
 	if($value===false) return \Yii::$app->cache->delete($name);
 	$data = \Yii::$app->cache->get($name);
 	if(!$value) return $data; 
 	\Yii::$app->cache->set($name,$value,$expire); 
 }
+/**
+* encode string
+*
+* Example:
+* <code> 
+* encode('mincms','key');
+* encode('yii');
+* </code>
+* @param  string $data   encode data
+* @param  array $key  encode key
+* @return string  base64_encode string
+*/
 function encode($data, $key=null){
 	if(!$key) $key = \Yii::$app->params['SecurityHelper']; 
 	$code = \yii\helpers\SecurityHelper::encrypt($data, $key);
 	return base64_encode($code);
 }
+/**
+* decode encode value
+*
+* Example:
+* <code> 
+* $code = encode('mincms','a');
+* decode($code, 'a');
+* </code>
+* @param  string $data   encode value
+* @param  array $key  encode key
+* @return string  decode value
+*/
 function decode($data, $key=null){
 	if(!$key) $key = \Yii::$app->params['SecurityHelper'];
 	return \yii\helpers\SecurityHelper::decrypt(base64_decode($data), $key);
 }
 /**
-* 判断是否是只能操作自己添加的记录
+* backend administrator auth check is it option your self?
+* @param  string $value   auth value 
+* @return bool true/false
 */
 function self($value){
 	$in = app\modules\auth\Auth::in(); 
@@ -253,24 +524,36 @@ function self($value){
 		return true;
 	} 
 }
+/**
+* get core config value
+* @param  string $name   config key 
+* @return string  config value
+*/
 function get_config($name){
 	$model = \app\modules\core\models\Config::find(array('slug'=>$name));
 	return $model->body;
 }
 /**
-* module_class('image.Classes.image',$file,$option);
-namespace app\modules\image;  
-class Classes
-{
-	 static function image($args){
-	    $file = $args[1];
-	    $option = $args[2]; 
-		if(is_array($option)){
-			$s = base64_encode(json_encode($option));
-		} 
-		return "/imagine/".$s.$file;
-	}
-} 
+* use module Classes , it is easy create usefull function .
+*
+* Example:
+* <code> 
+* module_class('image.Classes.image','upload/1.jpg',array(
+*	'resize'=>array(160,120)
+*  ));
+* namespace app\modules\image;  
+*	class Classes
+*	{
+*		 static function image($args){
+*		    $file = $args[1];
+*		    $option = $args[2]; 
+*			if(is_array($option)){
+*				$s = base64_encode(json_encode($option));
+*			} 
+*			return "/imagine/".$s.$file;
+*		}
+*	} 
+* </code> 
 */
 function module_class(){
 	$args = func_get_args(); 

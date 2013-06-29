@@ -47,7 +47,7 @@ class GroupController extends \app\core\AuthController
 		$this->view->title = __('create group');
 		$model = new \app\modules\auth\models\Group();
 	 	$model->scenario = 'create';
-		if ($this->populate($_POST, $model) && $model->validate()) { 
+		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save();
 		 	flash('success',__('create group sucessful'));
 			refresh();
@@ -62,7 +62,7 @@ class GroupController extends \app\core\AuthController
 		$this->view->title = __('update group');
 		$model = \app\modules\auth\models\Group::find($id);
 	 	$model->scenario = 'update';
-		if ($this->populate($_POST, $model) && $model->validate()) { 
+		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save();
 		 	flash('success',__('update group sucessful'));
 			refresh();

@@ -75,7 +75,7 @@ $this->registerMetaTag(array('content'=>'自定义内容管理系统,支持多�
     	$menus = array(
     		'site/index'=>'home',
     		'document/site/index'=>'document',
-    		'site/test'=>'demo',
+    		'document/site/test'=>'demo',
     		'auth/open/login'=>'admin login',
     	);
     	foreach($menus as $k=>$v){

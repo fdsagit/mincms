@@ -10,6 +10,14 @@ class Form extends \yii\base\Widget
  	public $slug;
  	public $display = 1; //是否默认显示，1为显示
  	public $top = false;//是否在顶端显示分页
+ 	/**
+ 	*
+ 	* <code>
+	* 	echo module_widget('comment','form',array(
+	* 		'slug'=>'document'
+	* 	));
+	* </code>
+ 	*/
 	function run(){ 
 		if(!$this->slug) {
 			return __('render commnet form failed,slug should be set');

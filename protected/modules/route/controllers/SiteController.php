@@ -33,7 +33,7 @@ class SiteController extends \app\core\AuthController
 		$this->view->title = __('create route');
 		$model = new Route();
 	 	$model->scenario = 'all';
-		if ($this->populate($_POST, $model) && $model->validate()) { 
+		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save();
 		 	flash('success',__('create sucessful'));
 			$this->redirect(url('route/site/index'));
@@ -47,7 +47,7 @@ class SiteController extends \app\core\AuthController
 		$this->view->title = __('update route') ."#".$id;
 		$model = Route::find($id);
 	 	$model->scenario = 'all';
-		if ($this->populate($_POST, $model) && $model->validate()) { 
+		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save();
 		 	flash('success',__('update sucessful'));
 			$this->redirect(url('route/site/index'));

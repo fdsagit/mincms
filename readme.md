@@ -15,7 +15,8 @@
 ### Commication
 
 ```
-QQÈº£º40933125
+QQ groupï¼š40933125
+Email: mincms@outlook.com
 ```
 after install please visit /public or set public dir as root
 

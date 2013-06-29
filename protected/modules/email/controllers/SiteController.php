@@ -15,7 +15,7 @@ class SiteController extends \app\core\AuthController
 	{   
  		$model = new Send;
  		$model->scenario = 'all';
-		if ($this->populate($_POST, $model) && $model->validate()) {
+		if ($model->load($_POST) && $model->validate()) {
 			//send mail
 		 	\app\modules\email\Mailer::send($model->title,$model->body,array($model->to_email=>$model->to_name),$attachment=null);
 		 	flash('success',__('send mail success'));

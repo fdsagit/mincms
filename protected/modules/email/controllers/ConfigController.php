@@ -19,7 +19,7 @@ class ConfigController extends \app\core\AuthController
 	  		$model = new Config();
 	 
 	  	$model->scenario = 'all'; 
-		if ($this->populate($_POST, $model) && $model->save()) {
+		if ($model->load($_POST) && $model->save()) {
 		 	flash('success',__('mail settings success'));
 		 	redirect(url('email/config/index'));
 		} 
