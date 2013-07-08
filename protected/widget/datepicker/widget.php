@@ -19,7 +19,7 @@ class Widget extends \yii\base\Widget
  			$('".$this->tag."').timepicker(".$opts."); 
  		");  
  		js_file("js/jui/jquery-ui.js");
- 		css_file("js/jui/jquery-ui.css"); 
+ 		css_file("js/jui/css/flick/jquery-ui.min.css"); 
  		js_file($base."/jquery-ui-timepicker-addon.js");
  		css_file($base."/css.css");
 	}

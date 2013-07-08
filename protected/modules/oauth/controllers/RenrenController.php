@@ -4,9 +4,11 @@ use app\modules\oauth\libraries\oauth2\Token;
 use app\modules\oauth\libraries\oauth2\Provider\Renren;
 /**
  * ## 人人
- * @author Sun < mincms@outlook.com >
- * @Coprighty  http://mincms.com
- */
+ * @author Sun <mincms@outlook.com>
+ * @copyright 2013 The MinCMS Group
+ * @license http://mincms.com/licenses
+ * @version 2.0.1
+*/
 class RenrenController extends OauthController
 {
  

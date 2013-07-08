@@ -4,8 +4,11 @@ use yii\helpers\Html;
 use app\core\Arr;
 use app\core\DB;
 /**
-* 
-* @author Sun < mincms@outlook.com >
+*  
+* @author Sun <mincms@outlook.com>
+* @copyright 2013 The MinCMS Group
+* @license http://mincms.com/licenses
+* @version 2.0.1
 */
 class Widget extends \app\modules\content\widget\taxonomyOne\Widget
 {  
@@ -18,11 +21,13 @@ class Widget extends \app\modules\content\widget\taxonomyOne\Widget
  		$relate = $this->structure[$name]['relate'];
  		$root = str_replace('taxonomy:','',$relate); 
  		$all = Classes::all('taxonomy',array('orderBy'=>'sort desc,id desc'),true);   
-  	 	foreach($all as $v){
-			$taxonomy[$v->id] = $v;
-		}  
-		$a1[''] = __('please select');    
-  		$all = \app\core\Arr::tree($taxonomy,'name','id','pid',$root);  
+ 		if($all){
+	  	 	foreach($all as $v){
+				$taxonomy[$v->id] = $v;
+			}  
+			$a1[''] = __('please select');    
+	  		$all = \app\core\Arr::tree($taxonomy,'name','id','pid',$root);  
+  		}
   		if(!$all) $all = array(); 
   		else{
   			$all = $a1+$all;

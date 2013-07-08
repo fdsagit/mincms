@@ -55,7 +55,7 @@ class AuthController extends Controller
     	if(is_array($this->allowAccess) && in_array($action_id,$this->allowAccess)) return; 
     	$access = \app\modules\auth\models\User::access($uid);  
     	if(!$access || !in_array($action_id,$access)){
-    	  	throw new \yii\base\HttpException(403,__('access deny'));
+    	  	throw new \Exception(__('access deny'));
     	}
     	
     }

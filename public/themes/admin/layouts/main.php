@@ -22,45 +22,70 @@ js("$(function(){
 	<title><?php echo __('backend admin'); ?></title>
 	<?php $this->head(); 
 	css_file('css/admin.css');
+	css_file(theme_url().'css.css'); 
 	?>
  
 </head>
 <body>
+<?php if(uid() == 1){?>
 <div class="navbar navbar-inverse navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="brand" href="<?php echo url('site/index');?>"><?php echo __('backend admin');?></a>
-      <div class="nav-collapse collapse"> 
-    		<?php echo Menu::widget(array(
-				'options' => array('class' => 'nav '), 
-				'activateParents'=>true,
-				'submenuTemplate'=>'<ul class="dropdown-menu">{items}</ul>',
-				'items' => app\core\Menu::get(),
-			)); ?>
-			
-		 		
-			<div style="padding-top: 6px; float:right;">	
-				<?php echo widget('switchlanguage'); ?>
-			</div>
-      </div><!--/.nav-collapse -->
-      
-    </div>
-  </div>
-</div>
+	  <div class="navbar-inner">
+		    <div class="container"> 
+			      <a class="brand" href="<?php echo url('core/config/index');?>"><?php echo __('backend admin');?></a>
+			      <div class="nav-collapse collapse"> 
+			    		<?php echo Menu::widget(array(
+							'options' => array('class' => 'nav '), 
+							'activateParents'=>true,
+							'submenuTemplate'=>'<ul class="dropdown-menu">{items}</ul>',
+							'items' => app\core\Menu::get(),
+						)); ?> 
+						<div style="padding-top: 6px; float:right;">	
+							<?php echo widget('switchlanguage'); ?>
+						</div>
+			      </div><!--/.nav-collapse -->  
+		  </div>  
+	</div>
 
- 
+<?php }?>
+<div class="navbar <?php if(uid()!=1){?>navbar-fixed-top<?php }?>">
+	  <div class="navbar-inner"  <?php if(uid()==1){?> style="background-image:none;background-color:#fff;border-color:#fff;" <?php }?> >
+		  	   <div class="container">  
+				    <ul class="nav">
+				    <?php 
+				    $all = \app\modules\content\Classes::cck_list();
+				    $active = \app\core\Menu::active(); 
+				    foreach($all as $vo){
+				    	
+				    ?>
+				      <li <?php if($active && in_array('content/node/cck/'.$vo['slug'] , $active)){ ?>
+				        	class="active" <?php }?>
+				      ><a href="<?php echo url('content/node/index',array('name'=>$vo['slug']));?>#table"><?php echo $vo['name'];?></a></li>
+				    <?php } ?>
+				    </ul>
+				    	
+				    <ul class="nav pull-right">
+                     	 
+                       	 <li class="dropdown">
+                       	 	 	<a href="#" data-toggle="dropdown" class="dropdown-toggle"><?php echo \Yii::$app->user->identity->username;?></a> 
+                       			<ul class="dropdown-menu">
+                       				<li><a href="#"><?php echo __('change password');?></a></li>
+                       				<li><a href="<?php echo url('auth/open/logout');?>"><?php echo __('logout');?></a></li>
+                       			
+                       			</ul>
+                       	</li>
+                    </ul>
+		  </div>
+	</div>	  
+</div>
+ </div>
     
-<div class="container" style="margin-top: 60px;">
+<div class="container" <?php if(uid()==1){?>style="margin-top:100px;"<?php }?>>
 	<?php $this->beginBody(); ?> 
 	<?php echo \yii\widgets\Breadcrumbs::widget(array(
 		'homeLink'=>array('label'=>__('home'),'url'=>array('core/config/index')),
 		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : array(),
 	)); ?>
+ 	 
 	<?php 
 		//显示flash message
 		foreach(array('success','error') as $type){
@@ -72,18 +97,14 @@ js("$(function(){
 
 	
 
-	<div class="footer">
-		<p>&copy; mincms.com <?php echo date('Y'); ?></p>
-		<p>
-			Yii <?php echo Yii::getVersion(); ?> 
-		</p>
-		<p>
-			Template by <a href="http://twitter.github.io/bootstrap/" target='_blank'>Twitter Bootstrap</a>
-		</p>
-	</div>
 	<?php $this->endBody(); ?>
 </div>
- 
+<footer class="footer">
+  <div class="container">
+    <p><?php echo copyRight();?></p>
+    <p>Template by <a href="http://twitter.github.io/bootstrap/" target='_blank'>Twitter Bootstrap</a></p>
+  </div>
+</footer>  
 </body>
 </html>
 <?php $this->endPage(); ?>

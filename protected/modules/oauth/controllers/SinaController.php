@@ -3,9 +3,11 @@ use app\core\Load;
  
 /**
  * ## 新浪微博
- * @author Sun < mincms@outlook.com >
- * @Coprighty  http://mincms.com
- */
+ * @author Sun <mincms@outlook.com>
+ * @copyright 2013 The MinCMS Group
+ * @license http://mincms.com/licenses
+ * @version 2.0.1
+*/
 class SinaController extends OauthController
 {
  

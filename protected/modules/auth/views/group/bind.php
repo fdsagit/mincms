@@ -31,6 +31,6 @@ $this->params['breadcrumbs'][] = __('save user group');
 <?php echo Html::dropDownList('group[]',$groups,$rows,array('multiple'=>'multiple','style'=>'width:300px;'));?>
  
 	<div class="form-actions">
-		<?php echo Html::submitButton(__('save user group'), null, null, array('class' => 'btn')); ?>
+		<?php echo Html::submitButton(__('save user group'), array('class' => 'btn')); ?>
 	</div>
 <?php app\core\ActiveForm::end(); ?>

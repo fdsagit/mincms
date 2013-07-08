@@ -11,7 +11,7 @@ class Widget extends \app\core\ActiveRecord
     } 
     function scenarios() {
 		 return array( 
-		 	'all' => array('field_id','name','memo'),
+		 	'default' => array('field_id','name','memo'),
 		   
 		 );
 	}

@@ -8,7 +8,7 @@ use yii\helpers\Html;
 * @license http://mincms.com/licenses
 * @link http://www.starplugins.com/cloudzoom   get license  
 * @link http://mincms.com/demo-cloudzoom.html   demo
-* @version 1.0.1
+* @version 2.0.1
 */
 
 class Widget extends \yii\base\Widget
@@ -28,7 +28,7 @@ class Widget extends \yii\base\Widget
   	
  	/**
 	*  
-	* Example :
+	* Example 
 	*  
 	* <code> 
 	*	echo widget('cloudzoom',array(

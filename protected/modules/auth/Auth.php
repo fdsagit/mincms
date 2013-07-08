@@ -1,16 +1,24 @@
 <?php 
 namespace app\modules\auth; 
+use app\core\DB;
 class Auth
 {
 	/**
 	* where uid in 
 	*/
 	static function in(){
-		 $uid = \Yii::$app->user->identity->id;
-		 $self = \Yii::$app->user->identity->yourself;
-		 if($self!=1){
-		 	return false;
-		 }
+		 $uid = \Yii::$app->user->identity->id;  
 		 return array($uid);
+	}
+	static function user($id){
+		$k = 'user_id'.$id;
+		$one = cache($k);
+		if(!$one){
+			$one = (object)DB::one('auth_users',array(
+				'where'=>array('id'=>$id)
+			));
+			cache($k , $one);
+		}
+		return $one;
 	}
 }

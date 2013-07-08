@@ -5,12 +5,20 @@
 - [yii2.0 milestones](http://github.com/yiisoft/yii2/issues/milestones)
 - [get composer] (http://getcomposer.org/download/)
 
-### Next git push will can be used to production. please wait.
+### Install  
 
-we are try test mincms on production. 
+```
+  php composer.phar install  / composer install  
 
+  COMPOSER_PROCESS_TIMEOUT=4000  composer update
+```
+### Commication
 
- 
+```
+QQ group：40933125
+Email: mincms@outlook.com
+```
+after install please visit /public or set public dir as root
 
  
 

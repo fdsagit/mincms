@@ -2,9 +2,11 @@
 use app\modules\oauth\models\OauthConfig;
 use app\core\DB;
 /**
-*   
-* 
-* @author Sun < mincms@outlook.com >
+ * oauth admin settings
+ * @author Sun <mincms@outlook.com>
+ * @copyright 2013 The MinCMS Group
+ * @license http://mincms.com/licenses
+ * @version 2.0.1
 */
 class SiteController extends \app\core\AuthController
 { 
@@ -83,7 +85,7 @@ class SiteController extends \app\core\AuthController
 	}
 	public function actionIndex()
 	{    
-		$rt = \app\core\Pagination::run('\app\modules\oauth\models\OauthConfig',array('orderBy'=>'sort desc,id desc'),array('pageSize'=>50));  
+		$rt = \app\core\Pagination::run('\app\modules\oauth\models\OauthConfig',array('orderBy'=>'sort desc,id desc'),array('pageSize'=>200));  
  		
 		return $this->render('index', array(
 		   'models' => $rt->models,

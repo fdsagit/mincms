@@ -36,8 +36,12 @@ class DB{
 	static function id(){ 
 		return \Yii::$app->db->getLastInsertID();
 	}
-	
-	
+	/**
+	* the same as pagination
+	*/
+	static function pager($table,$params=array(),$config=array('pageSize'=>10),$route=null){
+		return static::pagination($table,$params,$config,$route);
+	}
 	/**
 	* DB pagination
 	*
@@ -55,6 +59,9 @@ class DB{
 	* </code>
 	*/
 	static function pagination($table,$params=array(),$config=array('pageSize'=>10),$route=null){
+		if(!is_array($config)){
+			$config=array('pageSize'=>$config);
+		}
 		$one = static::one($table,array(
 			'select'=>'count(*) count'
 		));

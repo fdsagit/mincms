@@ -11,12 +11,12 @@ $this->params['breadcrumbs'][] =  array('label'=>__('content'),'url'=>url('conte
 $this->params['breadcrumbs'][] = $info; 	
 ?>
 <blockquote>
-	<h3>
-		[<?php echo $one->name;?>] #<?php echo $_GET['id'];?>
+ 
+		[<?php echo $one->name;?>] <?php if($_GET['id']){?> #<?php echo $_GET['id'];?> <?php }?>
 		<small>
 			<?php echo $info; ?>
 		</small>
-	</h3>
+ 
 </blockquote>
 <?php  
 $form = new FormBuilder($name,$id);

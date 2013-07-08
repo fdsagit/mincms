@@ -131,23 +131,7 @@ class Menu
 				}
 			}
 		}  
-	    if(!\Yii::$app->user->isGuest){
-		 	 $menu[] = array(
-		 	 	'label'=>\Yii::$app->user->identity->username,
-		 	 	'url'=>'#',
-		 	 	'itemOptions'=>array(
-		 	 	 	'class'=>'dropdown'
-		 	 	 ),
-		 	 	'template'=>"<a href=\"{url}\" data-toggle='dropdown' class='dropdown-toggle'>{label}</a>",
-		 	 	'items'=>array(
-		 	 	 	array(
-		 	 	 		'label'=>__('logout'),
-		 	 	 		'url'=>array('auth/open/logout')
-		 	 	 	),
-		 	 	 )
-		 	 );
-			 
-		 } 
+	     
 		return $menu;
 		 
 	}

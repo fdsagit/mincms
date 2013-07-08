@@ -6,6 +6,16 @@
 */
 class ActiveRecord extends \yii\db\ActiveRecord
 { 
+	function beforeSave($insert){
+		parent::beforeSave($insert);
+		hook('beforeSave',$this);
+		return true;
+	}
+	function afterFind(){
+		parent::afterFind();
+		hook('afterFind',$this);
+		return true;
+	}
  	public function save($runValidation = true, $attributes = null)
 	{
 		if ($this->getIsNewRecord()) {

@@ -17,6 +17,7 @@ class FormBuilder extends \yii\base\Widget
 	 public $nid; //node id
 	 public $script;
 	 public $message;
+	 protected $hook;
  	 /**
  	 * $params $file yaml文件，文件在forms目录下。且文件不能有.连接
  	 * 如在froms目录下的目录如 admin/post.php  该值为admin.post
@@ -31,6 +32,8 @@ class FormBuilder extends \yii\base\Widget
 		$this->name =  $name; 
 		$this->model = $model;
 		$model::$table = $this->name;
+		$hooks = cache_pre('hooks');
+		$this->hook = $hooks['cck_hook'][$name];  
 	 }
 
 	 function run(){
@@ -51,11 +54,18 @@ class FormBuilder extends \yii\base\Widget
 	 	 
 	 	if($_POST && \Yii::$app->request->isAjax){
 	 		//保存数据到数据库  
-	 		$attrs_data = array();
+	 		$attrs_data = (object)array();
 	 		foreach($this->attrs as $get){
-	 			$attrs_data[$get] = $_POST['NodeActiveRecord'][$get];
+	 			$attrs_data->$get = $_POST['NodeActiveRecord'][$get];
 	 		}
-
+			$hooks = cache_pre('hooks');
+			if($this->hook){
+				$hook = $this->hook;
+				if(method_exists($this->hook , 'beforeSave')){ 
+					$attrs_data = $hook::beforeSave($attrs_data);
+				}
+			} 
+		
 	 	 	Node::save_model($this->name,$this->model,$attrs_data,$this->nid);
 	 	}  
 	 	$data['nid'] = $this->nid; 
@@ -70,11 +80,7 @@ class FormBuilder extends \yii\base\Widget
 	 */
 	 function set_rules(){
 	  	$data = Node::set_rules($this->data);
-		//加载插件
-		if($plugins) {
-			foreach($plugins as $pk=>$plugin)
-			widget($pk,$plugin);
-		}
+	 
 		$this->attrs = $data['attrs']; 
 	 	/**
 	 	* 验证规则赋值给Model中的ruels属性

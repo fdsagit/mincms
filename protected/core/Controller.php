@@ -26,18 +26,18 @@ class Controller extends \yii\web\Controller
 			$unique = uniqid(); 
 			cookie('guest_unique',$unique);
 		}
-		$this->guest_unique = $unique; 
-		
-		language(); 
-		hook('action_init',$this);  
+		$this->guest_unique = $unique;  
+		language();  
 		/*
 		* load modules 
 		* 加载模块
 		*/
+		 
 		if(YII_DEBUG ===true){ 
 			\app\core\Modules::load();  
 		}elseif(!cache_pre('all_modules'))
 			\app\core\Modules::load();  
+		hook('action_init',$this); 
 			
 	}
 	public function beforeAction($action)

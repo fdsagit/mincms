@@ -9,7 +9,7 @@ class Modules{
 	* load modules 
 	* 加载模块
 	*/
-	static function load(){  
+	static function load(){   
 		$all = DB::all('core_modules',array(
 			'where'=>array('active'=>1),
 			'orderBy'=>'sort desc,id asc',
@@ -24,7 +24,7 @@ class Modules{
 		 		$reflection = new \ReflectionClass("\app\modules\\$name\Hook"); 
 				$methods = $reflection->getMethods(); 
 				foreach($methods as $m){
-					$action[$m->name][] = $name;
+					$action[$m->name][$name] = "\app\modules\\$name\Hook";
 				} 
 			} 
 		} 

@@ -98,7 +98,8 @@ class Node{
  		}   
  		
  		foreach($structs as $k=>$v){ 
- 			if($value = $model->$k){ //属性有值时 才会查寻数据库
+ 			$value = $model->$k;
+ 			//if(){ //属性有值时 才会查寻数据库
  				$fid = $v['fid'];//字段ID
  				$table = "content_".$v['mysql'];  
  				unset($_check_relate[$table][$fid]);
@@ -107,7 +108,7 @@ class Node{
  				}
  				$batchs[$table][$fid][] = $value;  
  				$wherein[$table][] = $value;  
- 			} 
+ 			//} 
  		}   
  		/**  
 		[content_text] => Array
@@ -213,31 +214,7 @@ class Node{
 	 function set_rules($data){
 	 	//set validate rules && plugins
 	 	$i=0;  
-		foreach($data as $field=>$value){
-			/**
-			* 对设置中的插件参数进行加载
-			*
-			*/
-			$plugins = $value['plugins'];
-			if($plugins){  
-				foreach($plugins as $pk=>$plugin){
-					/**
-					* TAG参数是常规参数，
-					* 如对应的是ID，则可以tag:id 或tag:#
-					* 如对应的是NAME,则可以tag:name 
-					*/
-					if($plugin['tag']){
-						if(in_array(strtolower($plugin['tag']),array('#','id'))){
-							$plugin['tag'] = '#'.$field;
-						}elseif(in_array(strtolower($plugin['tag']),array('name'))){
-							$plugin['tag'] = $field;
-						}
-					}
-					$out_plugins[$pk] = $plugin;
-					//加载插件
-					$this->controller->plugin($pk,$plugin);
-				}
-			}
+		foreach($data as $field=>$value){ 
 			/**
 			* 设置字段对应的验证规则，
 			* 至少有一个验证规则。

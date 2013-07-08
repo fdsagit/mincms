@@ -1,8 +1,11 @@
 <?php namespace app\modules\content\widget\input; 
-
+use yii\helpers\Html; 
 /**
-* 
-* @author Sun < mincms@outlook.com >
+*  
+* @author Sun <mincms@outlook.com>
+* @copyright 2013 The MinCMS Group
+* @license http://mincms.com/licenses
+* @version 2.0.1
 */
 class Widget extends \app\modules\content\Widget
 {  
@@ -11,8 +14,7 @@ class Widget extends \app\modules\content\Widget
 	}
 	
 	function run(){  
-		 $name = $this->name;  
-		 if(is_array($this->model->$name)) $this->model->$name = ''; 
- 		 echo $this->form->field($this->model,$name)->textInput(); 
+		 echo  Html::textInput($this->_name,$this->value , array('id'=>$this->id));   
+		  
 	}
 }

@@ -15,7 +15,7 @@ class AdminController extends \app\core\AuthController
 		parent::init();  
 	}
 	function actionSelected($name){ 
-		$key = '_theme_admin';
+		$key = '_theme_admin'.uid();
 		$value = Classes::get_config($key); 
 		Classes::set_config_lock($key,$name);
 		cache_pre_delete('hooks');
@@ -35,8 +35,8 @@ class AdminController extends \app\core\AuthController
 	*/
 	public function actionIndex()
 	{ 
-		if(Classes::get_config('_theme_admin'))
-			$this->theme_selected = Classes::get_config('_theme_admin');
+		if(Classes::get_config('_theme_admin'.uid()))
+			$this->theme_selected = Classes::get_config('_theme_admin'.uid());
 		if(Classes::get_config('_theme_front'))
 			$this->theme_selected_front = Classes::get_config('_theme_front');
 		$dir = root_path()."themes";

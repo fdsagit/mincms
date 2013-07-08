@@ -1,9 +1,10 @@
 <?php namespace app\core;  
 /**
-*  array 
-* 
-* @author Sun < mincms@outlook.com >
-* @date 2013
+* array
+* @author Sun <mincms@outlook.com>
+* @copyright 2013 The MinCMS Group
+* @license http://mincms.com/licenses
+* @version 2.0.1
 */
 class Arr
 { 
@@ -18,6 +19,16 @@ class Arr
 		foreach($arr as $ar){
 			return $ar;
 		}
+	}
+	static function limit($arr , $limit = 1){
+		$i = 0;
+		foreach($arr as $ar){
+			if($i< $limit){
+				$array[] = $ar;
+			}
+			$i++;
+		}
+		return $array;
 	}
  	/**
  	* 判断数组有没有值

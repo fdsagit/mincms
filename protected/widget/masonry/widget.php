@@ -7,7 +7,7 @@ use yii\helpers\Json;
 * @license http://mincms.com/licenses
 * @link http://mincms.com/demo-masonry.html masonry demo
 * @link http://mincms.com/demo-scroll.html scroll demo
-* @version 1.0.1
+* @version 2.0.1
 */
 
 class Widget extends \yii\base\Widget
@@ -32,6 +32,10 @@ class Widget extends \yii\base\Widget
  	* scroll  true/false
  	*/
  	public $scroll = false; 
+ 	/**
+ 	* css  true/false
+ 	*/
+ 	public $css = true; 
  	/**
 	* masonry/scroll images
 	*
@@ -89,6 +93,18 @@ class Widget extends \yii\base\Widget
 	*		 </ul> 
 	*	</div>
 	*</code> 
+	*
+	* Example scroll 2:
+	*
+	* <code>
+	*	use app\core\Pagination;
+	*	$size = 20;
+	*	$arr = Pagination::img($post->img , $size); 
+	*	$models = $arr['models'];
+	*	$pages = $arr['pages'];
+	*	$count = $arr['count']; 
+   *	echo \app\core\Pagination::next($count,$size);
+	* </code>
 	*/
 
 	function run(){   
@@ -101,24 +117,31 @@ class Widget extends \yii\base\Widget
 		$opts = Json::encode($this->options);  
 		
 		if($this->scroll === true){ 
-			css("#infscr-loading{clear:both; position: absolute;padding-left:10px;bottom: -25px;width: 200px;}#infscr-loading img{float: left;margin-right: 5px;}");
+			if(true === $this->css)
+				css("#infscr-loading{clear:both; position: absolute;padding-left:10px;bottom: -25px;width: 200px;}#infscr-loading img{float: left;margin-right: 5px;}");
+			if(!$this->options['loading']['img'])
+	 			$this->options['loading']['img'] = $base."/ajax-loader.gif";
+	 		if(!$this->options['loading']['msgText'])
+	 			$this->options['loading']['msgText'] = __('loading content……');
+	 		if(!$this->options['loading']['finishedMsg'])
+	 			$this->options['loading']['finishedMsg'] = __('content loading finished');
+	 		
+	 		if(!$this->options['dataType'])
+	 			$this->options['dataType'] = 'html';
+	 		if(!$this->options['navSelector'])
+	 			$this->options['navSelector'] = 'div.pagination';
+	 		if(!$this->options['nextSelector'])
+	 			$this->options['nextSelector'] = 'div.pagination a';
+	 		if(!$this->options['itemSelector'])
+	 			$this->options['itemSelector'] = $itemSelector;
+	 		$infinitescrollOpts = Json::encode($this->options);  
 		 	js("
 				var \$container = $('".$tag."');
 		 		\$container.imagesLoaded(function(){
 			     \$container.masonry($opts);
 			    });   
 				var \$container = $('".$tag."');
-					\$container.infinitescroll({ 
-					loading:{ 
-				    	img:'".$base."/ajax-loader.gif',
-					    msgText:'".__('loading content……')."',  
-					    finishedMsg:'".__('content loading finished')."'
-				    },
-				    dataType: 'html',
-				    navSelector  : 'div.pagination',   
-				    nextSelector : 'div.pagination a',    
-				    itemSelector : '".$itemSelector."', 
-				 },  
+					\$container.infinitescroll(".$infinitescrollOpts.",  
 				  function( newElements ) {
 				    var \$newElems = $( newElements ).css({ opacity: 0 });
 			        \$newElems.imagesLoaded(function(){

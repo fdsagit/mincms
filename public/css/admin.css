@@ -16,6 +16,13 @@ color: #333;
 margin: 10px 0 5px 0;
 padding: 10px; 
 }
+.cck label{
+	height:30px;
+	line-height:30px;
+}
+.cck p button{
+	margin-top:20px;
+}
 li{list-style:none;}
 .margin0{margin-left:0;}
 input.watermark {margin-right:10px;margin-bottom:10px;}
@@ -38,3 +45,15 @@ input.watermark {margin-right:10px;margin-bottom:10px;}
 	margin-bottom: 10px;
 }
 .clear{clear:both;}
+#theme .img-polaroid p{
+	display:none;
+	position: absolute;
+	top: 0px;
+	right: 0;
+	z-index: 999;
+}
+#theme .img-polaroid{
+	position: relative;
+ 
+}
+.footer{clear: both;}

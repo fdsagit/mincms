@@ -2,9 +2,11 @@
 use app\modules\oauth\libraries\oauth2\OAuth2;
 /**
  * ## 腾讯QQ
- * @author Sun < mincms@outlook.com >
- * @Coprighty  http://mincms.com
- */
+ * @author Sun <mincms@outlook.com>
+ * @copyright 2013 The MinCMS Group
+ * @license http://mincms.com/licenses
+ * @version 2.0.1
+*/
 class QqController extends OauthController
 { 
 	public $type = 'qq';

@@ -9,35 +9,20 @@ foreach($cols as $k => $v){
 	$content_type[] = $k;
 } 
 ?>
-<blockquote id='set_field' class='hander'>
-	<?php echo __('set field');?>
-</blockquote>
 
-<div id='field'  style="display:none" >
-	
 <?php if(uid()==1){ 
 	$view = FieldView::find()->where(array('fid'=>$fid))->one();  
-	$columns = Classes::default_columns(); 
-	unset($columns[0] , $columns[1] ,$columns[2] ,$columns[5] ,$columns[6]);
- 	$columns = array_merge($content_type , $columns);  
+ 
+ 	$columns = $content_type;  
 	if($view){
 		$list_db = $view->list;
 		$filter_db = $view->search;  
 	}
 ?>	
-	<ul id='set_search'>
-		<blockquote>
-			<?php echo __('set search filed');?>
-		</blockquote>
-		<?php  
-		foreach($columns as $col){
-		?>
-		<li class="label <?php if($filter_db && in_array($col,$filter_db)){?> label-info <?php }?>">
-				<?php echo Html::a($col,url('content/site/search',array('slug'=>$slug,'name'=>$col)));?>
-		</li>
-		<?php }?>
-	</ul>
-
+<blockquote id='set_field' class='hander'>
+	<?php echo __('set field');?>
+</blockquote>
+<div id='field'  style="display:none" >   
 	<ul id='set_list' >
 		<blockquote>
 			<?php echo __('set display filed in list');?>
@@ -51,19 +36,33 @@ foreach($cols as $k => $v){
 		</li>
 		<?php }?>
 	</ul>	
-<?php }?>
+		
+	<ul id='set_search'>
+		<blockquote>
+			<?php echo __('set search filed');?>
+		</blockquote>
+		<?php  
+		foreach($columns as $col){
+		?>
+		<li class="label <?php if($filter_db && in_array($col,$filter_db)){?> label-info <?php }?>">
+				<?php echo Html::a($col,url('content/site/search',array('slug'=>$slug,'name'=>$col)));?>
+		</li>
+		<?php }?>
+	</ul>
+
 </div>
 <div style='clear:both;'></div>
 <blockquote id='search' class="hander ">
 	<span class="<?php if($filters){?> label label-important<?php }?>"><?php echo __('filter');?></span>
 </blockquote>
+<?php }?>
+
 <div id='filter'  style="display:none"  class='well'>
 	
  <?php $form = ActiveForm::begin(array(
 	'options' => array('class' => 'form-horizontal' ,'id'=>'form_search'),
 	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
-)); ?>
-
+)); ?> 
  	<?php  
  	/**
  	* show filter columns
@@ -77,27 +76,37 @@ foreach($cols as $k => $v){
 	 		}
 	 	}
 	 	$filters  = $out;
- 	}
-	foreach($columns as $col){
-		if($filter_db && in_array($col,$filter_db)){
-			$value = $cols[$col]; 
-			if($value){
-				$form_value = $filters[$col]; 
-				$widget = 'app\modules\content\widget\\'.$value['widget'].'\widget'; 
-				if(!$value['relate']){
-					echo Html::hiddenInput("hidden[$col]",1);
-				}
-				echo $widget::widget(array(
-					'label'=>$value['label'],
-					'name'=>$col,
-					'value'=>$form_value,
+ 	} 
+ 	if($columns){
+		foreach($columns as $col){
+			if($filter_db && in_array($col,$filter_db)){
+				$value = $cols[$col]; 
+				if($value){
+					$form_value = $filters[$col]; 
+					$widget = 'app\modules\content\widget\\'.$value['widget'].'\widget'; 
+					if(!$value['relate']){
+						echo Html::hiddenInput("hidden[$col]",1);
+					}
+					echo $widget::widget(array(
+						'label'=>$value['label'],
+						'name'=>$col,
+						'value'=>$form_value,
+						'form'=>$form, 
+					));
+				} 
+		 }}
+	}
+	 if($filter_db['created']){
+		$widget = 'app\modules\content\widget\datepicker\widget'; 
+		echo $widget::widget(array(
+					'label'=>__('created'),
+					'name'=>'created',
+					'value'=>$filters['created'],
 					'form'=>$form, 
 				));
-			}
-			
-	?>
 	 
-	<?php }}?>
+	}
+	 ?>
 <div class="form-actions">
 	<?php echo Html::submitButton(__('filter'), array('class' => 'btn ')); ?>
 	&nbsp;&nbsp;
@@ -132,10 +141,10 @@ float:left;
 margin-right:5px;
 display:block;
 }
-#set_list{
+#set_search{
 clear:both;display:block;margin-top:20px;
 }
-#set_search{margin-bottom:20px; min-height:50px;}
+#set_list{margin-bottom:20px; min-height:50px;}
 #search,#set_field{margin-left:20px;}
 #field{margin-left:20px;margin-bottom:20px;min-height:126px;}
 ");

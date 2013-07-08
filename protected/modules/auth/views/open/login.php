@@ -10,11 +10,7 @@ use yii\widgets\ActiveForm;
 $this->title = __('admin login');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<blockquote>
-	<h3>
-		<?php echo $this->title; ?> 
-	</h3>
-</blockquote>
+ 
 
 <?php $form = ActiveForm::begin(array('options' => array('class' => 'form-horizontal'))); ?>
 	<?php echo $form->field($model, 'username')->textInput(); ?>

@@ -1,8 +1,6 @@
 <?php
 use yii\helpers\Html;
-use yii\widgets\Menu; 
- 
- 
+use yii\widgets\Menu;  
 /**
  * @var $this \yii\base\View
  * @var $content string
@@ -74,6 +72,7 @@ $this->registerMetaTag(array('content'=>'自定义内容管理系统,支持多�
         <?php $active = \app\core\Menu::active();
     	$menus = array(
     		'site/index'=>'home',
+    		'site/about'=>'about us',
     		'document/site/index'=>'document',
     		'document/site/test'=>'demo',
     		'auth/open/login'=>'admin login',
@@ -119,8 +118,8 @@ z-index: 1000; "src="<?php echo base_url();?>img/fork.png"/></a>
       <div class="footer" style="clear:both;">
         <hr>
         <address>
-        		©<?php echo date('Y');?> 
-        		<strong>mincms@outlook.com</strong><br>  
+        		<?php echo copyRight();?>
+        		<p>mincms@outlook.com</p> 
 			 	<br></address>
       </div>
 

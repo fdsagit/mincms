@@ -11,8 +11,7 @@ class Validate extends \app\core\ActiveRecord
     } 
     function scenarios() {
 		 return array( 
-		 	'all' => array('field_id','value'),
-		   
+		 	'default' => array('field_id','value'), 
 		 );
 	}
 	public function rules()

@@ -4,8 +4,11 @@ use yii\helpers\Html;
 use app\core\Arr;
 use app\core\DB;
 /**
-* 
-* @author Sun < mincms@outlook.com >
+*  
+* @author Sun <mincms@outlook.com>
+* @copyright 2013 The MinCMS Group
+* @license http://mincms.com/licenses
+* @version 2.0.1
 */
 class Widget extends \app\modules\content\Widget
 {  
@@ -15,10 +18,12 @@ class Widget extends \app\modules\content\Widget
 	*/
   	static function content_type($selected=null){  
   		$all = Classes::all('taxonomy',array('orderBy'=>'sort desc,id desc'),true);   
-  	 	foreach($all as $v){
-			$taxonomy[$v->id] = $v;
-		} 
-  		$all = \app\core\Arr::tree($taxonomy);  
+  		if($all){
+	  	 	foreach($all as $v){
+				$taxonomy[$v->id] = $v;
+			} 
+	  		$all = \app\core\Arr::tree($taxonomy);  
+  		}
   		if(!$all) $all = array();
   		else{
   			foreach($all as $k=>$v){
@@ -50,8 +55,8 @@ class Widget extends \app\modules\content\Widget
   		else{
   			$all = $a1+$all;
   		} 
- 		
- 		echo $this->form->field($this->model,$name)->dropDownList($all); 
+ 		echo  Html::dropDownList($this->_name,$this->value , $all ,array('id'=>$this->id ,'style'=>'width:260px'));   
+ 		 
  		 
 	}
 }

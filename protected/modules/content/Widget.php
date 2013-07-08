@@ -2,6 +2,7 @@
 namespace app\modules\content; 
 use app\modules\content\models\NodeActiveRecord;
 use app\core\Arr;
+use yii\helpers\Html; 
 class Widget extends \yii\base\Widget
 {
 	public $label;
@@ -9,12 +10,16 @@ class Widget extends \yii\base\Widget
     public $model;
     public $form;
   	public $value;
+  	public $_name;
   	public $_opt;
   	public $slug;
   	public $structure;
+  	public $id;
   	function init(){
   		parent::init();
   		$name = $this->name;   
+  		$this->id = "nodeactiverecord-".$this->name; 
+  		$this->_name = "NodeActiveRecord[".$this->name."]"; 
 		$this->slug = $_GET['name'];
 		$this->structure =  Classes::structure($this->slug);
 		$this->_opt = $this->structure[$name]['widget_config']; 
@@ -47,7 +52,9 @@ class Widget extends \yii\base\Widget
  				$str = $this->value;
  		}
  	 	if(!$values) $values = array();
- 		echo $this->form->field($this->model,$this->name.'[]')->dropDownList($values,array('multiple'=>'multiple')); 
+ 	 	
+ 	 	echo  Html::dropDownList($this->_name.'[]',$this->value , $values ,array('id'=>$this->id ,'style'=>'width:260px' , 'multiple'=>'multiple'));   
+ 	 
  		js("
  			var ret = [".$str."];
  			$('#".$id." option').each(function(){

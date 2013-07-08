@@ -47,6 +47,6 @@ $this->params['breadcrumbs'][] = __('bind access');
   </tbody>
 </table>
 	<div class="form-actions">
-		<?php echo Html::submitButton(__('save access'), null, null, array('class' => 'btn')); ?>
+		<?php echo Html::submitButton(__('save access'),  array('class' => 'btn')); ?>
 	</div>
 <?php app\core\ActiveForm::end(); ?>

@@ -11,7 +11,32 @@ use app\modules\content\models\FieldView;
  */
 class Classes
 {
+	static function cck_list(){
+		return DB::all('content_type_field',array( 
+			'where'=>array('pid'=>0),
+ 			'orderBy'=>'sort desc, id asc',
+ 		));   
+ 		 
+	}
+	static function one_full($slug , $id){ 
+		$table = "node_".$slug;
+		$model = DB::one($table,array(
+			'where'=>array(
+				'id'=>$id
+			)
+		));
+		$node = static::one($slug,$model['id']); 
+		$node->id = $model['id'];
+		$node->uid = $model['uid'];
+		$node->created = $model['created'];
+		$node->updated = $model['updated'];
+		$node->admin = $model['admin'];
+		$node->display = $model['display']; 
+		return $node;
+	}
 	static function all($slug,$params=array(),$backend=false){ 
+		$ch = static::structure($slug);
+		if(!$ch) return; 
 		$cacheID = "module_content_class_pager_list".$slug;
 		if($params){
 			$cacheID .=json_encode($params);
@@ -133,7 +158,7 @@ class Classes
 					 		LEFT JOIN $relate_table $alias
 					 		ON {$alias}.nid = t.id 
 					 	";
-					 	$where .= " AND {$alias}.fid = $fid	";
+					 	$where .= " AND {$alias}.fid = $fid	"; 
 					 	if($value){ 
 					 		$where .= " AND {$alias}.`value` in( ".implode(',',$value) .")";
 					 	}else{
@@ -158,11 +183,15 @@ class Classes
 					 		LEFT JOIN $relate_table $alias
 					 		ON {$alias}.nid = t.id 
 					 	";
-					 	$where .= " AND {$alias}.fid = $fid	";
-					 	if($value){ 
+					 	$where .= " AND {$alias}.fid = $fid	"; 
+					 	if($value){   
 					 		$where .= " AND {$alias}.`value` = $value ";
 					 	}else{
-					 		$where .= " AND {$alias}.`value` = '' ";
+					 		 
+					 		if($value==0) {
+					 			$where .= " AND {$alias}.`value` = 0 ";
+					 		}else
+					 			$where .= " AND {$alias}.`value` = '' ";
 					 	}
 						
 					 	
@@ -223,7 +252,9 @@ class Classes
 		<p><?php  dump($model);?> </p>
 	<?php }?>
 	*/
-	static function pager($slug,$params=array(),$config=10,$route=null){
+	static function pager($slug,$params=array(),$config=10,$admin=false,$route=null){
+		$ch = static::structure($slug);
+		if(!$ch) return;
 		$cacheID = "module_content_class_pager_list".$slug;
 		if($params){
 			$cacheID .=json_encode($params);
@@ -267,7 +298,7 @@ class Classes
 					$sql .= " WHERE ".$_params['where'];
 					$count_sql .= " WHERE ".$_params['where'];
 				} 
-			  
+		 
 				$one = DB::queryRow($count_sql); 
 				$count = $one['count'];  
 				$pages = new \yii\data\Pagination($count,$config); 
@@ -282,7 +313,10 @@ class Classes
 			} 
 		 
 			foreach($models as $model){
-				$node = static::one($slug,$model['id']); 
+				if(true === $admin){
+					$node = static::_one($slug,$model['id']); 
+				}else
+					$node = static::one($slug,$model['id']); 
 				$node->id = $model['id'];
 				$node->uid = $model['uid'];
 				$node->created = $model['created'];
@@ -301,6 +335,8 @@ class Classes
 		return $row;
 	}
 	static function one($slug,$nid){
+		$ch = static::structure($slug);
+		if(!$ch) return;
 		$cacheId = "module_content_node_{$slug}_{$nid}";
 		$row = cache($cacheId);
 		if(!$row){
@@ -489,10 +525,11 @@ class Classes
 		if(!$out){
 	 		$one = DB::one('content_type_field',array(
 	 				'where'=>array('slug'=>$slug,'pid'=>0),
-	 				'orWhere'=>array('id'=>$slug),
+	 				'orWhere'=>array('id'=>$slug), 
 	 		));
 	 		$all = DB::all('content_type_field',array(
-	 			'where'=>array('pid'=>$one['id'])
+	 			'where'=>array('pid'=>$one['id']),
+	 			'orderBy'=>'sort desc, id asc',
 	 		));   
 	 		$field_id = $one['id'];
 	 		$model = FieldView::find()->where(array('fid'=>$field_id))->one(); 
@@ -510,12 +547,19 @@ class Classes
 	 			$vali = DB::one('content_type_validate',array(
 	 				'where'=>array('field_id'=>$v['id'])
 	 			));
+	 			// plugins
+	 			$plugin = DB::one('content_type_plugin',array(
+	 				'where'=>array('field_id'=>$v['id'])
+	 			));
 	 			$validates = unserialize($vali['value']); 
 	 			$out[$n]['validates'] = $validates;
 	 			$out[$n]['slug'] = $v['slug'];
 	 			$out[$n]['name'] = $v['name'];
 	 			$out[$n]['fid'] = $v['id'];
 	 			$out[$n]['relate'] = $v['relate'];
+	 			if($plugin['name']){ 
+	 				$out[$n]['plugins'][$plugin['name']] = unserialize($plugin['memo']); 
+	 			}
 	 			$is_search = $is_list = 0;
 	 			if($show_list && in_array($n,$show_list)){
 	 				$is_list = 1;
@@ -525,6 +569,7 @@ class Classes
 	 			}
 	 			$out[$n]['list'] = $is_list;
 	 			$out[$n]['filter'] = $is_search;
+	 			if(!$widget) continue;
 	 			$cls = "\app\modules\content\widget\\$widget\widget"; 
 	 			$out[$n]['mysql'] = $cls::node_type(); 
 	 		}

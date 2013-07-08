@@ -1,7 +1,13 @@
 <?php 
 namespace app\modules\oauth\controllers; 
 use app\core\DB;
-
+/**
+ * oauth comm controller
+ * @author Sun <mincms@outlook.com>
+ * @copyright 2013 The MinCMS Group
+ * @license http://mincms.com/licenses
+ * @version 2.0.1
+*/
 class OauthController extends \app\core\FrontController
 {
 	public $url;

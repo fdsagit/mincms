@@ -16,7 +16,7 @@ class Widget extends \yii\base\Widget
 			alert('The selected language is: '+evt.selectedItem);
 		}";
 		$this->options['paramName'] = "language";
-		$this->options['openMode'] = 'hover'; 
+		$this->options['openMode'] = 'hover';  
 	 
 		$opts = Json::encode($this->options);
 		$base = publish(__DIR__.'/assets'); 

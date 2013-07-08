@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		<?php echo $this->title; ?> 
 	</h3>
 </blockquote>
-<div class='span8 margin0'>
+
 	
 <?php
 $pid = $_GET['pid']?:0;
@@ -22,9 +22,8 @@ if($_GET['id']){
 	$pid = $model->pid;
 }
 if($pid>0){
-	echo $this->render('field' , array('model'=>$model , 'widget'=>$widget));
+	echo $this->render('field' , array('model'=>$model , 'widget'=>$widget ,'id'=>$id));
 }else{
 	echo $this->render('type', array('model'=>$model));
 }?>
-
-
+ 

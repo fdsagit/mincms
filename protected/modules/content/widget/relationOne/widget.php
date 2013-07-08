@@ -2,10 +2,13 @@
 use app\modules\content\Classes;
 use yii\helpers\Html;
 use app\core\Arr;
-use app\core\DB;
+use app\core\DB; 
 /**
-* 
-* @author Sun < mincms@outlook.com >
+*  
+* @author Sun <mincms@outlook.com>
+* @copyright 2013 The MinCMS Group
+* @license http://mincms.com/licenses
+* @version 2.0.1
 */
 class Widget extends \app\modules\content\Widget
 {  
@@ -41,8 +44,8 @@ class Widget extends \app\modules\content\Widget
 	 			} 
  			}
  		}
- 		
- 		echo $this->form->field($this->model,$name)->dropDownList($values); 
+ 		echo  Html::dropDownList($this->_name,$this->value , $values ,array('id'=>$this->id ,'style'=>'width:260px'));   
+ 	 
  		 
 	}
 }

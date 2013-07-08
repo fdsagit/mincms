@@ -43,10 +43,9 @@ return array(
 			'bundles' => require(__DIR__ . '/assets.php'),
 		),
 		'log' => array(
-			'class' => 'yii\logging\Router',
 			'targets' => array(
 				array(
-					'class' => 'yii\logging\FileTarget',
+					'class' => 'yii\log\FileTarget',
 					'levels' => array('error', 'warning'),
 				),
 			),
@@ -57,7 +56,7 @@ return array(
 		*/
 		'db' => array(
 			'class' => 'yii\db\Connection',
-			'dsn' => 'mysql:host=localhost;dbname=books',
+			'dsn' => 'mysql:host=localhost;dbname=liujifa',
 			'username' => 'test',
 			'password' => 'test',
 			'charset' => 'utf8', 

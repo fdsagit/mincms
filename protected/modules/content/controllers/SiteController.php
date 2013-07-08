@@ -10,12 +10,74 @@ use app\core\DB;
 class SiteController extends \app\core\AuthController
 { 
 	public $widget;
+	public $plugin;
 	function init(){
 		parent::init();
+		if(YII_DEBUG !== true){
+			throw new \Exception(__('locked cck'));
+		}
 		$this->active = array('content','content.site.index');
 		$this->widget = Field::widgets();
-		$first[0] = __('please select');
+		$first[''] = __('please select');
 		$this->widget = $first+$this->widget;
+		$dir = base_path()."plugin"; 
+		$list = scandir($dir); 
+		foreach($list as $vo){   
+			if($vo !="."&& $vo !=".." && $vo !=".svn"  && !is_dir($dir.'/'.$vo) )
+			{  
+				$v = substr($vo,0,-4); 
+				$out[$v] = $v;
+			}
+		} 
+		$this->plugin = $out; 
+	}
+	/**
+	* ajax load plugin
+	*/
+	function actionPlugin(){
+		$this->layout = false;
+		$id = (int)$_POST['id'];
+		if($id>0){
+			$model = Field::find($id); 
+			$data['plugin_value'] = $model->plugin; 
+			$data['plugin_config'] = $model->plugin_config;
+		}
+		$value = strtolower($_POST['value']);  
+		if(!$this->plugin) return;  
+		$out[] = __('please select');
+		foreach($this->plugin as $k=>$v){
+			$n = strtolower($k);
+			if(strpos($n ,$value) !== false){
+				$test[$k] = $out[$k] = $v;
+			}
+		}
+		if(!$test) return;
+		
+		$data['plugin'] = $out;
+		
+		return  $this->render('plugin' , $data); 
+		 
+	}
+	function actionSort(){  
+		$model = Field::find((int)$_POST['pid']);
+		$slug = $model->slug;
+ 		$ids = $sort = $_POST['ids']; 
+ 		arsort($sort); 
+ 		$sort = array_merge($sort,array()); 
+ 		$table = "content_type_field";
+ 		$fid = $id; 
+ 		foreach($ids as $k=>$id){ 
+ 		 	DB::update($table,
+	 			array(
+	 				'sort'=>$sort[$k]
+	 			),'id=:id', array(':id'=>$id)
+ 		 	); 
+ 		}  
+ 	  	$cacheId = "modules_content_Class_structure{$slug}";
+		cache($cacheId,false);
+ 		return 1;
+ 		
+  
 	}
 	/**
 	* set search filed
@@ -72,12 +134,11 @@ class SiteController extends \app\core\AuthController
 	public function actionCreate()
 	{  
 		$this->view->title = __('create content type');
-		$model = new Field();
-	 	$model->scenario = 'all';
+		$model = new Field(); 
 		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save();
 		 	flash('success',__('create sucessful'));
-			refresh();
+			//refresh();
 		} 
 		return $this->render('form', array(
 		   'model' => $model,
@@ -91,8 +152,7 @@ class SiteController extends \app\core\AuthController
 		$model = Field::find($id);
 		if($model->pid > 0 ){
 			$p = Field::find($model->pid);
-		}
-	 	$model->scenario = 'all';
+		} 
 		if ($model->load($_POST) && $model->validate()) { 
 		 	$model->save(); 
 		 	flash('success',__('update sucessful'));
@@ -101,8 +161,9 @@ class SiteController extends \app\core\AuthController
 		return $this->render('form', array(
 		   'model' => $model, 
 		   'name'=>'content',
-		    'p'=>$p,
-		   'widget'=>$this->widget
+		   'p'=>$p,
+		   'id' =>$id,
+		   'widget'=>$this->widget, 
 		));
 	}
 	public function actionDelete($id){
@@ -115,7 +176,7 @@ class SiteController extends \app\core\AuthController
 	}
 	public function actionIndex()
 	{    
-		$rt = \app\core\Pagination::run('\app\modules\content\models\Field','active');  
+		$rt = \app\core\Pagination::run('\app\modules\content\models\Field',array('scope'=>'active','orderBy'=>'sort desc,id asc'),array('pageSize'=>500));  
  		if($_GET['pid'])
  			$model = Field::find((int)$_GET['pid']);
 		return $this->render('index', array(

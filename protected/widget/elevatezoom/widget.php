@@ -8,7 +8,7 @@ use yii\helpers\Html;
 * @license http://mincms.com/licenses
 * @link http://www.elevateweb.co.uk/image-zoom    offical website
 * @link http://mincms.com/demo-elevatezoom.html   demo
-* @version 1.0.1
+* @version 2.0.1
 */
 
 class Widget extends \yii\base\Widget

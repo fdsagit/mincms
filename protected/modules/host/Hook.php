@@ -24,7 +24,5 @@ class Hook
 			} 
 		}
 	}
-	static function model(){
-		
-	}
+	 
 }

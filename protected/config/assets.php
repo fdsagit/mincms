@@ -5,11 +5,11 @@ return array(
 		'basePath' => '@wwwroot',
 		'baseUrl' => '@www',
 		'css' => array(
-			'css/bootstrap.min.css',
-			'css/bootstrap-responsive.min.css', 
+			'misc/bootstrap/css/bootstrap.min.css',
+			'misc/bootstrap/css/bootstrap-responsive.min.css', 
 		),
 		'js' => array(
-			'js/bootstrap.min.js',
+			'misc/bootstrap/js/bootstrap.min.js',
 			'js/jquery.form.js',
 			'js/jquery-ui.js'
 		),
@@ -21,7 +21,7 @@ return array(
 		'basePath' => '@wwwroot',
 		'baseUrl' => '@www', 
 		'js' => array(
-		 
+		 	'js/jquery.js',
 			'js/jquery-ui.js'
 		),
 	 

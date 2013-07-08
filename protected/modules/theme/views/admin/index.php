@@ -13,9 +13,9 @@ use yii\helpers\Html;
 </blockquote>
 <?php $i=0; foreach($admin as $k=>$v){?> 
 	<div class="span3 <?php if($i==0){?> margin0 <?php }?> img-polaroid"  >
-	<img src="<?php echo image_url('themes/'.$k.'/'.$v['file'],array('resize'=>array(300,200,true,true)));?>" class="img-rounded">
+	<img src="<?php echo image_url('themes/'.$k.'/'.$v['file'],array('resize'=>array(300,200,true,true)));?>" class="img-rounded" >
 	<p>
-		<span class='label'>
+		<span class='label label-info'>
 			<?php echo $k;?> <br>
 			<?php echo __('author');?>: <?php echo $v['auth'];?><br>
 			<?php echo __('licensed');?>: <?php echo $v['licensed'];?>
@@ -27,7 +27,7 @@ use yii\helpers\Html;
 			</span> 
 	<?php }else{?>
 		<span class="btn btn-primary" >
-			<?php echo Html::a(__('selected'),url('theme/admin/selected',array('name'=>$k)));?>
+			<?php echo Html::a(__('active'),url('theme/admin/selected',array('name'=>$k)));?>
 		</span>
 	<?php }?>
 	</div>	 
@@ -40,7 +40,7 @@ use yii\helpers\Html;
 	<div class="span3 <?php if($i==0){?> margin0 <?php }?> img-polaroid">
 	<img src="<?php echo image_url('themes/'.$k.'/'.$v['file'],array('resize'=>array(300,200,true,true)));?>" class="img-rounded">
 	<p>
-		<span class='label'>
+		<span class='label label-info'>
 			<?php echo $k;?> <br>
 			<?php echo __('author');?>: <?php echo $v['auth'];?><br>
 			<?php echo __('licensed');?>: <?php echo $v['licensed'];?>

@@ -3,10 +3,14 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;  
 ?>
  
-<?php $form = ActiveForm::begin(array(
-	'options' => array('class' => 'form-horizontal'),
-	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
-)); ?>
+<?php 
+if(!$form){	
+	$form = ActiveForm::begin(array(
+		'options' => array('class' => 'form-horizontal'),
+		'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
+	)); 
+}
+?>
 	<?php foreach($fields as $k=>$v){ 
 	?>
 		<?php $out = $form->field($model, $k);  
@@ -18,7 +22,7 @@ use yii\widgets\ActiveForm;
 	<?php }?>
 	<?php if(true === $show_form){?>
 		<div class="form-actions">
-			<?php echo Html::submitButton(__('save'), null, null, array('class' => 'btn ')); ?>
+			<?php echo Html::submitButton(__('save'), array('class' => 'btn btn-info')); ?>
 		</div>
 	<?php }?>
 <?php if(true === $show_form) ActiveForm::end(); ?>

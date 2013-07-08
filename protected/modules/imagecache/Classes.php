@@ -10,6 +10,13 @@ use app\core\Url;
  */
 class Classes
 {
+	 static function get_origin($arr){
+	 	 $img = $arr[1];
+	 	 $img = str_replace('/imagine/','',$img);
+	 	 $ext = \app\core\File::ext($img);
+	 	 $img = substr($img,0 ,strrpos($img,'=')).$ext; 
+	 	 return $img;
+	 }
 	 static function image($args){ 
 	    $file = $args[1];
 	    $option = $args[2]; 
@@ -21,11 +28,7 @@ class Classes
 			$s = Url::short(serialize($option));
 		} 
 		$name = File::name($file);
-		$ext = File::ext($file);
-		//如果有upload/ 则替换
-		/*if(substr($name,0,7)=='upload/'){
-			$name = substr($name,7);
-		} */
+		$ext = File::ext($file); 
 		return base_url()."imagine/".$name."=$s{$ext}";
 	}
 	

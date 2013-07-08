@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use yii\widgets\ActiveForm; 
 /**
  * @var yii\base\View $this
  */
@@ -13,10 +14,19 @@ $this->params['breadcrumbs'][] = __('list');
 		<?php  if(!$model) {echo $this->title;} else{ echo $model->slug;} ?> 
 	</h3>
 </blockquote>
+<?php $form = ActiveForm::begin(array(
+	'options' => array('class' => 'form-horizontal','id'=>'oauth-sort'),
+	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
+)); ?>
+<input type='hidden' name='pid' value="<?php echo (int)$_GET['pid'];?>">
 <?php echo app\core\widget\Table::widget(array(
 	'models'=>$models,
 	'pages'=>$pages,
 	'create_url'=>url('content/site/create',array('pid'=>$_GET['pid'])),
-	'fields'=>array('id','slug','name','link')	
-));?>
+	'fields'=>array('ids','slug','name','link')	
+)); 
 
+\app\core\UI::sort('#oauth-sort',url('content/site/sort'))
+?> 
+
+<?php ActiveForm::end(); ?>

@@ -6,9 +6,11 @@ use app\core\Load;
 use app\core\Arr;
 /**
  * ## 网易
- * @author Sun < mincms@outlook.com >
- * @Coprighty  http://mincms.com
- */
+ * @author Sun <mincms@outlook.com>
+ * @copyright 2013 The MinCMS Group
+ * @license http://mincms.com/licenses
+ * @version 2.0.1
+*/
 class WyController extends OauthController
 { 
 	public $type = 'wy'; 

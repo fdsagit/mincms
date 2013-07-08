@@ -10,7 +10,7 @@ class FieldView extends \app\core\ActiveRecord
     } 
     function scenarios() {
 		 return array( 
-		 	'all' => array('fid','list','search'), 
+		 	'default' => array('fid','list','search'), 
 		 );
 	}
 	public function rules()

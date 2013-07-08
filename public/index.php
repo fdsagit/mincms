@@ -1,6 +1,6 @@
 <?php 
 // comment out the following line to disable debug mode
-defined('YII_DEBUG') or define('YII_DEBUG', true); 
+//defined('YII_DEBUG') or define('YII_DEBUG', true); 
 // local env settings
 //defined('YII_ENV') or define('YII_ENV', 'test'); 
 @include (__DIR__ . '/../vendor/yiisoft/yii2/yii/Yii.php');

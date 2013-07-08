@@ -1,11 +1,33 @@
 <?php namespace app\core;  
-/** 
- *
-* @author Sun < mincms@outlook.com >
-* @date 2013
+/**
+* Str class
+* @author Sun <mincms@outlook.com>
+* @copyright 2013 The MinCMS Group
+* @license http://mincms.com/licenses
+* @version 2.0.1
 */
 class Str{
- 
+   /**
+	* currencies 
+	* 
+	* @link http://xurrency.com/currencies currencies
+	*
+	* Example:
+	* <code> 
+	* \app\core\Str::currencies(1,'eur','rmb');
+	* </code>  
+	* @param  int $num   100
+	* @param  string $from  params 
+	* @param  string $to  params 
+	*/
+   static function currencies($num,$from, $to ){
+		$url = "http://www.google.com/ig/calculator?hl=en&q=".$num.$from."=?".$to;
+		$data = file_get_contents($url);
+		$data = explode('"', $data);
+		$data = explode(' ', $data['3']);
+		$var = $data['0'];
+		return round($var,2); 
+   }
  	
 	/**
 	* 批量替换

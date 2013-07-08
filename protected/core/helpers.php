@@ -4,9 +4,16 @@
 * @author Sun <mincms@outlook.com>
 * @copyright 2013 The MinCMS Group
 * @license http://mincms.com/licenses
-* @version 1.0.1
+* @version 2.0.1
 */
-
+ 
+/**
+* copyRight infomation
+* 
+*/
+function copyRight(){
+	return "&copy;<a href='http://mincms.com/' target='_blank'>MinCMS</a>";
+}
 /**
 * redirect to other page
 *
@@ -70,6 +77,17 @@ function widget($name,$params=null){
 function core_widget($name,$params=null){
 	$cls = "app\core\widget\\$name";
 	return $cls::widget($params);
+}
+/**
+* plugin
+* 
+* @param  string $url   controller/action
+* @param  array $parmas  params 
+*/
+function plugin($name,$params=null , $tag){
+	$params['tag'] = $tag;
+	$cls = "\app\plugin\\$name"; 
+	echo $cls::widget( array( 'tag'=>'','params'=>$params ));
 }
 /**
 * call module widget. path is @app\modules\$module\widget\$name 
@@ -404,17 +422,34 @@ function remove_cookie($name){
 * </code>
 */
 function hook(){
-	$hooks = cache_pre('hooks');
+	$hooks = cache_pre('hooks'); 
 	if(!$hooks) return;
 	$args = func_get_args();  
 	$name = $args[0];
 	unset($args[0]);   
-	$h = $hooks[$name];
-	if($h){
-		foreach($h as $li){
-			$cls = "\app\modules\\$li\\Hook";
+	$h = $hooks[$name]; 
+	if($h){ 
+		foreach($h as  $cls){  
 			$cls::$name($args[1]);
 		} 
+	} 
+ 
+}
+/**
+* add hooks 
+*
+* Example:
+* <code>
+* hook_add('beforeSave',"\app\modules\content\widget\datepicker\Widget");
+* </code>
+*/
+function hook_add($name,$cls){
+	$hooks = cache_pre('hooks');
+	if($hooks){
+		if(!$hooks[$name]){
+			$hooks[$name] = $cls;
+			cache_pre('hooks' , $hooks);
+		}
 	} 
  
 }
@@ -517,12 +552,15 @@ function decode($data, $key=null){
 * @return bool true/false
 */
 function self($value){
-	$in = app\modules\auth\Auth::in(); 
+	$in = app\modules\auth\Auth::in();   
+	$self = \Yii::$app->user->identity->yourself; 
+	if(!$self) return true;
 	if(false === $in){
 		return false;
 	}else if(in_array($value,$in)){
 		return true;
 	} 
+	
 }
 /**
 * get core config value

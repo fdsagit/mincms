@@ -1,18 +1,40 @@
 <?php namespace app\widget\imageblock;  
 /**
-* 
-* @author Sun < mincms@outlook.com >
+* imageblock widget
+* @author Sun <mincms@outlook.com>
+* @copyright 2013 The MinCMS Group
+* @license http://mincms.com/licenses 
+* @link http://mincms.com/demo-imageblock.html   demo
+* @version 2.0.1
 */
 class Widget extends \yii\base\Widget
 {  
  	public $rows; 
  	public $blue = true;
+ 	public $width = 225;
+ 	public $height = 170;
+ 	/**
+ 	* Example  
+ 	*
+ 	* <code>
+	* 	$rows[] = array(
+	*		'title'=>'test',
+	*		'body'=>'test',
+	*		'img'=>'http://responsivewebinc.com/premium/metro/purple/img/photos/tn_2.jpg',
+	*		'url'=>'test',
+	*	);	
+	*	echo widget('imageblock',array(
+	*		'rows'=>$rows
+	*	));
+	* </code>
+ 	*/
 	function run(){  
+		 $top = $this->height - 28;
 		 $posts = $this->rows;
 		 js("$('ul.hover-block li').hover(function(){
         $(this).find('.hover-content').animate({top:'-3px'},{queue:false,duration:500});
       }, function(){
-        $(this).find('.hover-content').animate({top:'125px'},{queue:false,duration:500});
+        $(this).find('.hover-content').animate({top:'".$top."px'},{queue:false,duration:500});
       });");
       if($this->blue===true){
       	css(".b-lblue:hover {
@@ -39,8 +61,8 @@ css("/* Image blocks */
 ul.hover-block li{
 	list-style:none;
 	float:left;
-	width:225px; 
-	height: 170px;
+	width:".$this->width."px; 
+	height: ".$this->height."px;
 	position: relative;
 	margin: 5px 4px;
 }
@@ -49,8 +71,8 @@ ul.hover-block li a {
 	display: block;
 	position: relative;
 	overflow: hidden;
-	width: 225px;
-	height: 170px;
+	width:".$this->width."px; 
+	height: ".$this->height."px;
 	color: #000;
 }
 
@@ -62,8 +84,8 @@ ul.hover-block li .hover-content{
 	width: 100%;
 	position: absolute;
 	z-index: 1000;
-	height: 170px;
-	top: 125px;
+	height: ".$this->height."px;
+	top: ".$top."px;
 	color: #fff;
 	padding: 5px 10px;
 	cursor: pointer;
@@ -82,7 +104,8 @@ ul.hover-block li img {
 }
 ");
 echo $this->render('@app/widget/imageblock/views/index',array(
-	'posts'=>$posts
+	'posts'=>$posts,
+	'top'=>$top
 ));
 	}
 }

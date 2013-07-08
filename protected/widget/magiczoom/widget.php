@@ -8,7 +8,7 @@ use yii\helpers\Html;
 * @license http://mincms.com/licenses
 * @link http://www.magictoolbox.com/magiczoom/   get license 
 * @link http://mincms.com/demo-magiczoom.html   demo
-* @version 1.0.1
+* @version 2.0.1
 */
 
 class Widget extends \yii\base\Widget

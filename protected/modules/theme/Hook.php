@@ -15,7 +15,7 @@ class Hook
  	static function action_init_auth(){
  		$arr = func_get_args();
  		$obj = $arr[0]; 
-		$value = Classes::get_config('_theme_admin');  
+		$value = Classes::get_config('_theme_admin'.uid());  
 		if($value){ 
 			$obj->theme = $value;
 		}

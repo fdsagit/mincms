@@ -9,12 +9,29 @@ use app\core\DB;
 */
 class NodeController extends \app\core\AuthController
 { 
- 	
+ 	function loadHook(){
+ 		$dir = base_path().'hook';
+ 		$list = scandir($dir);
+		foreach($list as $vo){   
+			if($vo !="."&& $vo !=".." && $vo !=".svn" && strpos($vo , '.php')!==false)
+			{ 
+				$name = str_replace('.php' , '' ,$vo);
+				$out[$name] = "\app\hook\\$name";
+			}
+			
+		}
+		if($out)
+			hook_add('cck_hook',$out);
+		
+		 
+ 	}
 	function init(){
 		parent::init();
+		$this->loadHook();
+	 
 		$this->active = array('content','content.node.index'); 
 	}
-	function actionSort(){ 
+	public function actionSort(){ 
  		$ids = $sort = $_POST['ids']; 
  	 	$slug = $_POST['name']; 
  		arsort($sort); 
@@ -30,7 +47,11 @@ class NodeController extends \app\core\AuthController
  		}   
  		return 1; 
 	}
-	function actionDisplay($name,$id){
+	public function actionDisplay($name,$id){
+		$model = Classes::one_full($name,$id); 
+		if(!self($model->uid) && uid()!==1){
+			throw new \Exception(__('not your create'));
+		}
 		$id = (int)$id;
 		if($id<1) exit;
 		$table = "node_{$name}";
@@ -47,6 +68,8 @@ class NodeController extends \app\core\AuthController
 	
 	public function actionCreate($name)
 	{  
+		$this->active = array('content','content.node.index','content.node.cck.'.$name); 
+		
 		$one = Field::find()->where(array('slug'=>$name))->one();
 		$this->view->title = __('create');
 		return $this->render('form',array(
@@ -56,7 +79,12 @@ class NodeController extends \app\core\AuthController
 	}
 	public function actionUpdate($name,$id)
 	{  
+		$this->active = array('content','content.node.index','content.node.cck.'.$name); 
 		$one = Field::find()->where(array('slug'=>$name))->one();
+		$model = Classes::one_full($name,$id); 
+		if(!self($model->uid) && uid()!==1){
+			throw new \Exception(__('not your create'));
+		}
 		$this->view->title = __('update').' #'.$id;
 		return $this->render('form',array(
 			'name'=>$name,
@@ -65,6 +93,10 @@ class NodeController extends \app\core\AuthController
 		));
 	}
 	public function actionDelete($id){
+		$model = Classes::one_full($name,$id); 
+		if(!self($model->uid) && uid()!==1){
+			throw new \Exception(__('not your create'));
+		}
 		if($_POST['action']==1){ 
 			$model = Field::find($id); 
 			$model->delete();
@@ -75,8 +107,12 @@ class NodeController extends \app\core\AuthController
 	/***
 	* content list
 	*/
-	public function actionIndex($name=null,$rest=null)
-	{    
+	public function actionIndex()
+	{     
+		$name = $_GET['name']?:"";
+		$rest = $_GET['rest']?:"";
+		$pid = $_GET['pid']?:0;
+		$this->active = array('content','content.node.index','content.node.cck.'.$name); 
 	 	if($name) {
 	 		/**
 		 	* set filter cookie.
@@ -111,11 +147,15 @@ class NodeController extends \app\core\AuthController
 		 	if($filters){
 		 		$condition['where'] = $filters;
 		 	}
-		 	  
+		 	if($name == 'taxonomy'){
+		 		$condition['where'] = array('pid'=>$pid); 
+		 	}
 		 	/**
 		 	* load pager data
 		 	*/
 	 		$data = Classes::pager($name,$condition,50);
+	 		 
+	 	 
 	 		$data['name'] = $name;
 	 		$one = DB::one('content_type_field',array(
 		 		'where'=>array('slug'=>$name,'pid'=>0)
@@ -130,9 +170,24 @@ class NodeController extends \app\core\AuthController
 		  
 		 	
 	 	}
-		$data['types'] = Field::find()->where(array('pid'=>0))->all(); 
- 		
-		return $this->render('index' ,$data );
+		$data['types'] = Field::find()->where(array('pid'=>0))->orderBy('sort desc,id asc')->all(); 
+		$data['name'] = $name;
+		$db = DB::one('content_type_field',array(
+			'where'=>array(
+				'slug'=>$name
+			)
+		));
+		$data['label'] = $db['name'];
+		 
+		if($pid>0){
+			$m = Classes::one($name,$pid); 
+			$data['pid'] = $m->id;
+			
+		}
+ 		if($name == 'taxonomy'){
+ 			return $this->render('taxonomy' ,$data );
+ 		}else
+			return $this->render('index' ,$data );
 	}
 
 	 

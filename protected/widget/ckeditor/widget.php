@@ -8,14 +8,16 @@ class Widget extends \yii\base\Widget
 {  
  	public $tag;
  	public $options; 
+ 	public $var = 'ck';
 	function run(){  
 		 if($this->options)
 			$opts = ",".Json::encode($this->options);
 		$base = publish(__DIR__.'/assets'); 
  		
  		if(!$this->tag) return; 
+ 		 
  		js(" 
- 			CKEDITOR.replace('".$this->tag."'".$opts."); 
+ 			CK".$this->var." = CKEDITOR.replace('".$this->tag."'".$opts."); 
  		"); 
  		js_file($base.'/ckeditor.js'); 
 	}

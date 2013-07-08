@@ -1,25 +1,41 @@
 <?php namespace app\widget\gallery;  
 use yii\helpers\Json;
 /**
-* 
- 
-<?php widget('gallery',array(
-	'tag'=>'#galleria',
-	'theme'=>'classic',// classic , azur ,dots,fullscreen,twelve
-));
-?>
-
-<div id="galleria" style="width:800px;height:600px;">
-    <a href="#"><img src="#"    data-big="/img/big1.jpg" data-title="My title" data-description="My description"></a>
-</div>
-* @author Sun < mincms@outlook.com >
+* gallery widget
+* @author Sun <mincms@outlook.com>
+* @copyright 2013 The MinCMS Group
+* @license http://mincms.com/licenses
+* @link http://galleria.io/   offical website
+* @link http://mincms.com/demo-gallery.html   demo
+* @version 2.0.1
 */
 class Widget extends \yii\base\Widget
 {  
  	public $tag;
- 	public $options; 
- 	// classic , azur ,dots,fullscreen,twelve
+ 	public $options;  
+ 	/**
+ 	* classic , azur ,dots,fullscreen,twelve
+ 	*/
  	public $theme = 'classic';
+ 	/**
+ 	* Example
+ 	*
+ 	* <code> 
+	*	<?php widget('gallery',array(
+	*		'tag'=>'#galleria',
+	*		'theme'=>'classic',// classic , azur ,dots,fullscreen,twelve
+	*	));
+	*	?>
+	*
+	*	<div id="galleria" style="width:800px;height:600px;">
+	*		<?php foreach($post->img as $im){ ?>
+	*	    <a href="<?php echo image_url($im['path'] , array('resize'=>array(800)));?>"><img 
+	*	    	src="<?php echo image_url($im['path'] , array('resize'=>array(120,90)));?>"   
+	*	    	 data-title="<?php echo $post->name;?>" data-description="<?php echo $post->name;?>"></a>
+	*	    <?php }?>
+	*	</div>
+	* </code>
+ 	*/
 	function run(){  
 		 if($this->options)
 			$opts = Json::encode($this->options);

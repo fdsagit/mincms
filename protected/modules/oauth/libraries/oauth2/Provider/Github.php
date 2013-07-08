@@ -2,14 +2,12 @@
 use app\modules\oauth\libraries\oauth2\Provider;
 use app\modules\oauth\libraries\oauth2\Token\Access;
 /**
- * GitHub OAuth2 Provider
- *
- * @package    CodeIgniter/OAuth2
- * @category   Provider
- * @author     Phil Sturgeon
- * @copyright  (c) 2012 HappyNinjas Ltd
- * @license    http://philsturgeon.co.uk/code/dbad-license
- */
+* github.com api
+* @author Sun <mincms@outlook.com>
+* @copyright 2013 The MinCMS Group
+* @license http://mincms.com/licenses
+* @version 2.0.1
+*/
 
 class Github extends Provider
 {

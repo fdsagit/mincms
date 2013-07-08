@@ -8,7 +8,7 @@ use yii\helpers\Html;
 * @license http://mincms.com/licenses
 * @link http://damirfoy.com/iCheck/   offical website 
 * @link http://mincms.com/demo-icheck.html   demo
-* @version 1.0.1
+* @version 2.0.1
 */
 
 class Widget extends \yii\base\Widget

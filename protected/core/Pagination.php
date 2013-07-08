@@ -5,12 +5,29 @@
 * @author Sun <mincms@outlook.com>
 * @copyright 2013 The MinCMS Group
 * @license http://mincms.com/licenses 
-* @version 1.0.1 
+* @version 2.0.1 
 */
 
 
 class Pagination  
 {  
+	/**
+	* ajax pagination
+	* <code>
+	*	\app\core\Pagination::ajax('.ajax_pagination a' , '#ajax_body');
+	* </code>
+	*/
+	static function ajax($tag = '.ajax_pagination a',$body = '#ajax_body'){
+		js("
+			$('".$tag."').click(function(){
+			var url = $(this).attr('href');
+			$.post(url,function(data){
+				$('".$body."').html(data);
+			});
+			return false;
+		});
+		");
+	}
 	/**
 	* support ckeditor pagebreak
 	$node = node('post',1); 
@@ -47,9 +64,7 @@ class Pagination
 		return array('row'=>$row,'pages'=>$pages);
 	}
 	/**
-	*
-	 
- 		
+	* 
 	*/
 	static function next($count,$size=10){
 		$page = (int)$_GET['page']?:1;
@@ -63,15 +78,21 @@ class Pagination
 			$url = url_action(null,$params); 
 			echo "<div   class='pagination' style='display:none;'><a href='".$url."'></a></div>";
 		}else{
-			throw new Exception('exception');
+			throw new \Exception('exception');
 		}
 	}
  
 	/**
-	$p = \Vendor\Pager::img($posts,1,true,"apple_pagination showimg");
-	$posts = $p[0];
-	$pager = $p[1];	
-	$per 每页显示几条  $img 是否是图片
+	* image pagination
+	*
+	* Example
+	*
+ 	* <code>
+	* 	$arr = Pagination::img($post->img , $size); 
+	*	$models = $arr['models'];
+	*	$pages = $arr['pages'];
+	*	$count = $arr['count'];
+ 	* </code> 
 	*/
 	static function img($arr,$per=2,$img=false, $class='pagination'){	 
 		$current = (int)$_GET['page']?:1;
@@ -90,19 +111,25 @@ class Pagination
 		for($i;$i<$j;$i++){
 			$post[] = $n[$i];
 		}
-	 	$p = "<div class='".$class."'>";
+	 	$p = "<div class='".$class."'><ul>";
 		for($i=1;$i<=$page;$i++){
 			unset($cls);
+			$params = array('page'=>$i);
+			if($_GET){
+				$params = array_merge($_GET,$params);
+			}
+			$url = url_action(null,$params); 
+			
 			if($i==$current)
-				$cls = "class='current'";
+				$cls = "class='active'";
 			if($img==true){
-				$p .= "<span><a href='?page=".$i."' $cls   data-content=\"<img src='".image($n[($i-1)*$per],array(400,300))."'/>\" >".$i."</a></span>";
+				$p .= "<li $cls><a href='".$url."'    data-content=\"<img src='".image($n[($i-1)*$per],array(400,300))."'/>\" >".$i."</a></li>";
 			}
 			else 
-				$p .= "<span><a href='?page=".$i."' $cls >".$i."</a></span>";
+				$p .= "<li $cls><a href='".$url."' $cls >".$i."</a></li>";
 		}
-		$p .= "</div>";
-		return array($post,$p);
+		$p .= "</ul></div>";
+		return array('models'=>$post,'pages'=>$p ,'count'=>$num);
 	}
 	/**
 	*   Pagination 
@@ -128,7 +155,18 @@ class Pagination
 		if($scope){
 			if(is_string($scope)){
 				$query = $query->$scope();
-			}else{
+			}else{ 
+				$defaultScope = $scope['scope'];
+				if( $defaultScope ){ 
+					if(is_array($defaultScope)){
+						foreach($defaultScope as $sp){ 
+							$query = $query->$sp();
+						}
+					}else{
+						$query = $query->$defaultScope();
+					}
+				} 
+				unset($scope['scope']);
 				foreach($scope as $k=>$v){
 					if(!is_numeric($k))
 						$query = $query->$k($v);

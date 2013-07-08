@@ -1,5 +1,6 @@
 <?php namespace app\modules\content\models; 
 use app\modules\content\models\Widget;
+use app\modules\content\models\Plugin;
 use yii\helpers\Html;
 use app\core\DB;
 use app\modules\content\Classes;
@@ -12,14 +13,14 @@ class Field extends \app\core\ActiveRecord
     } 
     function scenarios() {
 		 return array( 
-		 	'all' => array('slug','name','pid','memo'), 
+		 	'default' => array('slug','name','pid','memo'), 
 		 );
 	}
 	
 	public function rules()
 	{ 
 		return array(
-			array('slug, name, pid', 'required'), 
+			array('slug, name', 'required'), 
 		 	array('slug', 'match','pattern'=>'/^[a-z_]/', 'message'=>__('match')), 
 		  	array('slug', 'check'),
 		);
@@ -29,7 +30,7 @@ class Field extends \app\core\ActiveRecord
 		if(in_array($this->$attribute, Classes::default_columns())){
 			$this->addError('slug',__('slug not allowed')); 
 		}
-		$model = static::find()->where(array('slug'=>$this->$attribute,'pid'=>$this->pid))->one();
+		$model = static::find()->where(array('slug'=>$this->$attribute,'pid'=>$this->pid?:0))->one();
 		if($model){
 			if(!$this->id){
 				$this->addError('slug',__('slug & name is unique')); 
@@ -64,26 +65,29 @@ class Field extends \app\core\ActiveRecord
 		/**
 		* 判断是否有下一级的URL
 		*/
-		if($model = static::find(array('pid'=>$this->id)))
+		if(!$_GET['pid'])
 			return Html::a(__('link'),url('content/site/index',array('pid'=>$this->id)));
 		return Html::a(__('return back'),url('content/site/index',array('pid'=>$model->pid)));
 	}
 	function beforeSave($insert){
 		parent::beforeSave($insert);
+		 
 		$this->relate = $_POST['Field']['relate'];  
 		return true;
 	}
 	function afterSave($insert){  
 		parent::afterSave($insert);
- 		$model = Widget::find(array(
- 			'field_id'=>$this->id 
-	 	));
-	 	if(!$model){
-	 		$model = new Widget;
-	 	} 
-	 	$model->field_id = $this->id ;
-	 	$model->name = $_POST['widget'] ;
-	 	$model->save();  
+		if($_POST['widget']){
+	 		$model = Widget::find(array(
+	 			'field_id'=>$this->id 
+		 	));
+		 	if(!$model){
+		 		$model = new Widget;
+		 	} 
+		 	$model->field_id = $this->id ;
+		 	$model->name = $_POST['widget'] ;
+		 	$model->save();  
+	 	}
 	 	 
 	 	//create table
 	 	$slug = $this->slug; 
@@ -96,9 +100,33 @@ class Field extends \app\core\ActiveRecord
 	 	\Yii::import('@app/vendor/Spyc');
  	    $rule = \Spyc::YAMLLoad($_POST['rule']);
  	    $this->_validate($rule);
+ 	    if($_POST['widget_config']){
+	 	    $widget_config = \Spyc::YAMLLoad($_POST['widget_config']);
+	 	    $this->_widget_config($widget_config);
+ 	    }
  	    
- 	    $widget_config = \Spyc::YAMLLoad($_POST['widget_config']);
- 	    $this->_widget_config($widget_config);
+ 	    if($_POST['plugin']){
+	 	    $model = Plugin::find(array(
+	 			'field_id'=>$this->id 
+		 	));
+		 	if(!$model){
+		 		$model = new Plugin;
+		 	} 
+		 	$model->field_id = $this->id ;
+		 	$model->name = $_POST['plugin'] ;
+		 	$model->save();  
+	 	}else{
+	 		$model = Plugin::find(array(
+	 			'field_id'=>$this->id 
+		 	));
+		 	if($model)
+		 		$model->delete();
+	 	}
+	 	
+ 	    if($_POST['plugin_config']){
+	 	    $plugin_config = \Spyc::YAMLLoad($_POST['plugin_config']);
+	 	    $this->_plugin_config($plugin_config);
+ 	    }
  	    //cache Classes cache
  	    
  	    if($this->pid == 0){
@@ -128,6 +156,27 @@ class Field extends \app\core\ActiveRecord
 	 	));
 		return $model->name;
 	}
+	
+	function getplugin(){
+		$model = Plugin::find(array(
+ 			'field_id'=>$this->id 
+	 	));
+		return $model->name;
+	}
+	function getplugin_config(){
+		$model = Plugin::find(array(
+ 			'field_id'=>$this->id 
+	 	));
+	 	
+	 	$all = unserialize($model->memo);
+	 	if($all){
+	 		foreach($all as $k=>$v){
+	 			$str .= $k.":".$v.chr(13);
+	 		}
+	 	}
+		return $str; 
+	}
+	
 	function getwidget_config(){
 		$model = Widget::find(array(
  			'field_id'=>$this->id 
@@ -170,18 +219,23 @@ class Field extends \app\core\ActiveRecord
 		return $rt;
  	}
  	
- 	function _widget_config($value){
- 		$one = \app\modules\content\models\Widget::find(array(
+ 	function _widget_config($value , $name = 'Widget'){
+ 		$cls = "\app\modules\content\models\\$name";
+ 		$one = $cls::find(array(
  			'field_id'=>$this->id
  		));
  		if(!$one){
- 			$one = new \app\modules\content\models\Widget; 
+ 			$one = new $cls; 
  		} 
  		
  		$one->field_id = $this->id;
 		$one->memo = serialize($value);
 		$one->save();
  	} 
+ 	
+ 	function _plugin_config($value){
+ 		$this->_widget_config($value,'Plugin');
+ 	}
  	/**
  	* set validate
  	*/
@@ -219,6 +273,11 @@ class Field extends \app\core\ActiveRecord
 		}
 		return $out;
 	}  
+	function getIds(){
+	 
+		return '<i class="drag"></i>'.\yii\helpers\Html::hiddenInput('ids[]',$this->id).$this->slug;
+		
+	}
  
 	 
 }

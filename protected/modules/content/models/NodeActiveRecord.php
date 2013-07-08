@@ -28,11 +28,7 @@ class NodeActiveRecord extends \yii\base\Model
     {
         return static::$table;
     } 
-  	/*unction scenarios() {
-		 return array( 
-		 	'all' => array('slug','name','pid','memo'), 
-		 );
-	}*/
+  	 
   	public function rules()
     {
         return $this->rules;

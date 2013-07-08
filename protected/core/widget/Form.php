@@ -32,6 +32,7 @@ class Form extends \yii\base\Widget
 	public $fields;  
 	public $yaml;
 	public $form=true;
+	public $open;
 	function run(){ 
 		if($this->yaml){
 			\Yii::import('@app/vendor/Spyc');
@@ -54,6 +55,7 @@ class Form extends \yii\base\Widget
 	 	echo $this->render('@app/core/widget/views/form',array(
 	 		'model'=>$this->model,
 	 		'fields'=>$data, 
+	 		'form'=>$this->open,
 	 		'show_form'=>$this->form
 	 	));
 	}

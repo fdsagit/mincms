@@ -5,7 +5,7 @@
 error_reporting(E_ALL & ~(E_STRICT | E_NOTICE));
  
  
-$main = include dirname(__FILE__).'/../protected/config/main.php';
+$main = include dirname(__FILE__).'/../protected/config/web-prod.php';
  
 $mysql = $main['components']['db']; 
 $db = new db;
